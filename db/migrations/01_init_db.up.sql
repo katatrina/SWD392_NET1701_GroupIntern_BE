@@ -105,8 +105,8 @@ CREATE TABLE "payments"
     "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
-ALTER TABLE "users"
-    ADD FOREIGN KEY ("id") REFERENCES "dentist_detail" ("dentist_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "dentist_detail"
+    ADD FOREIGN KEY ("dentist_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "dentist_categories"
     ADD FOREIGN KEY ("dentist_id") REFERENCES "dentist_detail" ("dentist_id") ON DELETE CASCADE ON UPDATE CASCADE;

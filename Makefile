@@ -6,3 +6,9 @@ migrate-up:
 
 migrate-down:
 	migrate -path db/migrations -database "postgres://root:secret@localhost:5432/dental_clinic?sslmode=disable" -verbose down
+
+sqlc:
+	sqlc generate
+
+server:
+	go run main.go
