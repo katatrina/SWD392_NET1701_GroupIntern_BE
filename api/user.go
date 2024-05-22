@@ -1,20 +1,27 @@
 package api
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	db "github.com/katatrina/SWD392/db/sqlc"
-	"github.com/katatrina/SWD392/internal"
+	"github.com/katatrina/SWD392/internal/util"
 	"github.com/lib/pq"
+)
+
+var (
+	ErrIncorrectEmailOrPassword = errors.New("email or password is incorrect")
 )
 
 type createUserRequest struct {
 	Password    string `json:"password" binding:"required"`
 	FullName    string `json:"full_name" binding:"required"`
-	Email       string `json:"email" binding:"required"`
+	Email       string `json:"email" binding:"required,email"`
 	PhoneNumber string `json:"phone_number" binding:"required"`
 }
 
@@ -28,7 +35,7 @@ func (server *Server) createUser(ctx *gin.Context) {
 	}
 
 	// Generate hashed password
-	hashedPassword, err := internal.GenerateHashedPassword(req.Password)
+	hashedPassword, err := util.GenerateHashedPassword(req.Password)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -63,4 +70,75 @@ func (server *Server) createUser(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusCreated, nil)
+}
+
+type loginUserRequest struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}
+
+type userResponse struct {
+	ID          int64     `json:"id"`
+	FullName    string    `json:"full_name"`
+	Email       string    `json:"email"`
+	PhoneNumber string    `json:"phone_number"`
+	Role        string    `json:"role"`
+	CreatedAt   time.Time `json:"created_at"`
+}
+
+type loginUserResponse struct {
+	AccessToken string       `json:"access_token"`
+	UserInfo    userResponse `json:"user_info"`
+}
+
+func (server *Server) loginUser(ctx *gin.Context) {
+	var req loginUserRequest
+
+	// Parse the JSON request body
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	// Get the customer by email
+	customer, err := server.store.GetCustomerByEmail(ctx, req.Email)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			ctx.JSON(http.StatusNotFound, errorResponse(ErrIncorrectEmailOrPassword))
+			return
+		}
+
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	// Check the password
+	err = util.CheckPassword(customer.HashedPassword, req.Password)
+	if err != nil {
+		err = errors.New("incorrect email or password")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrIncorrectEmailOrPassword))
+		return
+	}
+
+	userID := strconv.FormatInt(customer.ID, 10)
+
+	// Create a new, unique access token
+	accessToken, err := server.tokenMaker.CreateToken(userID, customer.Role, time.Minute*15)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	rsp := loginUserResponse{
+		AccessToken: accessToken,
+		UserInfo: userResponse{
+			ID:          customer.ID,
+			FullName:    customer.FullName,
+			Email:       customer.Email,
+			PhoneNumber: customer.PhoneNumber,
+			Role:        customer.Role,
+			CreatedAt:   customer.CreatedAt,
+		},
+	}
+	ctx.JSON(http.StatusOK, rsp)
 }

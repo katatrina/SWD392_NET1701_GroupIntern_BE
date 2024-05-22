@@ -4,16 +4,21 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	db "github.com/katatrina/SWD392/db/sqlc"
+	"github.com/katatrina/SWD392/internal/token"
 )
 
 type Server struct {
-	router *gin.Engine
-	store  db.Store
+	router     *gin.Engine
+	store      db.Store
+	tokenMaker token.Maker
 }
 
 func NewServer(store db.Store) *Server {
+	tokenMaker := token.NewJWTMaker("a3d1b2c3e4f5678910a1b2c3d4e5f67890abcdef1234567890abcdef12345678")
+
 	server := &Server{
-		store: store,
+		store:      store,
+		tokenMaker: tokenMaker,
 	}
 
 	server.setupRouter()
@@ -29,6 +34,7 @@ func (server *Server) setupRouter() {
 		userGroup := v1.Group("/users")
 		{
 			userGroup.POST("", server.createUser)
+			userGroup.POST("/login", server.loginUser)
 		}
 	}
 
