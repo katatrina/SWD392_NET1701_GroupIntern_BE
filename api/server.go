@@ -5,6 +5,10 @@ import (
 	"github.com/gin-gonic/gin"
 	db "github.com/katatrina/SWD392/db/sqlc"
 	"github.com/katatrina/SWD392/internal/token"
+
+	_ "github.com/katatrina/SWD392/docs"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Server struct {
@@ -29,11 +33,13 @@ func (server *Server) setupRouter() {
 	router := gin.Default()
 	router.Use(cors.Default())
 
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	v1 := router.Group("/api/v1")
 	{
 		userGroup := v1.Group("/users")
 		{
-			userGroup.POST("", server.createUser)
+			userGroup.POST("", server.createCustomer)
 			userGroup.POST("/login", server.loginUser)
 		}
 	}

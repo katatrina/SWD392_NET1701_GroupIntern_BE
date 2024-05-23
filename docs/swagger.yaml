@@ -1,0 +1,61 @@
+basePath: /api/v1
+definitions:
+  api.createCustomerRequest:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+    required:
+    - email
+    - full_name
+    - password
+    - phone_number
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: cvphuoc2014@gmail.com
+    name: Châu Vĩnh Phước
+  description: API documentation for the Dental Clinic application.
+  title: Dental Clinic API
+  version: 1.0.0
+paths:
+  /users:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create customer
+        in: body
+        name: customer
+        required: true
+        schema:
+          $ref: '#/definitions/api.createCustomerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: create a new customer
+      tags:
+      - users
+securityDefinitions:
+  accessToken:
+    description: JWT Authorization header using the Bearer scheme.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

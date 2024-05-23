@@ -18,15 +18,28 @@ var (
 	ErrIncorrectEmailOrPassword = errors.New("email or password is incorrect")
 )
 
-type createUserRequest struct {
+type createCustomerRequest struct {
 	Password    string `json:"password" binding:"required"`
 	FullName    string `json:"full_name" binding:"required"`
 	Email       string `json:"email" binding:"required,email"`
 	PhoneNumber string `json:"phone_number" binding:"required"`
 }
 
-func (server *Server) createUser(ctx *gin.Context) {
-	var req createUserRequest
+// createCustomer creates a new customer
+//
+//	@Router		/users [post]
+//	@Summary	create a new customer
+//	@Description
+//	@Tags		users
+//	@Accept		json
+//	@Produce	json
+//	@Param		customer	body		createCustomerRequest	true	"Create customer"
+//	@Success	201			{object}	nil
+//	@Failure	400
+//	@Failure	403
+//	@Failure	500
+func (server *Server) createCustomer(ctx *gin.Context) {
+	var req createCustomerRequest
 
 	// Parse the JSON request body
 	if err := ctx.ShouldBindJSON(&req); err != nil {
