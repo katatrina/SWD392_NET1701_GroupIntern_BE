@@ -104,6 +104,20 @@ type loginUserResponse struct {
 	UserInfo    userResponse `json:"user_info"`
 }
 
+// loginUser logs in a user
+//
+//	@Router		/users/login [post]
+//	@Summary	log in a user
+//	@Description
+//	@Tags		users
+//	@Accept		json
+//	@Produce	json
+//	@Param		user	body		loginUserRequest	true	"Login user"
+//	@Success	200		{object}	loginUserResponse
+//	@Failure	400
+//	@Failure	401
+//	@Failure	404
+//	@Failure	500
 func (server *Server) loginUser(ctx *gin.Context) {
 	var req loginUserRequest
 

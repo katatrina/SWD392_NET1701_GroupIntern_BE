@@ -16,6 +16,38 @@ definitions:
     - password
     - phone_number
     type: object
+  api.loginUserRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  api.loginUserResponse:
+    properties:
+      access_token:
+        type: string
+      user_info:
+        $ref: '#/definitions/api.userResponse'
+    type: object
+  api.userResponse:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+      phone_number:
+        type: string
+      role:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact:
@@ -45,11 +77,38 @@ paths:
           description: Bad Request
         "403":
           description: Forbidden
+        "500":
+          description: Internal Server Error
+      summary: create a new customer
+      tags:
+      - users
+  /users/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login user
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/api.loginUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.loginUserResponse'
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
         "404":
           description: Not Found
         "500":
           description: Internal Server Error
-      summary: create a new customer
+      summary: log in a user
       tags:
       - users
 securityDefinitions:
