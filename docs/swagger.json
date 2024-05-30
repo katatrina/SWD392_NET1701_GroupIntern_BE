@@ -12,6 +12,42 @@
     "host": "localhost:8080",
     "basePath": "/api/v1",
     "paths": {
+        "/bookings/examination": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookings"
+                ],
+                "summary": "create a new examination booking",
+                "parameters": [
+                    {
+                        "description": "Create examination booking",
+                        "name": "booking",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.createExaminationBookingRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/users": {
             "post": {
                 "consumes": [
@@ -118,6 +154,28 @@
                 },
                 "phone_number": {
                     "type": "string"
+                }
+            }
+        },
+        "api.createExaminationBookingRequest": {
+            "type": "object",
+            "required": [
+                "customer_id",
+                "examination_schedule_id",
+                "payment_id"
+            ],
+            "properties": {
+                "customer_id": {
+                    "type": "integer"
+                },
+                "customer_reason": {
+                    "type": "string"
+                },
+                "examination_schedule_id": {
+                    "type": "integer"
+                },
+                "payment_id": {
+                    "type": "integer"
                 }
             }
         },

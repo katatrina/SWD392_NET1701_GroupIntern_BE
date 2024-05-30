@@ -35,6 +35,7 @@ CREATE TABLE "service_categories"
 (
     "id"         bigserial PRIMARY KEY,
     "name"       text        NOT NULL,
+    "image_url"  text        NOT NULL,
     "slug"       text        NOT NULL,
     "price"      bigint      NOT NULL,
     "created_at" timestamptz NOT NULL DEFAULT (now())
@@ -62,7 +63,7 @@ CREATE TABLE "treatment_schedules"
     "service_quantity" bigint      NOT NULL,
     "room_id"          bigint      NOT NULL,
     "slot"             bigint      NOT NULL,
-    "status"           text        NOT NULL DEFAULT '',
+    "status"           text        NOT NULL DEFAULT 'Đang chờ',
     "created_at"       timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -77,7 +78,7 @@ CREATE TABLE "examination_schedules"
     "service_category_id" bigint      NOT NULL,
     "room_id"             bigint      NOT NULL,
     "slot"                bigint      NOT NULL,
-    "status"              text        NOT NULL DEFAULT 'Đang chờ',
+    "status"              text        NOT NULL DEFAULT '',
     "created_at"          timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -87,7 +88,7 @@ CREATE TABLE "bookings"
     "type"            text        NOT NULL,
     "customer_id"     bigint      NOT NULL,
     "customer_reason" text        NOT NULL DEFAULT '',
-    "payment_status"  text        NOT NULL DEFAULT '',
+    "payment_status"  text        NOT NULL DEFAULT 'Chưa thanh toán',
     "payment_id"      bigint      NOT NULL,
     "is_cancelled"    bool        NOT NULL DEFAULT false,
     "created_at"      timestamptz NOT NULL DEFAULT (now())

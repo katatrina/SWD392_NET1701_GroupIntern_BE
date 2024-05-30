@@ -1,14 +1,13 @@
--- Drop dependent tables first
-DROP TABLE IF EXISTS "dentist_categories";
-DROP TABLE IF EXISTS "room_categories";
-DROP TABLE IF EXISTS "treatment_schedules";
-DROP TABLE IF EXISTS "examination_schedules";
-DROP TABLE IF EXISTS "bookings";
-DROP TABLE IF EXISTS "services";
+-- Drop tables with foreign key references first
+DROP TABLE IF EXISTS "treatment_schedules" CASCADE;
+DROP TABLE IF EXISTS "examination_schedules" CASCADE;
+DROP TABLE IF EXISTS "bookings" CASCADE;
+DROP TABLE IF EXISTS "services" CASCADE;
+DROP TABLE IF EXISTS "dentist_detail" CASCADE;
 
 -- Drop remaining tables
-DROP TABLE IF EXISTS "users";
-DROP TABLE IF EXISTS "dentist_detail";
-DROP TABLE IF EXISTS "rooms";
-DROP TABLE IF EXISTS "service_categories";
-DROP TABLE IF EXISTS "payments";
+DROP TABLE IF EXISTS "payments" CASCADE;
+DROP TABLE IF EXISTS "users" CASCADE;
+DROP TABLE IF EXISTS "specialties" CASCADE;
+DROP TABLE IF EXISTS "rooms" CASCADE;
+DROP TABLE IF EXISTS "service_categories" CASCADE;

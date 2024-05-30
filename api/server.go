@@ -44,6 +44,13 @@ func (server *Server) setupRouter() {
 		}
 	}
 
+	{
+		bookingGroup := v1.Group("/bookings")
+		{
+			bookingGroup.POST("examination", server.createExaminationBooking)
+		}
+	}
+
 	server.router = router
 }
 

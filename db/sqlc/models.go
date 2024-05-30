@@ -20,16 +20,11 @@ type Booking struct {
 	CreatedAt      time.Time `json:"created_at"`
 }
 
-type DentistCategory struct {
-	DentistID         int64 `json:"dentist_id"`
-	ServiceCategoryID int64 `json:"service_category_id"`
-}
-
 type DentistDetail struct {
 	DentistID   int64     `json:"dentist_id"`
 	DateOfBirth time.Time `json:"date_of_birth"`
 	Sex         string    `json:"sex"`
-	Specialty   string    `json:"specialty"`
+	SpecialtyID int64     `json:"specialty_id"`
 }
 
 type ExaminationSchedule struct {
@@ -41,6 +36,7 @@ type ExaminationSchedule struct {
 	DentistID         int64         `json:"dentist_id"`
 	ServiceCategoryID int64         `json:"service_category_id"`
 	RoomID            int64         `json:"room_id"`
+	Slot              int64         `json:"slot"`
 	Status            string        `json:"status"`
 	CreatedAt         time.Time     `json:"created_at"`
 }
@@ -55,11 +51,6 @@ type Room struct {
 	ID        int64     `json:"id"`
 	Name      string    `json:"name"`
 	CreatedAt time.Time `json:"created_at"`
-}
-
-type RoomCategory struct {
-	RoomID            int64 `json:"room_id"`
-	ServiceCategoryID int64 `json:"service_category_id"`
 }
 
 type Service struct {
@@ -79,6 +70,12 @@ type ServiceCategory struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
+type Specialty struct {
+	ID        int64     `json:"id"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
 type TreatmentSchedule struct {
 	ID              int64     `json:"id"`
 	BookingID       int64     `json:"booking_id"`
@@ -89,6 +86,7 @@ type TreatmentSchedule struct {
 	ServiceID       int64     `json:"service_id"`
 	ServiceQuantity int64     `json:"service_quantity"`
 	RoomID          int64     `json:"room_id"`
+	Slot            int64     `json:"slot"`
 	Status          string    `json:"status"`
 	CreatedAt       time.Time `json:"created_at"`
 }
