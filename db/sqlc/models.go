@@ -65,6 +65,7 @@ type Service struct {
 type ServiceCategory struct {
 	ID        int64     `json:"id"`
 	Name      string    `json:"name"`
+	ImageUrl  string    `json:"image_url"`
 	Slug      string    `json:"slug"`
 	Price     int64     `json:"price"`
 	CreatedAt time.Time `json:"created_at"`

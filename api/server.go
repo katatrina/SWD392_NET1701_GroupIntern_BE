@@ -51,6 +51,8 @@ func (server *Server) setupRouter() {
 		}
 	}
 
+	v1.POST("/service-categories", server.listAllServiceCategories)
+
 	server.router = router
 }
 

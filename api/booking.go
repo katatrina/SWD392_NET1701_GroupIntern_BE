@@ -22,8 +22,8 @@ type createExaminationBookingRequest struct {
 //	@Tags		bookings
 //	@Accept		json
 //	@Produce	json
-//	@Param		booking	body		createExaminationBookingRequest	true	"Create examination booking"
-//	@Success	201		{object}	nil
+//	@Param		booking	body	createExaminationBookingRequest	true	"Create examination booking"
+//	@Success	201
 //	@Failure	400
 //	@Failure	500
 func (server *Server) createExaminationBooking(ctx *gin.Context) {

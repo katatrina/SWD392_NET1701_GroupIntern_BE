@@ -33,8 +33,8 @@ type createCustomerRequest struct {
 //	@Tags		users
 //	@Accept		json
 //	@Produce	json
-//	@Param		customer	body		createCustomerRequest	true	"Create customer"
-//	@Success	201			{object}	nil
+//	@Param		customer	body	createCustomerRequest	true	"Create customer"
+//	@Success	201
 //	@Failure	400
 //	@Failure	403
 //	@Failure	500
