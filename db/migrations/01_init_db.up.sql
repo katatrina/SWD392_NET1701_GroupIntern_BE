@@ -14,7 +14,14 @@ CREATE TABLE "dentist_detail"
     "dentist_id"    bigint PRIMARY KEY,
     "date_of_birth" timestamptz NOT NULL,
     "sex"           text        NOT NULL,
-    "specialty"     text        NOT NULL
+    "specialty_id"  bigint      NOT NULL
+);
+
+CREATE TABLE "specialties"
+(
+    "id"         bigserial PRIMARY KEY,
+    "name"       text        NOT NULL,
+    "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "dentist_categories"
@@ -104,6 +111,9 @@ CREATE TABLE "payments"
     "name"       text        NOT NULL,
     "created_at" timestamptz NOT NULL DEFAULT (now())
 );
+
+ALTER TABLE "dentist_detail"
+    ADD FOREIGN KEY ("specialty_id") REFERENCES "specialties" ("id");
 
 ALTER TABLE "dentist_detail"
     ADD FOREIGN KEY ("dentist_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
