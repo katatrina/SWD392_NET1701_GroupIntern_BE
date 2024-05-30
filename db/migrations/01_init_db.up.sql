@@ -24,25 +24,11 @@ CREATE TABLE "specialties"
     "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
-CREATE TABLE "dentist_categories"
-(
-    "dentist_id"          bigint,
-    "service_category_id" bigint,
-    PRIMARY KEY ("dentist_id", "service_category_id")
-);
-
 CREATE TABLE "rooms"
 (
     "id"         bigserial PRIMARY KEY,
     "name"       text        NOT NULL,
     "created_at" timestamptz NOT NULL DEFAULT (now())
-);
-
-CREATE TABLE "room_categories"
-(
-    "room_id"             bigint,
-    "service_category_id" bigint,
-    PRIMARY KEY ("room_id", "service_category_id")
 );
 
 CREATE TABLE "service_categories"
@@ -75,6 +61,7 @@ CREATE TABLE "treatment_schedules"
     "service_id"       bigint      NOT NULL,
     "service_quantity" bigint      NOT NULL,
     "room_id"          bigint      NOT NULL,
+    "slot"             bigint      NOT NULL,
     "status"           text        NOT NULL DEFAULT '',
     "created_at"       timestamptz NOT NULL DEFAULT (now())
 );
@@ -89,7 +76,8 @@ CREATE TABLE "examination_schedules"
     "dentist_id"          bigint      NOT NULL,
     "service_category_id" bigint      NOT NULL,
     "room_id"             bigint      NOT NULL,
-    "status"              text        NOT NULL DEFAULT '',
+    "slot"                bigint      NOT NULL,
+    "status"              text        NOT NULL DEFAULT 'Đang chờ',
     "created_at"          timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -117,18 +105,6 @@ ALTER TABLE "dentist_detail"
 
 ALTER TABLE "dentist_detail"
     ADD FOREIGN KEY ("dentist_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE "dentist_categories"
-    ADD FOREIGN KEY ("dentist_id") REFERENCES "dentist_detail" ("dentist_id") ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE "dentist_categories"
-    ADD FOREIGN KEY ("service_category_id") REFERENCES "service_categories" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE "room_categories"
-    ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE "room_categories"
-    ADD FOREIGN KEY ("service_category_id") REFERENCES "service_categories" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "services"
     ADD FOREIGN KEY ("category_id") REFERENCES "service_categories" ("id");
