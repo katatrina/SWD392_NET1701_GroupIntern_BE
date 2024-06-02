@@ -20,6 +20,11 @@ const docTemplate = `{
     "paths": {
         "/bookings/examination": {
             "post": {
+                "security": [
+                    {
+                        "accessToken": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],

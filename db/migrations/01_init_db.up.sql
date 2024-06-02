@@ -62,7 +62,6 @@ CREATE TABLE "treatment_schedules"
     "service_id"       bigint      NOT NULL,
     "service_quantity" bigint      NOT NULL,
     "room_id"          bigint      NOT NULL,
-    "slot"             bigint      NOT NULL,
     "status"           text        NOT NULL DEFAULT 'Đang chờ',
     "created_at"       timestamptz NOT NULL DEFAULT (now())
 );
@@ -77,8 +76,7 @@ CREATE TABLE "examination_schedules"
     "dentist_id"          bigint      NOT NULL,
     "service_category_id" bigint      NOT NULL,
     "room_id"             bigint      NOT NULL,
-    "slot"                bigint      NOT NULL,
-    "status"              text        NOT NULL DEFAULT '',
+    "status"              text        NOT NULL DEFAULT 'Đang chờ',
     "created_at"          timestamptz NOT NULL DEFAULT (now())
 );
 

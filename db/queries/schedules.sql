@@ -1,2 +1,5 @@
 -- name: UpdateExaminationSchedule :exec
-UPDATE examination_schedules SET booking_id = $2 AND customer_id = $3 WHERE id = $1;
+UPDATE examination_schedules
+SET booking_id  = coalesce(sqlc.narg('booking_id'), name),
+    customer_id = coalesce(sqlc.narg('customer_id'), bio)
+WHERE id = sqlc.arg('id');

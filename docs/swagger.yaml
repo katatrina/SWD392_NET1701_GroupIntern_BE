@@ -107,6 +107,8 @@ paths:
           description: Bad Request
         "500":
           description: Internal Server Error
+      security:
+      - accessToken: []
       summary: create a new examination booking
       tags:
       - bookings

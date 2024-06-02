@@ -25,7 +25,7 @@ func NewPayload(userID string, role string, duration time.Duration) (*Payload, e
 			Subject:   userID,
 			Audience:  []string{"client"},
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(duration)),
-			NotBefore: jwt.NewNumericDate(time.Now().Add(duration)),
+			NotBefore: jwt.NewNumericDate(time.Now()),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			ID:        tokenID.String(),
 		},

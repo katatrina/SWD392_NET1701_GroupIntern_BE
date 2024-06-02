@@ -45,7 +45,7 @@ func (maker *JWTMaker) VerifyToken(token string) (*Payload, error) {
 		case errors.Is(err, jwt.ErrTokenExpired):
 			return nil, fmt.Errorf("token is expired")
 		default:
-			return nil, fmt.Errorf("token is invalid")
+			return nil, err
 		}
 	}
 

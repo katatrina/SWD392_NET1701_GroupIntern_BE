@@ -1,10 +1,13 @@
 package api
 
 import (
+	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	db "github.com/katatrina/SWD392/db/sqlc"
+	"github.com/katatrina/SWD392/internal/token"
 )
 
 type createExaminationBookingRequest struct {
@@ -19,6 +22,7 @@ type createExaminationBookingRequest struct {
 //	@Router		/bookings/examination [post]
 //	@Summary	create a new examination booking
 //	@Description
+//	@Security	accessToken
 //	@Tags		bookings
 //	@Accept		json
 //	@Produce	json
@@ -34,6 +38,20 @@ func (server *Server) createExaminationBooking(ctx *gin.Context) {
 		return
 	}
 
+	authorizedPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+
+	customerID, err := strconv.ParseInt(authorizedPayload.Subject, 10, 64)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	if req.CustomerID != customerID {
+		err = errors.New("customer id doesn't match the authenticated user")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
+
 	arg := db.BookExaminationAppointmentParams{
 		CustomerID:            req.CustomerID,
 		CustomerReason:        req.CustomerReason,
@@ -41,7 +59,7 @@ func (server *Server) createExaminationBooking(ctx *gin.Context) {
 		ExaminationScheduleID: req.ExaminationScheduleID,
 	}
 
-	err := server.store.BookExaminationAppointmentTx(ctx, arg)
+	err = server.store.BookExaminationAppointmentTx(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

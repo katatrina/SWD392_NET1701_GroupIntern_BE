@@ -44,14 +44,16 @@ func (server *Server) setupRouter() {
 		}
 	}
 
+	authorized := v1.Group("/")
+	authorized.Use(authMiddleware(server.tokenMaker))
 	{
-		bookingGroup := v1.Group("/bookings")
+		bookingGroup := authorized.Group("/bookings")
 		{
 			bookingGroup.POST("examination", server.createExaminationBooking)
 		}
 	}
 
-	v1.POST("/service-categories", server.listAllServiceCategories)
+	v1.GET("/service-categories", server.listAllServiceCategories)
 
 	server.router = router
 }

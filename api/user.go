@@ -15,7 +15,8 @@ import (
 )
 
 var (
-	ErrIncorrectEmailOrPassword = errors.New("email or password is incorrect")
+	ErrEmailNotFound     = errors.New("email not found")
+	ErrPasswordIncorrect = errors.New("password is incorrect")
 )
 
 type createCustomerRequest struct {
@@ -131,7 +132,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 	customer, err := server.store.GetCustomerByEmail(ctx, req.Email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			ctx.JSON(http.StatusNotFound, errorResponse(ErrIncorrectEmailOrPassword))
+			ctx.JSON(http.StatusNotFound, errorResponse(ErrEmailNotFound))
 			return
 		}
 
@@ -142,15 +143,14 @@ func (server *Server) loginUser(ctx *gin.Context) {
 	// Check the password
 	err = util.CheckPassword(customer.HashedPassword, req.Password)
 	if err != nil {
-		err = errors.New("incorrect email or password")
-		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrIncorrectEmailOrPassword))
+		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrPasswordIncorrect))
 		return
 	}
 
 	userID := strconv.FormatInt(customer.ID, 10)
 
 	// Create a new, unique access token
-	accessToken, err := server.tokenMaker.CreateToken(userID, customer.Role, time.Minute*15)
+	accessToken, err := server.tokenMaker.CreateToken(userID, customer.Role, time.Minute*60)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
