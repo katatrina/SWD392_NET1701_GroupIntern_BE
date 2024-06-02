@@ -60,7 +60,7 @@ const docTemplate = `{
             }
         },
         "/service-categories": {
-            "post": {
+            "get": {
                 "produces": [
                     "application/json"
                 ],

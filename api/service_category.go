@@ -8,7 +8,7 @@ import (
 
 // listAllServiceCategories returns a list of all service categories
 //
-//	@Router		/service-categories [post]
+//	@Router		/service-categories [get]
 //	@Summary	list all service categories
 //	@Produce	json
 //	@Description

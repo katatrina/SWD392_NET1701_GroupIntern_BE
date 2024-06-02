@@ -113,7 +113,7 @@ paths:
       tags:
       - bookings
   /service-categories:
-    post:
+    get:
       produces:
       - application/json
       responses:
