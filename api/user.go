@@ -91,7 +91,7 @@ type loginUserRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
-type userResponse struct {
+type userInfo struct {
 	ID          int64     `json:"id"`
 	FullName    string    `json:"full_name"`
 	Email       string    `json:"email"`
@@ -101,8 +101,8 @@ type userResponse struct {
 }
 
 type loginUserResponse struct {
-	AccessToken string       `json:"access_token"`
-	UserInfo    userResponse `json:"user_info"`
+	AccessToken string   `json:"access_token"`
+	UserInfo    userInfo `json:"user_info"`
 }
 
 // loginUser logs in a user
@@ -128,8 +128,8 @@ func (server *Server) loginUser(ctx *gin.Context) {
 		return
 	}
 
-	// Get the customer by email
-	customer, err := server.store.GetCustomerByEmail(ctx, req.Email)
+	// Get the user by email
+	user, err := server.store.GetUserByEmail(ctx, req.Email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			ctx.JSON(http.StatusNotFound, errorResponse(ErrEmailNotFound))
@@ -141,16 +141,16 @@ func (server *Server) loginUser(ctx *gin.Context) {
 	}
 
 	// Check the password
-	err = util.CheckPassword(customer.HashedPassword, req.Password)
+	err = util.CheckPassword(user.HashedPassword, req.Password)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, errorResponse(ErrPasswordIncorrect))
 		return
 	}
 
-	userID := strconv.FormatInt(customer.ID, 10)
+	userID := strconv.FormatInt(user.ID, 10)
 
 	// Create a new, unique access token
-	accessToken, err := server.tokenMaker.CreateToken(userID, customer.Role, time.Minute*60)
+	accessToken, err := server.tokenMaker.CreateToken(userID, user.Role, time.Minute*60)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
@@ -158,14 +158,15 @@ func (server *Server) loginUser(ctx *gin.Context) {
 
 	rsp := loginUserResponse{
 		AccessToken: accessToken,
-		UserInfo: userResponse{
-			ID:          customer.ID,
-			FullName:    customer.FullName,
-			Email:       customer.Email,
-			PhoneNumber: customer.PhoneNumber,
-			Role:        customer.Role,
-			CreatedAt:   customer.CreatedAt,
+		UserInfo: userInfo{
+			ID:          user.ID,
+			FullName:    user.FullName,
+			Email:       user.Email,
+			PhoneNumber: user.PhoneNumber,
+			Role:        user.Role,
+			CreatedAt:   user.CreatedAt,
 		},
 	}
+
 	ctx.JSON(http.StatusOK, rsp)
 }

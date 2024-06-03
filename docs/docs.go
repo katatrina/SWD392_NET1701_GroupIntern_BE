@@ -18,37 +18,34 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/bookings/examination": {
-            "post": {
-                "security": [
-                    {
-                        "accessToken": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
+        "/schedules/examination": {
+            "get": {
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "bookings"
+                    "schedules"
                 ],
-                "summary": "create a new examination booking",
+                "summary": "list examination schedules by date and service category",
                 "parameters": [
                     {
-                        "description": "Create examination booking",
-                        "name": "booking",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/api.createExaminationBookingRequest"
-                        }
+                        "type": "string",
+                        "description": "Date in the format YYYY-MM-DD",
+                        "name": "date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Service Category ID",
+                        "name": "service_category_id",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created"
+                    "200": {
+                        "description": "OK"
                     },
                     "400": {
                         "description": "Bad Request"
@@ -193,28 +190,6 @@ const docTemplate = `{
                 }
             }
         },
-        "api.createExaminationBookingRequest": {
-            "type": "object",
-            "required": [
-                "customer_id",
-                "examination_schedule_id",
-                "payment_id"
-            ],
-            "properties": {
-                "customer_id": {
-                    "type": "integer"
-                },
-                "customer_reason": {
-                    "type": "string"
-                },
-                "examination_schedule_id": {
-                    "type": "integer"
-                },
-                "payment_id": {
-                    "type": "integer"
-                }
-            }
-        },
         "api.loginUserRequest": {
             "type": "object",
             "required": [
@@ -237,11 +212,11 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "user_info": {
-                    "$ref": "#/definitions/api.userResponse"
+                    "$ref": "#/definitions/api.userInfo"
                 }
             }
         },
-        "api.userResponse": {
+        "api.userInfo": {
             "type": "object",
             "properties": {
                 "created_at": {

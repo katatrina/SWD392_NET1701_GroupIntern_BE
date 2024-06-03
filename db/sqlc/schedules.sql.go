@@ -7,20 +7,60 @@ package db
 
 import (
 	"context"
-	"database/sql"
+	"time"
 )
 
-const updateExaminationSchedule = `-- name: UpdateExaminationSchedule :exec
-UPDATE examination_schedules SET booking_id = $2 AND customer_id = $3 WHERE id = $1
+const listExaminationSchedulesByDateAndServiceCategory = `-- name: ListExaminationSchedulesByDateAndServiceCategory :many
+SELECT s.id, s.type, s.start_time, s.end_time, u.full_name as dentist_name, r.name as room_name
+FROM schedules s
+JOIN users u ON s.dentist_id = u.id
+JOIN rooms r ON s.room_id = r.id
+JOIN examination_schedule_detail esd ON s.id = esd.schedule_id
+WHERE s.start_time::date = $1::date
+AND esd.service_category_id = $2
+ORDER BY s.start_time ASC
 `
 
-type UpdateExaminationScheduleParams struct {
-	ID         int64         `json:"id"`
-	BookingID  sql.NullInt64 `json:"booking_id"`
-	CustomerID sql.NullInt64 `json:"customer_id"`
+type ListExaminationSchedulesByDateAndServiceCategoryParams struct {
+	Date              time.Time `json:"date"`
+	ServiceCategoryID int64     `json:"service_category_id"`
 }
 
-func (q *Queries) UpdateExaminationSchedule(ctx context.Context, arg UpdateExaminationScheduleParams) error {
-	_, err := q.db.ExecContext(ctx, updateExaminationSchedule, arg.ID, arg.BookingID, arg.CustomerID)
-	return err
+type ListExaminationSchedulesByDateAndServiceCategoryRow struct {
+	ID          int64     `json:"id"`
+	Type        string    `json:"type"`
+	StartTime   time.Time `json:"start_time"`
+	EndTime     time.Time `json:"end_time"`
+	DentistName string    `json:"dentist_name"`
+	RoomName    string    `json:"room_name"`
+}
+
+func (q *Queries) ListExaminationSchedulesByDateAndServiceCategory(ctx context.Context, arg ListExaminationSchedulesByDateAndServiceCategoryParams) ([]ListExaminationSchedulesByDateAndServiceCategoryRow, error) {
+	rows, err := q.db.QueryContext(ctx, listExaminationSchedulesByDateAndServiceCategory, arg.Date, arg.ServiceCategoryID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListExaminationSchedulesByDateAndServiceCategoryRow{}
+	for rows.Next() {
+		var i ListExaminationSchedulesByDateAndServiceCategoryRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Type,
+			&i.StartTime,
+			&i.EndTime,
+			&i.DentistName,
+			&i.RoomName,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

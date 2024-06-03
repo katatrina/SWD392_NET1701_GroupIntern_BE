@@ -10,10 +10,9 @@ import (
 
 type Querier interface {
 	CreateCustomer(ctx context.Context, arg CreateCustomerParams) (User, error)
-	CreateExaminationBooking(ctx context.Context, arg CreateExaminationBookingParams) (Booking, error)
-	GetCustomerByEmail(ctx context.Context, email string) (User, error)
+	GetUserByEmail(ctx context.Context, email string) (User, error)
 	ListAllServiceCategories(ctx context.Context) ([]ServiceCategory, error)
-	UpdateExaminationSchedule(ctx context.Context, arg UpdateExaminationScheduleParams) error
+	ListExaminationSchedulesByDateAndServiceCategory(ctx context.Context, arg ListExaminationSchedulesByDateAndServiceCategoryParams) ([]ListExaminationSchedulesByDateAndServiceCategoryRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

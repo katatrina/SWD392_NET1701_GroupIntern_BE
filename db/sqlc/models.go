@@ -5,19 +5,25 @@
 package db
 
 import (
-	"database/sql"
 	"time"
 )
 
+type Appointment struct {
+	ID         int64     `json:"id"`
+	BookingID  int64     `json:"booking_id"`
+	ScheduleID int64     `json:"schedule_id"`
+	CustomerID int64     `json:"customer_id"`
+	CreatedAt  time.Time `json:"created_at"`
+}
+
 type Booking struct {
-	ID             int64     `json:"id"`
-	Type           string    `json:"type"`
-	CustomerID     int64     `json:"customer_id"`
-	CustomerReason string    `json:"customer_reason"`
-	PaymentStatus  string    `json:"payment_status"`
-	PaymentID      int64     `json:"payment_id"`
-	IsCancelled    bool      `json:"is_cancelled"`
-	CreatedAt      time.Time `json:"created_at"`
+	ID            int64     `json:"id"`
+	CustomerID    int64     `json:"customer_id"`
+	CustomerNote  string    `json:"customer_note"`
+	PaymentStatus string    `json:"payment_status"`
+	PaymentID     int64     `json:"payment_id"`
+	IsCancelled   bool      `json:"is_cancelled"`
+	CreatedAt     time.Time `json:"created_at"`
 }
 
 type DentistDetail struct {
@@ -27,18 +33,10 @@ type DentistDetail struct {
 	SpecialtyID int64     `json:"specialty_id"`
 }
 
-type ExaminationSchedule struct {
-	ID                int64         `json:"id"`
-	BookingID         sql.NullInt64 `json:"booking_id"`
-	StartTime         time.Time     `json:"start_time"`
-	EndTime           time.Time     `json:"end_time"`
-	CustomerID        sql.NullInt64 `json:"customer_id"`
-	DentistID         int64         `json:"dentist_id"`
-	ServiceCategoryID int64         `json:"service_category_id"`
-	RoomID            int64         `json:"room_id"`
-	Slot              int64         `json:"slot"`
-	Status            string        `json:"status"`
-	CreatedAt         time.Time     `json:"created_at"`
+type ExaminationScheduleDetail struct {
+	ScheduleID        int64     `json:"schedule_id"`
+	ServiceCategoryID int64     `json:"service_category_id"`
+	CreatedAt         time.Time `json:"created_at"`
 }
 
 type Payment struct {
@@ -50,6 +48,16 @@ type Payment struct {
 type Room struct {
 	ID        int64     `json:"id"`
 	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type Schedule struct {
+	ID        int64     `json:"id"`
+	Type      string    `json:"type"`
+	StartTime time.Time `json:"start_time"`
+	EndTime   time.Time `json:"end_time"`
+	DentistID int64     `json:"dentist_id"`
+	RoomID    int64     `json:"room_id"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
@@ -77,18 +85,10 @@ type Specialty struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-type TreatmentSchedule struct {
-	ID              int64     `json:"id"`
-	BookingID       int64     `json:"booking_id"`
-	StartTime       time.Time `json:"start_time"`
-	EndTime         time.Time `json:"end_time"`
-	CustomerID      int64     `json:"customer_id"`
-	DentistID       int64     `json:"dentist_id"`
+type TreatmentScheduleDetail struct {
+	ScheduleID      int64     `json:"schedule_id"`
 	ServiceID       int64     `json:"service_id"`
 	ServiceQuantity int64     `json:"service_quantity"`
-	RoomID          int64     `json:"room_id"`
-	Slot            int64     `json:"slot"`
-	Status          string    `json:"status"`
 	CreatedAt       time.Time `json:"created_at"`
 }
 
