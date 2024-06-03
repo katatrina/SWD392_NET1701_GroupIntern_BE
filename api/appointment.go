@@ -22,7 +22,7 @@ type createExaminationAppointmentRequest struct {
 //	@Summary	create a new examination appointment
 //	@Description
 //	@Security	accessToken
-//	@Tags		bookings
+//	@Tags		appointments
 //	@Accept		json
 //	@Produce	json
 //	@Param		booking	body	createExaminationAppointmentRequest	true "Examination Appointment Request"

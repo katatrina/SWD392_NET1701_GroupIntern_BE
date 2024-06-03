@@ -32,7 +32,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bookings"
+                    "appointments"
                 ],
                 "summary": "create a new examination appointment",
                 "parameters": [

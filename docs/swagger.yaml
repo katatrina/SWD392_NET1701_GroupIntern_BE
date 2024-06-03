@@ -126,7 +126,7 @@ paths:
       - accessToken: []
       summary: create a new examination appointment
       tags:
-      - bookings
+      - appointments
   /schedules/examination:
     get:
       parameters:
