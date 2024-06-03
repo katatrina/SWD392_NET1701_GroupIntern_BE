@@ -11,7 +11,7 @@ import (
 )
 
 const listExaminationSchedulesByDateAndServiceCategory = `-- name: ListExaminationSchedulesByDateAndServiceCategory :many
-SELECT s.id, s.type, s.start_time, s.end_time, u.full_name as dentist_name, r.name as room_name
+SELECT s.id as schedule_id, s.type, s.start_time, s.end_time, u.full_name as dentist_name, r.name as room_name
 FROM schedules s
 JOIN users u ON s.dentist_id = u.id
 JOIN rooms r ON s.room_id = r.id
@@ -27,7 +27,7 @@ type ListExaminationSchedulesByDateAndServiceCategoryParams struct {
 }
 
 type ListExaminationSchedulesByDateAndServiceCategoryRow struct {
-	ID          int64     `json:"id"`
+	ScheduleID  int64     `json:"schedule_id"`
 	Type        string    `json:"type"`
 	StartTime   time.Time `json:"start_time"`
 	EndTime     time.Time `json:"end_time"`
@@ -45,7 +45,7 @@ func (q *Queries) ListExaminationSchedulesByDateAndServiceCategory(ctx context.C
 	for rows.Next() {
 		var i ListExaminationSchedulesByDateAndServiceCategoryRow
 		if err := rows.Scan(
-			&i.ID,
+			&i.ScheduleID,
 			&i.Type,
 			&i.StartTime,
 			&i.EndTime,

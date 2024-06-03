@@ -20,9 +20,9 @@ type listExaminationSchedulesRequest struct {
 //	@Description
 //	@Tags		schedules
 //	@Produce	json
-//	@Param		date				query	string	true	"Date in the format YYYY-MM-DD"
-//	@Param		service_category_id	query	int		true	"Service Category ID"
-//	@Success	200
+//	@Param		date				query		string	true	"Date in the format YYYY-MM-DD"
+//	@Param		service_category_id	query		int		true	"Service Category ID"
+//	@Success	200					{object}	[]db.ListExaminationSchedulesByDateAndServiceCategoryRow
 //	@Failure	400
 //	@Failure	500
 func (server *Server) listExaminationSchedulesByDateAndServiceCategory(ctx *gin.Context) {

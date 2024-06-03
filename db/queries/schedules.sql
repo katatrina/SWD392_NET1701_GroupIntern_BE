@@ -1,5 +1,5 @@
 -- name: ListExaminationSchedulesByDateAndServiceCategory :many
-SELECT s.id, s.type, s.start_time, s.end_time, u.full_name as dentist_name, r.name as room_name
+SELECT s.id as schedule_id, s.type, s.start_time, s.end_time, u.full_name as dentist_name, r.name as room_name
 FROM schedules s
 JOIN users u ON s.dentist_id = u.id
 JOIN rooms r ON s.room_id = r.id

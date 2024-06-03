@@ -13,10 +13,13 @@ var (
 	ErrAuthorizationHeaderNotProvided   = errors.New("authorization header is not provided")
 	ErrInvalidAuthorizationHeaderFormat = errors.New("invalid authorization header format")
 	ErrAuthorizationTypeNotSupported    = errors.New("authorization type is not supported")
+
+	ErrMismatchedUser = errors.New("provided id doesn't match the authenticated user")
 )
 
 var (
 	authorizationPayloadKey = "authorization_payload"
+	authorizationHeaderType = "bearer"
 )
 
 // authMiddleware is a middleware to check if the request is authorized.
@@ -35,7 +38,7 @@ func authMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 		}
 
 		authorizationType := strings.ToLower(fields[0])
-		if authorizationType != "bearer" {
+		if authorizationType != authorizationHeaderType {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(ErrAuthorizationTypeNotSupported))
 			return
 		}

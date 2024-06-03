@@ -18,6 +18,47 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/appointments/examination": {
+            "post": {
+                "security": [
+                    {
+                        "accessToken": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookings"
+                ],
+                "summary": "create a new examination appointment",
+                "parameters": [
+                    {
+                        "description": "Examination Appointment Request",
+                        "name": "booking",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.createExaminationAppointmentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/schedules/examination": {
             "get": {
                 "produces": [
@@ -45,7 +86,13 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.ListExaminationSchedulesByDateAndServiceCategoryRow"
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad Request"
@@ -190,6 +237,28 @@ const docTemplate = `{
                 }
             }
         },
+        "api.createExaminationAppointmentRequest": {
+            "type": "object",
+            "required": [
+                "customer_id",
+                "examination_schedule_id",
+                "payment_id"
+            ],
+            "properties": {
+                "customer_id": {
+                    "type": "integer"
+                },
+                "customer_note": {
+                    "type": "string"
+                },
+                "examination_schedule_id": {
+                    "type": "integer"
+                },
+                "payment_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "api.loginUserRequest": {
             "type": "object",
             "required": [
@@ -235,6 +304,29 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "role": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.ListExaminationSchedulesByDateAndServiceCategoryRow": {
+            "type": "object",
+            "properties": {
+                "dentist_name": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "room_name": {
+                    "type": "string"
+                },
+                "schedule_id": {
+                    "type": "integer"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }

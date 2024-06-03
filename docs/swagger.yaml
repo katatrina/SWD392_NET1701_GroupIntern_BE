@@ -16,6 +16,21 @@ definitions:
     - password
     - phone_number
     type: object
+  api.createExaminationAppointmentRequest:
+    properties:
+      customer_id:
+        type: integer
+      customer_note:
+        type: string
+      examination_schedule_id:
+        type: integer
+      payment_id:
+        type: integer
+    required:
+    - customer_id
+    - examination_schedule_id
+    - payment_id
+    type: object
   api.loginUserRequest:
     properties:
       email:
@@ -48,6 +63,21 @@ definitions:
       role:
         type: string
     type: object
+  db.ListExaminationSchedulesByDateAndServiceCategoryRow:
+    properties:
+      dentist_name:
+        type: string
+      end_time:
+        type: string
+      room_name:
+        type: string
+      schedule_id:
+        type: integer
+      start_time:
+        type: string
+      type:
+        type: string
+    type: object
   db.ServiceCategory:
     properties:
       created_at:
@@ -72,6 +102,31 @@ info:
   title: Dental Clinic API
   version: 1.0.0
 paths:
+  /appointments/examination:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Examination Appointment Request
+        in: body
+        name: booking
+        required: true
+        schema:
+          $ref: '#/definitions/api.createExaminationAppointmentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - accessToken: []
+      summary: create a new examination appointment
+      tags:
+      - bookings
   /schedules/examination:
     get:
       parameters:
@@ -90,6 +145,10 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            items:
+              $ref: '#/definitions/db.ListExaminationSchedulesByDateAndServiceCategoryRow'
+            type: array
         "400":
           description: Bad Request
         "500":
