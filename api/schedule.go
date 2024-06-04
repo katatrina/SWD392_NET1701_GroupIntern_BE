@@ -16,7 +16,7 @@ type listExaminationSchedulesRequest struct {
 // listExaminationSchedulesByDateAndServiceCategory lists examination schedules by date and service category
 //
 //	@Router		/schedules/examination [get]
-//	@Summary	list examination schedules by date and service category
+//	@Summary	liệt kê tất cả lịch khám trong một ngày của một danh mục dịch vụ
 //	@Description
 //	@Tags		schedules
 //	@Produce	json

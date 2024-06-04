@@ -48,7 +48,11 @@ func (server *Server) setupRouter() {
 	authorized.Use(authMiddleware(server.tokenMaker))
 	authorized.POST("appointments/examination", server.createExaminationAppointment)
 
-	v1.GET("/service-categories", server.listAllServiceCategories)
+	serviceCategoryGroup := v1.Group("/service-categories")
+	{
+		serviceCategoryGroup.GET("", server.listAllServiceCategories)
+		serviceCategoryGroup.GET("/:id/services", server.listAllServicesOfACategory)
+	}
 
 	v1.GET("/schedules/examination", server.listExaminationSchedulesByDateAndServiceCategory)
 

@@ -65,3 +65,27 @@ VALUES (1, 1),
        (2, 2),
        (3, 3),
        (4, 4);
+
+-- Insert services
+INSERT INTO services (name, category_id, unit, price, warranty_duration)
+VALUES ('Bọc răng sứ cao cấp', 1, 'cái', 500000, '1 year'),
+       ('Bọc răng sứ titanium', 1, 'cái', 700000, '2 year'),
+       ('Bọc răng xứ composite', 1, 'cái', 300000, '6 months'),
+       ('Cấy ghép Implant cao cấp', 2, 'cái', 600000, '1 year'),
+       ('Cấy ghép Implant titanium', 2, 'cái', 800000, '2 year'),
+       ('Cấy ghép Implant composite', 2, 'cái', 400000, '6 months'),
+       ('Niềng răng thẩm mỹ cao cấp', 3, 'cái', 700000, '1 year'),
+       ('Niềng răng thẩm mỹ titanium', 3, 'cái', 900000, '2 year'),
+       ('Niềng răng thẩm mỹ composite', 3, 'cái', 500000, '6 months'),
+       ('Tẩy trắng răng cao cấp', 4, 'lần', 800000, '1 year'),
+       ('Tẩy trắng răng titanium', 4, 'lần', 1000000, '2 year'),
+       ('Tẩy trắng răng composite', 4, 'lần', 600000, '6 months'),
+       ('Nhổ răng khôn cao cấp', 5, 'cái', 900000, '1 year'),
+       ('Nhổ răng khôn titanium', 5, 'cái', 1100000, '2 year'),
+       ('Nhổ răng khôn composite', 5, 'cái', 700000, '6 months'),
+       ('Bệnh lý nha chu cao cấp', 6, 'cái', 1000000, '1 year'),
+       ('Bệnh lý nha chu titanium', 6, 'cái', 1200000, '2 year'),
+       ('Bệnh lý nha chu composite', 6, 'cái', 800000, '6 months'),
+       ('Điều trị tủy răng cao cấp', 7, 'cái', 1100000, '1 year'),
+       ('Điều trị tủy răng titanium', 7, 'cái', 1300000, '2 year'),
+       ('Điều trị tủy răng composite', 7, 'cái', 900000, '6 months');

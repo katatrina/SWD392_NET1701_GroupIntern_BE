@@ -19,13 +19,13 @@ type createExaminationAppointmentRequest struct {
 // createExaminationAppointment creates a new examination appointment
 //
 //	@Router		/appointments/examination [post]
-//	@Summary	create a new examination appointment
+//	@Summary	Đặt lịch khám cho khách hàng
 //	@Description
 //	@Security	accessToken
 //	@Tags		appointments
 //	@Accept		json
 //	@Produce	json
-//	@Param		booking	body	createExaminationAppointmentRequest	true "Examination Appointment Request"
+//	@Param		request	body	createExaminationAppointmentRequest	true "Examination Appointment Request"
 //	@Success	201
 //	@Failure	400
 //	@Failure	500

@@ -63,10 +63,11 @@ type Schedule struct {
 
 type Service struct {
 	ID               int64     `json:"id"`
+	Name             string    `json:"name"`
 	CategoryID       int64     `json:"category_id"`
 	Unit             string    `json:"unit"`
 	Price            int64     `json:"price"`
-	WarrantyDuration int64     `json:"warranty_duration"`
+	WarrantyDuration string    `json:"warranty_duration"`
 	CreatedAt        time.Time `json:"created_at"`
 }
 

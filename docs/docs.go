@@ -34,11 +34,11 @@ const docTemplate = `{
                 "tags": [
                     "appointments"
                 ],
-                "summary": "create a new examination appointment",
+                "summary": "Đặt lịch khám cho khách hàng",
                 "parameters": [
                     {
                         "description": "Examination Appointment Request",
-                        "name": "booking",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -67,7 +67,7 @@ const docTemplate = `{
                 "tags": [
                     "schedules"
                 ],
-                "summary": "list examination schedules by date and service category",
+                "summary": "liệt kê tất cả lịch khám trong một ngày của một danh mục dịch vụ",
                 "parameters": [
                     {
                         "type": "string",
@@ -111,7 +111,7 @@ const docTemplate = `{
                 "tags": [
                     "services"
                 ],
-                "summary": "list all service categories",
+                "summary": "liệt kê tất cả danh mục dịch vụ hiện có",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -119,6 +119,40 @@ const docTemplate = `{
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/db.ServiceCategory"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/service-categories/{categoryID}/services": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "liệt kê tất cả dịch vụ của một danh mục",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Category ID",
+                        "name": "categoryID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.Service"
                             }
                         }
                     },
@@ -139,11 +173,11 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "create a new customer",
+                "summary": "Tạo mới tài khoản khách hàng",
                 "parameters": [
                     {
                         "description": "Create customer",
-                        "name": "customer",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -178,11 +212,11 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "log in a user",
+                "summary": "Đăng nhập",
                 "parameters": [
                     {
-                        "description": "Login user",
-                        "name": "user",
+                        "description": "Login user info",
+                        "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -327,6 +361,32 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.Service": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "unit": {
+                    "type": "string"
+                },
+                "warranty_duration": {
                     "type": "string"
                 }
             }

@@ -43,12 +43,13 @@ CREATE TABLE "service_categories"
 
 CREATE TABLE "services"
 (
-    "id"          bigserial PRIMARY KEY,
-    "category_id" bigint      NOT NULL,
-    "unit"        text        NOT NULL,
-    "price"       bigint      NOT NULL,
-    "warranty_duration" interval NOT NULL,
-    "created_at"  timestamptz NOT NULL DEFAULT (now())
+    "id"                bigserial PRIMARY KEY,
+    "name"              text        NOT NULL,
+    "category_id"       bigint      NOT NULL,
+    "unit"              text        NOT NULL,
+    "price"             bigint      NOT NULL,
+    "warranty_duration" text        NOT NULL,
+    "created_at"        timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "schedules"

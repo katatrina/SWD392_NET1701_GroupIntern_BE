@@ -29,12 +29,12 @@ type createCustomerRequest struct {
 // createCustomer creates a new customer
 //
 //	@Router		/users [post]
-//	@Summary	create a new customer
+//	@Summary	Tạo mới tài khoản khách hàng
 //	@Description
 //	@Tags		users
 //	@Accept		json
 //	@Produce	json
-//	@Param		customer	body	createCustomerRequest	true	"Create customer"
+//	@Param		request	body	createCustomerRequest	true	"Create customer"
 //	@Success	201
 //	@Failure	400
 //	@Failure	403
@@ -108,12 +108,12 @@ type loginUserResponse struct {
 // loginUser logs in a user
 //
 //	@Router		/users/login [post]
-//	@Summary	log in a user
+//	@Summary	Đăng nhập
 //	@Description
 //	@Tags		users
 //	@Accept		json
 //	@Produce	json
-//	@Param		user	body		loginUserRequest	true	"Login user"
+//	@Param		request	body		loginUserRequest	true	"Login user info"
 //	@Success	200		{object}	loginUserResponse
 //	@Failure	400
 //	@Failure	401

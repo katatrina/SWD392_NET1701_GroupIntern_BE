@@ -14,6 +14,7 @@ type Querier interface {
 	CreateCustomer(ctx context.Context, arg CreateCustomerParams) (User, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	ListAllServiceCategories(ctx context.Context) ([]ServiceCategory, error)
+	ListAllServicesOfACategory(ctx context.Context, categoryID int64) ([]Service, error)
 	ListExaminationSchedulesByDateAndServiceCategory(ctx context.Context, arg ListExaminationSchedulesByDateAndServiceCategoryParams) ([]ListExaminationSchedulesByDateAndServiceCategoryRow, error)
 }
 
