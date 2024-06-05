@@ -8,7 +8,7 @@ import (
 
 type Store interface {
 	Querier
-	BookExaminationAppointmentTx(ctx context.Context, arg BookExaminationAppointmentParams) error
+	BookExaminationAppointmentByPatientTx(ctx context.Context, arg BookExaminationAppointmentParams) error
 }
 
 type SQLStore struct {

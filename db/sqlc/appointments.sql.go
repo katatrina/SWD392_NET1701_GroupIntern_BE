@@ -10,17 +10,17 @@ import (
 )
 
 const createAppointment = `-- name: CreateAppointment :exec
-INSERT INTO appointments (booking_id, schedule_id, customer_id)
+INSERT INTO appointments (booking_id, schedule_id, patient_id)
 VALUES ($1, $2, $3)
 `
 
 type CreateAppointmentParams struct {
 	BookingID  int64 `json:"booking_id"`
 	ScheduleID int64 `json:"schedule_id"`
-	CustomerID int64 `json:"customer_id"`
+	PatientID  int64 `json:"patient_id"`
 }
 
 func (q *Queries) CreateAppointment(ctx context.Context, arg CreateAppointmentParams) error {
-	_, err := q.db.ExecContext(ctx, createAppointment, arg.BookingID, arg.ScheduleID, arg.CustomerID)
+	_, err := q.db.ExecContext(ctx, createAppointment, arg.BookingID, arg.ScheduleID, arg.PatientID)
 	return err
 }

@@ -18,7 +18,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/appointments/examination": {
+        "/patients/me/appointments/examination": {
             "post": {
                 "security": [
                     {
@@ -34,7 +34,7 @@ const docTemplate = `{
                 "tags": [
                     "appointments"
                 ],
-                "summary": "Đặt lịch khám cho khách hàng",
+                "summary": "Cho phép bệnh nhân đặt lịch khám",
                 "parameters": [
                     {
                         "description": "Examination Appointment Request",
@@ -42,7 +42,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.createExaminationAppointmentRequest"
+                            "$ref": "#/definitions/api.createExaminationAppointmentByPatientRequest"
                         }
                     }
                 ],
@@ -173,15 +173,15 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "Tạo mới tài khoản khách hàng",
+                "summary": "Tạo mới tài khoản bệnh nhân",
                 "parameters": [
                     {
-                        "description": "Create customer",
+                        "description": "Create patient info",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.createCustomerRequest"
+                            "$ref": "#/definitions/api.createPatientRequest"
                         }
                     }
                 ],
@@ -248,7 +248,25 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "api.createCustomerRequest": {
+        "api.createExaminationAppointmentByPatientRequest": {
+            "type": "object",
+            "required": [
+                "examination_schedule_id",
+                "payment_id"
+            ],
+            "properties": {
+                "examination_schedule_id": {
+                    "type": "integer"
+                },
+                "patient_note": {
+                    "type": "string"
+                },
+                "payment_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.createPatientRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -268,28 +286,6 @@ const docTemplate = `{
                 },
                 "phone_number": {
                     "type": "string"
-                }
-            }
-        },
-        "api.createExaminationAppointmentRequest": {
-            "type": "object",
-            "required": [
-                "customer_id",
-                "examination_schedule_id",
-                "payment_id"
-            ],
-            "properties": {
-                "customer_id": {
-                    "type": "integer"
-                },
-                "customer_note": {
-                    "type": "string"
-                },
-                "examination_schedule_id": {
-                    "type": "integer"
-                },
-                "payment_id": {
-                    "type": "integer"
                 }
             }
         },
@@ -387,7 +383,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "warranty_duration": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },

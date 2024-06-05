@@ -12,7 +12,7 @@
     "host": "localhost:8080",
     "basePath": "/api/v1",
     "paths": {
-        "/appointments/examination": {
+        "/patients/me/appointments/examination": {
             "post": {
                 "security": [
                     {
@@ -28,7 +28,7 @@
                 "tags": [
                     "appointments"
                 ],
-                "summary": "Đặt lịch khám cho khách hàng",
+                "summary": "Cho phép bệnh nhân đặt lịch khám",
                 "parameters": [
                     {
                         "description": "Examination Appointment Request",
@@ -36,7 +36,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.createExaminationAppointmentRequest"
+                            "$ref": "#/definitions/api.createExaminationAppointmentByPatientRequest"
                         }
                     }
                 ],
@@ -167,15 +167,15 @@
                 "tags": [
                     "users"
                 ],
-                "summary": "Tạo mới tài khoản khách hàng",
+                "summary": "Tạo mới tài khoản bệnh nhân",
                 "parameters": [
                     {
-                        "description": "Create customer",
+                        "description": "Create patient info",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.createCustomerRequest"
+                            "$ref": "#/definitions/api.createPatientRequest"
                         }
                     }
                 ],
@@ -242,7 +242,25 @@
         }
     },
     "definitions": {
-        "api.createCustomerRequest": {
+        "api.createExaminationAppointmentByPatientRequest": {
+            "type": "object",
+            "required": [
+                "examination_schedule_id",
+                "payment_id"
+            ],
+            "properties": {
+                "examination_schedule_id": {
+                    "type": "integer"
+                },
+                "patient_note": {
+                    "type": "string"
+                },
+                "payment_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "api.createPatientRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -262,28 +280,6 @@
                 },
                 "phone_number": {
                     "type": "string"
-                }
-            }
-        },
-        "api.createExaminationAppointmentRequest": {
-            "type": "object",
-            "required": [
-                "customer_id",
-                "examination_schedule_id",
-                "payment_id"
-            ],
-            "properties": {
-                "customer_id": {
-                    "type": "integer"
-                },
-                "customer_note": {
-                    "type": "string"
-                },
-                "examination_schedule_id": {
-                    "type": "integer"
-                },
-                "payment_id": {
-                    "type": "integer"
                 }
             }
         },
@@ -381,7 +377,7 @@
                     "type": "string"
                 },
                 "warranty_duration": {
-                    "type": "string"
+                    "type": "integer"
                 }
             }
         },

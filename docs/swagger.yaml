@@ -1,6 +1,18 @@
 basePath: /api/v1
 definitions:
-  api.createCustomerRequest:
+  api.createExaminationAppointmentByPatientRequest:
+    properties:
+      examination_schedule_id:
+        type: integer
+      patient_note:
+        type: string
+      payment_id:
+        type: integer
+    required:
+    - examination_schedule_id
+    - payment_id
+    type: object
+  api.createPatientRequest:
     properties:
       email:
         type: string
@@ -15,21 +27,6 @@ definitions:
     - full_name
     - password
     - phone_number
-    type: object
-  api.createExaminationAppointmentRequest:
-    properties:
-      customer_id:
-        type: integer
-      customer_note:
-        type: string
-      examination_schedule_id:
-        type: integer
-      payment_id:
-        type: integer
-    required:
-    - customer_id
-    - examination_schedule_id
-    - payment_id
     type: object
   api.loginUserRequest:
     properties:
@@ -93,7 +90,7 @@ definitions:
       unit:
         type: string
       warranty_duration:
-        type: string
+        type: integer
     type: object
   db.ServiceCategory:
     properties:
@@ -119,7 +116,7 @@ info:
   title: Dental Clinic API
   version: 1.0.0
 paths:
-  /appointments/examination:
+  /patients/me/appointments/examination:
     post:
       consumes:
       - application/json
@@ -129,7 +126,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/api.createExaminationAppointmentRequest'
+          $ref: '#/definitions/api.createExaminationAppointmentByPatientRequest'
       produces:
       - application/json
       responses:
@@ -141,7 +138,7 @@ paths:
           description: Internal Server Error
       security:
       - accessToken: []
-      summary: Đặt lịch khám cho khách hàng
+      summary: Cho phép bệnh nhân đặt lịch khám
       tags:
       - appointments
   /schedules/examination:
@@ -216,12 +213,12 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: Create customer
+      - description: Create patient info
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/api.createCustomerRequest'
+          $ref: '#/definitions/api.createPatientRequest'
       produces:
       - application/json
       responses:
@@ -233,7 +230,7 @@ paths:
           description: Forbidden
         "500":
           description: Internal Server Error
-      summary: Tạo mới tài khoản khách hàng
+      summary: Tạo mới tài khoản bệnh nhân
       tags:
       - users
   /users/login:

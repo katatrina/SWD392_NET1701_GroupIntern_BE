@@ -39,14 +39,20 @@ func (server *Server) setupRouter() {
 	{
 		userGroup := v1.Group("/users")
 		{
-			userGroup.POST("", server.createCustomer)
+			userGroup.POST("", server.createPatient)
 			userGroup.POST("/login", server.loginUser)
 		}
 	}
 
 	authorized := v1.Group("/")
 	authorized.Use(authMiddleware(server.tokenMaker))
-	authorized.POST("appointments/examination", server.createExaminationAppointment)
+	{
+		patientGroup := authorized.Group("/patients/me")
+		{
+			patientGroup.POST("appointments/examination", server.createExaminationAppointmentByPatient)
+			patientGroup.GET("appointments/examination", server.listExaminationAppointmentsByPatient)
+		}
+	}
 
 	serviceCategoryGroup := v1.Group("/service-categories")
 	{

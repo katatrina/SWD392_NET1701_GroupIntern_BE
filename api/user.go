@@ -19,28 +19,28 @@ var (
 	ErrPasswordIncorrect = errors.New("password is incorrect")
 )
 
-type createCustomerRequest struct {
+type createPatientRequest struct {
 	Password    string `json:"password" binding:"required"`
 	FullName    string `json:"full_name" binding:"required"`
 	Email       string `json:"email" binding:"required,email"`
 	PhoneNumber string `json:"phone_number" binding:"required"`
 }
 
-// createCustomer creates a new customer
+// createPatient creates a new patient account
 //
 //	@Router		/users [post]
-//	@Summary	Tạo mới tài khoản khách hàng
+//	@Summary	Tạo mới tài khoản bệnh nhân
 //	@Description
 //	@Tags		users
 //	@Accept		json
 //	@Produce	json
-//	@Param		request	body	createCustomerRequest	true	"Create customer"
+//	@Param		request	body	createPatientRequest	true	"Create patient info"
 //	@Success	201
 //	@Failure	400
 //	@Failure	403
 //	@Failure	500
-func (server *Server) createCustomer(ctx *gin.Context) {
-	var req createCustomerRequest
+func (server *Server) createPatient(ctx *gin.Context) {
+	var req createPatientRequest
 
 	// Parse the JSON request body
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -55,7 +55,7 @@ func (server *Server) createCustomer(ctx *gin.Context) {
 		return
 	}
 
-	arg := db.CreateCustomerParams{
+	arg := db.CreatePatientParams{
 		FullName:       req.FullName,
 		HashedPassword: hashedPassword,
 		Email:          req.Email,
@@ -63,7 +63,7 @@ func (server *Server) createCustomer(ctx *gin.Context) {
 	}
 
 	// Create a new customer
-	_, err = server.store.CreateCustomer(ctx, arg)
+	_, err = server.store.CreatePatient(ctx, arg)
 	if err != nil {
 		var pqErr *pq.Error
 		if errors.As(err, &pqErr) {

@@ -5,19 +5,19 @@ import (
 )
 
 type BookExaminationAppointmentParams struct {
-	CustomerID            int64
-	CustomerNote          string
+	PatientID             int64
+	PatientNote           string
 	ExaminationScheduleID int64
 	PaymentID             int64
 }
 
-func (store *SQLStore) BookExaminationAppointmentTx(ctx context.Context, arg BookExaminationAppointmentParams) error {
+func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context, arg BookExaminationAppointmentParams) error {
 	err := store.execTx(ctx, func(q *Queries) error {
 		// Create a new booking
 		booking, err := q.CreateBooking(ctx, CreateBookingParams{
-			CustomerID:   arg.CustomerID,
-			CustomerNote: arg.CustomerNote,
-			PaymentID:    arg.PaymentID,
+			PatientID:   arg.PatientID,
+			PatientNote: arg.PatientNote,
+			PaymentID:   arg.PaymentID,
 		})
 		if err != nil {
 			return err
@@ -27,7 +27,7 @@ func (store *SQLStore) BookExaminationAppointmentTx(ctx context.Context, arg Boo
 		err = q.CreateAppointment(ctx, CreateAppointmentParams{
 			BookingID:  booking.ID,
 			ScheduleID: arg.ExaminationScheduleID,
-			CustomerID: arg.CustomerID,
+			PatientID:  arg.PatientID,
 		})
 
 		return err

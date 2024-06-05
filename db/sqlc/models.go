@@ -12,14 +12,14 @@ type Appointment struct {
 	ID         int64     `json:"id"`
 	BookingID  int64     `json:"booking_id"`
 	ScheduleID int64     `json:"schedule_id"`
-	CustomerID int64     `json:"customer_id"`
+	PatientID  int64     `json:"patient_id"`
 	CreatedAt  time.Time `json:"created_at"`
 }
 
 type Booking struct {
 	ID            int64     `json:"id"`
-	CustomerID    int64     `json:"customer_id"`
-	CustomerNote  string    `json:"customer_note"`
+	PatientID     int64     `json:"patient_id"`
+	PatientNote   string    `json:"patient_note"`
 	PaymentStatus string    `json:"payment_status"`
 	PaymentID     int64     `json:"payment_id"`
 	IsCancelled   bool      `json:"is_cancelled"`
@@ -67,7 +67,7 @@ type Service struct {
 	CategoryID       int64     `json:"category_id"`
 	Unit             string    `json:"unit"`
 	Price            int64     `json:"price"`
-	WarrantyDuration string    `json:"warranty_duration"`
+	WarrantyDuration int64     `json:"warranty_duration"`
 	CreatedAt        time.Time `json:"created_at"`
 }
 

@@ -11,7 +11,7 @@ import (
 type Querier interface {
 	CreateAppointment(ctx context.Context, arg CreateAppointmentParams) error
 	CreateBooking(ctx context.Context, arg CreateBookingParams) (Booking, error)
-	CreateCustomer(ctx context.Context, arg CreateCustomerParams) (User, error)
+	CreatePatient(ctx context.Context, arg CreatePatientParams) (User, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	ListAllServiceCategories(ctx context.Context) ([]ServiceCategory, error)
 	ListAllServicesOfACategory(ctx context.Context, categoryID int64) ([]Service, error)

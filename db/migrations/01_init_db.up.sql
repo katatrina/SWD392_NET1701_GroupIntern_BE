@@ -43,13 +43,13 @@ CREATE TABLE "service_categories"
 
 CREATE TABLE "services"
 (
-    "id"                bigserial PRIMARY KEY,
-    "name"              text        NOT NULL,
-    "category_id"       bigint      NOT NULL,
-    "unit"              text        NOT NULL,
-    "price"             bigint      NOT NULL,
-    "warranty_duration" text        NOT NULL,
-    "created_at"        timestamptz NOT NULL DEFAULT (now())
+    "id"          bigserial PRIMARY KEY,
+    "name"        text        NOT NULL,
+    "category_id" bigint      NOT NULL,
+    "unit"        text        NOT NULL,
+    "price"       bigint      NOT NULL,
+    "warranty_duration" interval NOT NULL,
+    "created_at"  timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "schedules"
@@ -83,15 +83,15 @@ CREATE TABLE "appointments"
     "id"          bigserial PRIMARY KEY,
     "booking_id"  bigint      NOT NULL,
     "schedule_id" bigint      NOT NULL,
-    "customer_id" bigint      NOT NULL,
+    "patient_id"  bigint      NOT NULL,
     "created_at"  timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "bookings"
 (
     "id"             bigserial PRIMARY KEY,
-    "customer_id"    bigint      NOT NULL,
-    "customer_note"  text        NOT NULL DEFAULT '',
+    "patient_id"     bigint      NOT NULL,
+    "patient_note"   text        NOT NULL DEFAULT '',
     "payment_status" text        NOT NULL DEFAULT 'not yet',
     "payment_id"     bigint      NOT NULL,
     "is_cancelled"   bool        NOT NULL DEFAULT false,
@@ -139,10 +139,10 @@ ALTER TABLE "appointments"
     ADD FOREIGN KEY ("schedule_id") REFERENCES "schedules" ("id");
 
 ALTER TABLE "appointments"
-    ADD FOREIGN KEY ("customer_id") REFERENCES "users" ("id");
+    ADD FOREIGN KEY ("patient_id") REFERENCES "users" ("id");
 
 ALTER TABLE "bookings"
-    ADD FOREIGN KEY ("customer_id") REFERENCES "users" ("id");
+    ADD FOREIGN KEY ("patient_id") REFERENCES "users" ("id");
 
 ALTER TABLE "bookings"
     ADD FOREIGN KEY ("payment_id") REFERENCES "payments" ("id");
