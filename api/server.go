@@ -44,7 +44,6 @@ func (server *Server) setupCors() {
 
 func (server *Server) setupRouter() {
 	router := gin.Default()
-	server.setupCors()
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
@@ -76,6 +75,7 @@ func (server *Server) setupRouter() {
 	v1.GET("/schedules/examination", server.listExaminationSchedulesByDateAndServiceCategory)
 
 	server.router = router
+	server.setupCors()
 }
 
 func (server *Server) Start() error {
