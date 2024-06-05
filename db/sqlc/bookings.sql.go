@@ -11,7 +11,7 @@ import (
 
 const createBooking = `-- name: CreateBooking :one
 INSERT INTO bookings (patient_id, patient_note, payment_id)
-VALUES ($1, $2, $3) RETURNING id, patient_id, patient_note, payment_status, payment_id, is_cancelled, created_at
+VALUES ($1, $2, $3) RETURNING id, patient_id, patient_note, payment_status, payment_id, status, created_at
 `
 
 type CreateBookingParams struct {
@@ -29,7 +29,7 @@ func (q *Queries) CreateBooking(ctx context.Context, arg CreateBookingParams) (B
 		&i.PatientNote,
 		&i.PaymentStatus,
 		&i.PaymentID,
-		&i.IsCancelled,
+		&i.Status,
 		&i.CreatedAt,
 	)
 	return i, err

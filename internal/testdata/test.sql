@@ -60,7 +60,7 @@ VALUES ('examination', '2024-06-03 07:00:00+07', '2021-06-03 08:00:00+07', 1, 1)
        ('examination', '2024-06-03 09:00:00+07', '2021-06-03 10:00:00+07', 3, 3),
        ('examination', '2024-06-03 10:00:00+07', '2021-06-03 11:00:00+07', 4, 4);
 
-INSERT INTO examination_schedule_details (schedule_id, service_category_id)
+INSERT INTO examination_schedule_detail (schedule_id, service_category_id)
 VALUES (1, 1),
        (2, 2),
        (3, 3),

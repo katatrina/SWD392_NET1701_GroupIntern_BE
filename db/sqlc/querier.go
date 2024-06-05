@@ -15,6 +15,7 @@ type Querier interface {
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	ListAllServiceCategories(ctx context.Context) ([]ServiceCategory, error)
 	ListAllServicesOfACategory(ctx context.Context, categoryID int64) ([]Service, error)
+	ListExaminationAppointments(ctx context.Context, arg ListExaminationAppointmentsParams) ([]ListExaminationAppointmentsRow, error)
 	ListExaminationSchedulesByDateAndServiceCategory(ctx context.Context, arg ListExaminationSchedulesByDateAndServiceCategoryParams) ([]ListExaminationSchedulesByDateAndServiceCategoryRow, error)
 }
 

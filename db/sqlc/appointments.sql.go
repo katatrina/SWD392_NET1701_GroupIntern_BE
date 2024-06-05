@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"time"
 )
 
 const createAppointment = `-- name: CreateAppointment :exec
@@ -23,4 +24,58 @@ type CreateAppointmentParams struct {
 func (q *Queries) CreateAppointment(ctx context.Context, arg CreateAppointmentParams) error {
 	_, err := q.db.ExecContext(ctx, createAppointment, arg.BookingID, arg.ScheduleID, arg.PatientID)
 	return err
+}
+
+const listExaminationAppointments = `-- name: ListExaminationAppointments :many
+SELECT schedules.start_time, bookings.id as booking_id, service_categories.price as fee, bookings.status as status
+FROM bookings
+         JOIN appointments ON bookings.id = appointments.booking_id
+         JOIN schedules ON appointments.schedule_id = schedules.id
+         JOIN examination_schedule_detail ON schedules.id = examination_schedule_detail.schedule_id
+         JOIN service_categories ON examination_schedule_detail.service_category_id = service_categories.id
+WHERE bookings.patient_id = $1
+ORDER BY schedules.start_time DESC
+LIMIT $2
+OFFSET $3
+`
+
+type ListExaminationAppointmentsParams struct {
+	PatientID int64 `json:"patient_id"`
+	Limit     int32 `json:"limit"`
+	Offset    int32 `json:"offset"`
+}
+
+type ListExaminationAppointmentsRow struct {
+	StartTime time.Time `json:"start_time"`
+	BookingID int64     `json:"booking_id"`
+	Fee       int64     `json:"fee"`
+	Status    string    `json:"status"`
+}
+
+func (q *Queries) ListExaminationAppointments(ctx context.Context, arg ListExaminationAppointmentsParams) ([]ListExaminationAppointmentsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listExaminationAppointments, arg.PatientID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListExaminationAppointmentsRow{}
+	for rows.Next() {
+		var i ListExaminationAppointmentsRow
+		if err := rows.Scan(
+			&i.StartTime,
+			&i.BookingID,
+			&i.Fee,
+			&i.Status,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

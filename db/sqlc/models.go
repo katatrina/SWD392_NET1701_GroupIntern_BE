@@ -13,6 +13,7 @@ type Appointment struct {
 	BookingID  int64     `json:"booking_id"`
 	ScheduleID int64     `json:"schedule_id"`
 	PatientID  int64     `json:"patient_id"`
+	Status     string    `json:"status"`
 	CreatedAt  time.Time `json:"created_at"`
 }
 
@@ -22,7 +23,7 @@ type Booking struct {
 	PatientNote   string    `json:"patient_note"`
 	PaymentStatus string    `json:"payment_status"`
 	PaymentID     int64     `json:"payment_id"`
-	IsCancelled   bool      `json:"is_cancelled"`
+	Status        string    `json:"status"`
 	CreatedAt     time.Time `json:"created_at"`
 }
 

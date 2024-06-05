@@ -1,6 +1,8 @@
 package api
 
 import (
+	"time"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	db "github.com/katatrina/SWD392/db/sqlc"
@@ -29,9 +31,20 @@ func NewServer(store db.Store) *Server {
 	return server
 }
 
+func (server *Server) setupCors() {
+	config := cors.Config{
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "Authorization"},
+		AllowCredentials: false,
+		MaxAge:           12 * time.Hour,
+	}
+	config.AllowAllOrigins = true
+	server.router.Use(cors.New(config))
+}
+
 func (server *Server) setupRouter() {
 	router := gin.Default()
-	router.Use(cors.Default())
+	server.setupCors()
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 

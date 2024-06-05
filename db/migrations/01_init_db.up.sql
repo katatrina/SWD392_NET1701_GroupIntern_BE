@@ -84,6 +84,7 @@ CREATE TABLE "appointments"
     "booking_id"  bigint      NOT NULL,
     "schedule_id" bigint      NOT NULL,
     "patient_id"  bigint      NOT NULL,
+    "status"      text        NOT NULL DEFAULT 'waiting',
     "created_at"  timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -94,7 +95,7 @@ CREATE TABLE "bookings"
     "patient_note"   text        NOT NULL DEFAULT '',
     "payment_status" text        NOT NULL DEFAULT 'not yet',
     "payment_id"     bigint      NOT NULL,
-    "is_cancelled"   bool        NOT NULL DEFAULT false,
+    "status"         text        NOT NULL DEFAULT 'waiting',
     "created_at"     timestamptz NOT NULL DEFAULT (now())
 );
 
