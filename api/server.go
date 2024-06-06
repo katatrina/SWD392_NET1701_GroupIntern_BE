@@ -61,7 +61,7 @@ func (server *Server) setupRouter() {
 		patientGroup := authorized.Group("/patients/me")
 		{
 			patientGroup.POST("appointments/examination", server.createExaminationAppointmentByPatient)
-			patientGroup.GET("appointments/examination", server.listExaminationAppointmentsByPatient)
+			patientGroup.GET("bookings/examination", server.getAllExaminationBookingsByPatient)
 		}
 	}
 

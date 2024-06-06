@@ -10,36 +10,41 @@ import (
 	"time"
 )
 
-const getScheduledDetailByID = `-- name: GetScheduledDetailByID :one
-SELECT s.id    as schedule_id,
-       s.type,
+const getExaminationScheduleDetail = `-- name: GetExaminationScheduleDetail :one
+SELECT s.id        as schedule_id,
        s.start_time,
        s.end_time,
-       sc.name as service_category_name,
-       sc.cost as service_category_cost
+       u.full_name as dentist_name,
+       r.name      as room_name,
+       sc.name     as service_category_name,
+       sc.cost     as service_category_cost
 FROM schedules s
          JOIN examination_schedule_detail sd ON s.id = sd.schedule_id
+         JOIN users u ON s.dentist_id = u.id
+         JOIN rooms r ON s.room_id = r.id
          JOIN service_categories sc ON sd.service_category_id = sc.id
 WHERE s.id = $1
 `
 
-type GetScheduledDetailByIDRow struct {
+type GetExaminationScheduleDetailRow struct {
 	ScheduleID          int64     `json:"schedule_id"`
-	Type                string    `json:"type"`
 	StartTime           time.Time `json:"start_time"`
 	EndTime             time.Time `json:"end_time"`
+	DentistName         string    `json:"dentist_name"`
+	RoomName            string    `json:"room_name"`
 	ServiceCategoryName string    `json:"service_category_name"`
 	ServiceCategoryCost int64     `json:"service_category_cost"`
 }
 
-func (q *Queries) GetScheduledDetailByID(ctx context.Context, scheduleID int64) (GetScheduledDetailByIDRow, error) {
-	row := q.db.QueryRowContext(ctx, getScheduledDetailByID, scheduleID)
-	var i GetScheduledDetailByIDRow
+func (q *Queries) GetExaminationScheduleDetail(ctx context.Context, scheduleID int64) (GetExaminationScheduleDetailRow, error) {
+	row := q.db.QueryRowContext(ctx, getExaminationScheduleDetail, scheduleID)
+	var i GetExaminationScheduleDetailRow
 	err := row.Scan(
 		&i.ScheduleID,
-		&i.Type,
 		&i.StartTime,
 		&i.EndTime,
+		&i.DentistName,
+		&i.RoomName,
 		&i.ServiceCategoryName,
 		&i.ServiceCategoryCost,
 	)

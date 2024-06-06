@@ -94,6 +94,7 @@ CREATE TABLE "bookings"
     "id"               bigserial PRIMARY KEY,
     "patient_id"       bigint      NOT NULL,
     "patient_note"     text        NOT NULL DEFAULT '',
+    "type"             text        NOT NULL,
     "payment_status"   text        NOT NULL DEFAULT 'not yet',
     "payment_id"       bigint      NOT NULL,
     "total_cost"       bigint      NOT NULL DEFAULT 0,

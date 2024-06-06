@@ -13,56 +13,6 @@
     "basePath": "/api/v1",
     "paths": {
         "/patients/me/appointments/examination": {
-            "get": {
-                "security": [
-                    {
-                        "accessToken": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "appointments"
-                ],
-                "summary": "Lấy danh sách lịch khám của bệnh nhân",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Page ID",
-                        "name": "page_id",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Page Size",
-                        "name": "page_size",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/db.ListExaminationAppointmentsRow"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            },
             "post": {
                 "security": [
                     {
@@ -93,6 +43,39 @@
                 "responses": {
                     "201": {
                         "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/patients/me/bookings/examination": {
+            "get": {
+                "security": [
+                    {
+                        "accessToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "Lấy tất cả danh sách lịch khám của bệnh nhân",
+                "responses": {
+                    "200": {
+                        "description": "List of examination bookings",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.Booking"
+                            }
+                        }
                     },
                     "400": {
                         "description": "Bad Request"
@@ -407,19 +390,37 @@
                 }
             }
         },
-        "db.ListExaminationAppointmentsRow": {
+        "db.Booking": {
             "type": "object",
             "properties": {
-                "booking_id": {
+                "appointment_date": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
                     "type": "integer"
                 },
-                "fee": {
+                "patient_id": {
                     "type": "integer"
                 },
-                "start_time": {
+                "patient_note": {
+                    "type": "string"
+                },
+                "payment_id": {
+                    "type": "integer"
+                },
+                "payment_status": {
                     "type": "string"
                 },
                 "status": {
+                    "type": "string"
+                },
+                "total_cost": {
+                    "type": "integer"
+                },
+                "type": {
                     "type": "string"
                 }
             }
@@ -467,6 +468,9 @@
                 "category_id": {
                     "type": "integer"
                 },
+                "cost": {
+                    "type": "integer"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -475,9 +479,6 @@
                 },
                 "name": {
                     "type": "string"
-                },
-                "price": {
-                    "type": "integer"
                 },
                 "unit": {
                     "type": "string"
@@ -490,6 +491,9 @@
         "db.ServiceCategory": {
             "type": "object",
             "properties": {
+                "cost": {
+                    "type": "integer"
+                },
                 "created_at": {
                     "type": "string"
                 },
@@ -501,9 +505,6 @@
                 },
                 "name": {
                     "type": "string"
-                },
-                "price": {
-                    "type": "integer"
                 },
                 "short_description": {
                     "type": "string"

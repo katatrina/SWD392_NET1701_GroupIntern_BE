@@ -65,33 +65,18 @@ func (server *Server) createExaminationAppointmentByPatient(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, nil)
 }
 
-type listExaminationAppointmentsByPatientRequest struct {
-	PageID   int32 `form:"page_id" binding:"required"`
-	PageSize int32 `form:"page_size" binding:"required"`
-}
-
-// listExaminationAppointmentsByPatient returns a list of examination appointments of a patient
+// getAllExaminationBookingsByPatient returns all examination bookings of a patient
 //
-//	@Router		/patients/me/appointments/examination [get]
-//	@Summary	Lấy danh sách lịch khám của bệnh nhân
+//	@Router		/patients/me/bookings/examination [get]
+//	@Summary	Lấy tất cả danh sách lịch khám của bệnh nhân
 //	@Produce	json
 //	@Description
 //	@Security	accessToken
-//	@Param		page_id		query	int	true	"Page ID"
-//	@Param		page_size	query	int	true	"Page Size"
 //	@Tags		appointments
-//	@Success	200	{object}	[]db.ListExaminationAppointmentsRow
+//	@Success	200	{object}	[]db.Booking "List of examination bookings"
 //	@Failure	400
-//	@Failure	404
 //	@Failure	500
-func (server *Server) listExaminationAppointmentsByPatient(ctx *gin.Context) {
-	var req listExaminationAppointmentsByPatientRequest
-
-	if err := ctx.ShouldBindQuery(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-
+func (server *Server) getAllExaminationBookingsByPatient(ctx *gin.Context) {
 	authorizedPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 
 	patientID, err := strconv.ParseInt(authorizedPayload.Subject, 10, 64)
@@ -100,22 +85,11 @@ func (server *Server) listExaminationAppointmentsByPatient(ctx *gin.Context) {
 		return
 	}
 
-	arg := db.ListExaminationAppointmentsParams{
-		PatientID: patientID,
-		Limit:     req.PageSize,
-		Offset:    (req.PageID - 1) * req.PageSize,
-	}
-
-	appointments, err := server.store.ListExaminationAppointments(ctx, arg)
-	// TODO: Handle no record error gracefully
-	if len(appointments) == 0 {
-		ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
-		return
-	}
+	bookings, err := server.store.ListExaminationBookings(ctx, patientID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
-	ctx.JSON(http.StatusOK, appointments)
+	ctx.JSON(http.StatusOK, bookings)
 }

@@ -10,14 +10,14 @@ import (
 
 type Querier interface {
 	CreateAppointment(ctx context.Context, arg CreateAppointmentParams) error
-	CreateBooking(ctx context.Context, arg CreateBookingParams) (Booking, error)
+	CreateExaminationBooking(ctx context.Context, arg CreateExaminationBookingParams) (Booking, error)
 	CreatePatient(ctx context.Context, arg CreatePatientParams) (User, error)
-	GetScheduledDetailByID(ctx context.Context, scheduleID int64) (GetScheduledDetailByIDRow, error)
+	GetExaminationScheduleDetail(ctx context.Context, scheduleID int64) (GetExaminationScheduleDetailRow, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	ListAllPaymentMethods(ctx context.Context) ([]Payment, error)
 	ListAllServiceCategories(ctx context.Context) ([]ServiceCategory, error)
 	ListAllServicesOfACategory(ctx context.Context, categoryID int64) ([]Service, error)
-	ListExaminationAppointments(ctx context.Context, arg ListExaminationAppointmentsParams) ([]ListExaminationAppointmentsRow, error)
+	ListExaminationBookings(ctx context.Context, patientID int64) ([]Booking, error)
 	ListExaminationSchedulesByDateAndServiceCategory(ctx context.Context, arg ListExaminationSchedulesByDateAndServiceCategoryParams) ([]ListExaminationSchedulesByDateAndServiceCategoryRow, error)
 }
 

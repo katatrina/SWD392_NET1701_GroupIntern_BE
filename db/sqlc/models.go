@@ -21,6 +21,7 @@ type Booking struct {
 	ID              int64     `json:"id"`
 	PatientID       int64     `json:"patient_id"`
 	PatientNote     string    `json:"patient_note"`
+	Type            string    `json:"type"`
 	PaymentStatus   string    `json:"payment_status"`
 	PaymentID       int64     `json:"payment_id"`
 	TotalCost       int64     `json:"total_cost"`
@@ -70,7 +71,7 @@ type Service struct {
 	CategoryID       int64     `json:"category_id"`
 	Unit             string    `json:"unit"`
 	Cost             int64     `json:"cost"`
-	WarrantyDuration string    `json:"warranty_duration"`
+	WarrantyDuration int64     `json:"warranty_duration"`
 	CreatedAt        time.Time `json:"created_at"`
 }
 

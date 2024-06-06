@@ -10,12 +10,12 @@ import (
 	"time"
 )
 
-const createBooking = `-- name: CreateBooking :one
-INSERT INTO bookings (patient_id, patient_note, payment_id, total_cost, appointment_date)
-VALUES ($1, $2, $3, $4, $5) RETURNING id, patient_id, patient_note, payment_status, payment_id, total_cost, appointment_date, status, created_at
+const createExaminationBooking = `-- name: CreateExaminationBooking :one
+INSERT INTO bookings (patient_id, patient_note, payment_id, total_cost, appointment_date, type)
+VALUES ($1, $2, $3, $4, $5, 'examination') RETURNING id, patient_id, patient_note, type, payment_status, payment_id, total_cost, appointment_date, status, created_at
 `
 
-type CreateBookingParams struct {
+type CreateExaminationBookingParams struct {
 	PatientID       int64     `json:"patient_id"`
 	PatientNote     string    `json:"patient_note"`
 	PaymentID       int64     `json:"payment_id"`
@@ -23,8 +23,8 @@ type CreateBookingParams struct {
 	AppointmentDate time.Time `json:"appointment_date"`
 }
 
-func (q *Queries) CreateBooking(ctx context.Context, arg CreateBookingParams) (Booking, error) {
-	row := q.db.QueryRowContext(ctx, createBooking,
+func (q *Queries) CreateExaminationBooking(ctx context.Context, arg CreateExaminationBookingParams) (Booking, error) {
+	row := q.db.QueryRowContext(ctx, createExaminationBooking,
 		arg.PatientID,
 		arg.PatientNote,
 		arg.PaymentID,
@@ -36,6 +36,7 @@ func (q *Queries) CreateBooking(ctx context.Context, arg CreateBookingParams) (B
 		&i.ID,
 		&i.PatientID,
 		&i.PatientNote,
+		&i.Type,
 		&i.PaymentStatus,
 		&i.PaymentID,
 		&i.TotalCost,
@@ -44,4 +45,45 @@ func (q *Queries) CreateBooking(ctx context.Context, arg CreateBookingParams) (B
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const listExaminationBookings = `-- name: ListExaminationBookings :many
+SELECT id, patient_id, patient_note, type, payment_status, payment_id, total_cost, appointment_date, status, created_at
+FROM bookings
+WHERE patient_id = $1
+  AND type = 'examination'
+`
+
+func (q *Queries) ListExaminationBookings(ctx context.Context, patientID int64) ([]Booking, error) {
+	rows, err := q.db.QueryContext(ctx, listExaminationBookings, patientID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Booking{}
+	for rows.Next() {
+		var i Booking
+		if err := rows.Scan(
+			&i.ID,
+			&i.PatientID,
+			&i.PatientNote,
+			&i.Type,
+			&i.PaymentStatus,
+			&i.PaymentID,
+			&i.TotalCost,
+			&i.AppointmentDate,
+			&i.Status,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

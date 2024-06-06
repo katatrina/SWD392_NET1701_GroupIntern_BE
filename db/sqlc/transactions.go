@@ -14,13 +14,13 @@ type BookExaminationAppointmentParams struct {
 func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context, arg BookExaminationAppointmentParams) error {
 	err := store.execTx(ctx, func(q *Queries) error {
 		// Get examination schedule detail
-		schedule, err := q.GetScheduledDetailByID(ctx, arg.ExaminationScheduleID)
+		schedule, err := q.GetExaminationScheduleDetail(ctx, arg.ExaminationScheduleID)
 		if err != nil {
 			return err
 		}
 
 		// Create a new booking
-		booking, err := q.CreateBooking(ctx, CreateBookingParams{
+		booking, err := q.CreateExaminationBooking(ctx, CreateExaminationBookingParams{
 			PatientID:       arg.PatientID,
 			PatientNote:     arg.PatientNote,
 			PaymentID:       arg.PaymentID,
