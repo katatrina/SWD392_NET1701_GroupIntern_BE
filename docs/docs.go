@@ -109,6 +109,31 @@ const docTemplate = `{
                 }
             }
         },
+        "/payment-methods": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "payments"
+                ],
+                "summary": "liệt kê tất cả phương thức thanh toán",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.Payment"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/schedules/examination": {
             "get": {
                 "produces": [
@@ -428,6 +453,20 @@ const docTemplate = `{
                 }
             }
         },
+        "db.Payment": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "db.Service": {
             "type": "object",
             "properties": {
@@ -471,6 +510,9 @@ const docTemplate = `{
                 },
                 "price": {
                     "type": "integer"
+                },
+                "short_description": {
+                    "type": "string"
                 },
                 "slug": {
                     "type": "string"

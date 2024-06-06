@@ -19,14 +19,14 @@ VALUES ('01'),
        ('07');
 
 -- Insert service categories
-INSERT INTO service_categories (name, image_url, slug, price)
-VALUES ('Bọc răng sứ', '', 'boc-rang-su', 500000),
-       ('Cấy ghép Implant', '', 'cay-ghep-implant', 600000),
-       ('Niềng răng thẩm mỹ', '', 'nieng-rang-tham-my', 700000),
-       ('Tẩy trắng răng', '', 'tay-trang-rang', 800000),
-       ('Nhổ răng khôn', '', 'nho-rang-khon', 900000),
-       ('Bệnh lý nha chu', '', 'benh-ly-nha-chu', 1000000),
-       ('Điều trị tủy răng', '', 'dieu-tri-tuy-rang', 1100000);
+INSERT INTO service_categories (name, image_url, slug, price, short_description)
+VALUES ('Bọc răng sứ', '', 'boc-rang-su', 500000, 'Bọc răng sứ (phục hình cố định răng sứ) là sử dụng răng sứ được làm hoàn toàn từ sứ hoặc sứ kết hợp cùng kim loại để chụp lên phần răng khiếm khuyết hoặc hư tổn để tái tạo hình dáng, kích thước và màu sắc như răng thật.'),
+       ('Cấy ghép Implant', '', 'cay-ghep-implant', 600000, 'Cấy ghép Implant là phương pháp thay thế răng bị mất bằng cách cấy ghép vào xương hàm một cọc titan hoặc hợp kim titan.'),
+       ('Niềng răng thẩm mỹ', '', 'nieng-rang-tham-my', 700000, 'Niềng răng thẩm mỹ là phương pháp chỉnh hình răng mà không cần phải đeo nhiều phụ kiện ngoại vi.'),
+       ('Tẩy trắng răng', '', 'tay-trang-rang', 800000, 'Tẩy trắng răng là phương pháp giúp làm sáng răng mà không cần phải mài hoặc phục hình răng.'),
+       ('Nhổ răng khôn', '', 'nho-rang-khon', 900000, 'Nhổ răng khôn là phương pháp nhổ răng khôn bị hỏng hoặc gây đau nhức.'),
+       ('Bệnh lý nha chu', '', 'benh-ly-nha-chu', 1000000, 'Bệnh lý nha chu là phương pháp điều trị các bệnh lý nha chu.'),
+       ('Điều trị tủy răng', '', 'dieu-tri-tuy-rang', 1100000, 'Điều trị tủy răng là phương pháp điều trị các bệnh lý tủy răng.');
 
 -- Insert payments
 INSERT INTO payments (name)

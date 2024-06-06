@@ -33,12 +33,13 @@ CREATE TABLE "rooms"
 
 CREATE TABLE "service_categories"
 (
-    "id"         bigserial PRIMARY KEY,
-    "name"       text        NOT NULL,
-    "image_url"  text        NOT NULL,
-    "slug"       text        NOT NULL,
-    "price"      bigint      NOT NULL,
-    "created_at" timestamptz NOT NULL DEFAULT (now())
+    "id"                bigserial PRIMARY KEY,
+    "name"              text        NOT NULL,
+    "short_description" text        NOT NULL,
+    "image_url"         text        NOT NULL,
+    "slug"              text        NOT NULL,
+    "price"             bigint      NOT NULL,
+    "created_at"        timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "services"

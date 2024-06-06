@@ -73,6 +73,8 @@ func (server *Server) setupRouter() {
 
 	v1.GET("/schedules/examination", server.listExaminationSchedulesByDateAndServiceCategory)
 
+	v1.GET("/payment-methods", server.listAllPaymentMethods)
+
 	server.router = router
 }
 

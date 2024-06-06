@@ -43,14 +43,14 @@ func (server *Server) createExaminationAppointmentByPatient(ctx *gin.Context) {
 
 	authorizedPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 
-	customerID, err := strconv.ParseInt(authorizedPayload.Subject, 10, 64)
+	patientID, err := strconv.ParseInt(authorizedPayload.Subject, 10, 64)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
 	arg := db.BookExaminationAppointmentParams{
-		PatientID:             customerID,
+		PatientID:             patientID,
 		PatientNote:           req.PatientNote,
 		ExaminationScheduleID: req.ExaminationScheduleID,
 		PaymentID:             req.PaymentID,

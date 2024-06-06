@@ -10,7 +10,7 @@ import (
 )
 
 const listAllServiceCategories = `-- name: ListAllServiceCategories :many
-SELECT id, name, image_url, slug, price, created_at FROM service_categories
+SELECT id, name, short_description, image_url, slug, price, created_at FROM service_categories
 `
 
 func (q *Queries) ListAllServiceCategories(ctx context.Context) ([]ServiceCategory, error) {
@@ -25,6 +25,7 @@ func (q *Queries) ListAllServiceCategories(ctx context.Context) ([]ServiceCatego
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
+			&i.ShortDescription,
 			&i.ImageUrl,
 			&i.Slug,
 			&i.Price,

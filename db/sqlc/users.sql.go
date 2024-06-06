@@ -11,7 +11,7 @@ import (
 
 const createPatient = `-- name: CreatePatient :one
 INSERT INTO users (full_name, hashed_password, email, phone_number, role)
-VALUES ($1, $2, $3, $4, 'customer') RETURNING id, full_name, hashed_password, email, phone_number, role, created_at
+VALUES ($1, $2, $3, $4, 'patient') RETURNING id, full_name, hashed_password, email, phone_number, role, created_at
 `
 
 type CreatePatientParams struct {
