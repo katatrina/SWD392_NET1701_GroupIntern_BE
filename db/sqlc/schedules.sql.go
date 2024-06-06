@@ -10,12 +10,48 @@ import (
 	"time"
 )
 
+const getScheduledDetailByID = `-- name: GetScheduledDetailByID :one
+SELECT s.id    as schedule_id,
+       s.type,
+       s.start_time,
+       s.end_time,
+       sc.name as service_category_name,
+       sc.cost as service_category_cost
+FROM schedules s
+         JOIN examination_schedule_detail sd ON s.id = sd.schedule_id
+         JOIN service_categories sc ON sd.service_category_id = sc.id
+WHERE s.id = $1
+`
+
+type GetScheduledDetailByIDRow struct {
+	ScheduleID          int64     `json:"schedule_id"`
+	Type                string    `json:"type"`
+	StartTime           time.Time `json:"start_time"`
+	EndTime             time.Time `json:"end_time"`
+	ServiceCategoryName string    `json:"service_category_name"`
+	ServiceCategoryCost int64     `json:"service_category_cost"`
+}
+
+func (q *Queries) GetScheduledDetailByID(ctx context.Context, scheduleID int64) (GetScheduledDetailByIDRow, error) {
+	row := q.db.QueryRowContext(ctx, getScheduledDetailByID, scheduleID)
+	var i GetScheduledDetailByIDRow
+	err := row.Scan(
+		&i.ScheduleID,
+		&i.Type,
+		&i.StartTime,
+		&i.EndTime,
+		&i.ServiceCategoryName,
+		&i.ServiceCategoryCost,
+	)
+	return i, err
+}
+
 const listExaminationSchedulesByDateAndServiceCategory = `-- name: ListExaminationSchedulesByDateAndServiceCategory :many
 SELECT s.id as schedule_id, s.type, s.start_time, s.end_time, u.full_name as dentist_name, r.name as room_name
 FROM schedules s
-JOIN users u ON s.dentist_id = u.id
-JOIN rooms r ON s.room_id = r.id
-JOIN examination_schedule_detail esd ON s.id = esd.schedule_id
+         JOIN users u ON s.dentist_id = u.id
+         JOIN rooms r ON s.room_id = r.id
+         JOIN examination_schedule_detail esd ON s.id = esd.schedule_id
 WHERE s.start_time::date = $1::date
 AND esd.service_category_id = $2
 ORDER BY s.start_time ASC

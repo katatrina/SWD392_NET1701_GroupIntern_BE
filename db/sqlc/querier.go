@@ -12,6 +12,7 @@ type Querier interface {
 	CreateAppointment(ctx context.Context, arg CreateAppointmentParams) error
 	CreateBooking(ctx context.Context, arg CreateBookingParams) (Booking, error)
 	CreatePatient(ctx context.Context, arg CreatePatientParams) (User, error)
+	GetScheduledDetailByID(ctx context.Context, scheduleID int64) (GetScheduledDetailByIDRow, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	ListAllPaymentMethods(ctx context.Context) ([]Payment, error)
 	ListAllServiceCategories(ctx context.Context) ([]ServiceCategory, error)

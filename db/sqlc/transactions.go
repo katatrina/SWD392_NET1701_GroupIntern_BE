@@ -13,11 +13,19 @@ type BookExaminationAppointmentParams struct {
 
 func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context, arg BookExaminationAppointmentParams) error {
 	err := store.execTx(ctx, func(q *Queries) error {
+		// Get examination schedule detail
+		schedule, err := q.GetScheduledDetailByID(ctx, arg.ExaminationScheduleID)
+		if err != nil {
+			return err
+		}
+
 		// Create a new booking
 		booking, err := q.CreateBooking(ctx, CreateBookingParams{
-			PatientID:   arg.PatientID,
-			PatientNote: arg.PatientNote,
-			PaymentID:   arg.PaymentID,
+			PatientID:       arg.PatientID,
+			PatientNote:     arg.PatientNote,
+			PaymentID:       arg.PaymentID,
+			TotalCost:       schedule.ServiceCategoryCost,
+			AppointmentDate: schedule.StartTime,
 		})
 		if err != nil {
 			return err

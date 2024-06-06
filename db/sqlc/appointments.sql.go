@@ -27,7 +27,7 @@ func (q *Queries) CreateAppointment(ctx context.Context, arg CreateAppointmentPa
 }
 
 const listExaminationAppointments = `-- name: ListExaminationAppointments :many
-SELECT schedules.start_time, bookings.id as booking_id, service_categories.price as fee, bookings.status as status
+SELECT schedules.start_time, bookings.id as booking_id, service_categories.cost, bookings.status as status
 FROM bookings
          JOIN appointments ON bookings.id = appointments.booking_id
          JOIN schedules ON appointments.schedule_id = schedules.id
@@ -48,7 +48,7 @@ type ListExaminationAppointmentsParams struct {
 type ListExaminationAppointmentsRow struct {
 	StartTime time.Time `json:"start_time"`
 	BookingID int64     `json:"booking_id"`
-	Fee       int64     `json:"fee"`
+	Cost      int64     `json:"cost"`
 	Status    string    `json:"status"`
 }
 
@@ -64,7 +64,7 @@ func (q *Queries) ListExaminationAppointments(ctx context.Context, arg ListExami
 		if err := rows.Scan(
 			&i.StartTime,
 			&i.BookingID,
-			&i.Fee,
+			&i.Cost,
 			&i.Status,
 		); err != nil {
 			return nil, err

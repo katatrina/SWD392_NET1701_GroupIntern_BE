@@ -7,21 +7,30 @@ package db
 
 import (
 	"context"
+	"time"
 )
 
 const createBooking = `-- name: CreateBooking :one
-INSERT INTO bookings (patient_id, patient_note, payment_id)
-VALUES ($1, $2, $3) RETURNING id, patient_id, patient_note, payment_status, payment_id, status, created_at
+INSERT INTO bookings (patient_id, patient_note, payment_id, total_cost, appointment_date)
+VALUES ($1, $2, $3, $4, $5) RETURNING id, patient_id, patient_note, payment_status, payment_id, total_cost, appointment_date, status, created_at
 `
 
 type CreateBookingParams struct {
-	PatientID   int64  `json:"patient_id"`
-	PatientNote string `json:"patient_note"`
-	PaymentID   int64  `json:"payment_id"`
+	PatientID       int64     `json:"patient_id"`
+	PatientNote     string    `json:"patient_note"`
+	PaymentID       int64     `json:"payment_id"`
+	TotalCost       int64     `json:"total_cost"`
+	AppointmentDate time.Time `json:"appointment_date"`
 }
 
 func (q *Queries) CreateBooking(ctx context.Context, arg CreateBookingParams) (Booking, error) {
-	row := q.db.QueryRowContext(ctx, createBooking, arg.PatientID, arg.PatientNote, arg.PaymentID)
+	row := q.db.QueryRowContext(ctx, createBooking,
+		arg.PatientID,
+		arg.PatientNote,
+		arg.PaymentID,
+		arg.TotalCost,
+		arg.AppointmentDate,
+	)
 	var i Booking
 	err := row.Scan(
 		&i.ID,
@@ -29,6 +38,8 @@ func (q *Queries) CreateBooking(ctx context.Context, arg CreateBookingParams) (B
 		&i.PatientNote,
 		&i.PaymentStatus,
 		&i.PaymentID,
+		&i.TotalCost,
+		&i.AppointmentDate,
 		&i.Status,
 		&i.CreatedAt,
 	)

@@ -10,7 +10,7 @@ import (
 )
 
 const listAllServiceCategories = `-- name: ListAllServiceCategories :many
-SELECT id, name, short_description, image_url, slug, price, created_at FROM service_categories
+SELECT id, name, image_url, short_description, slug, cost, created_at FROM service_categories
 `
 
 func (q *Queries) ListAllServiceCategories(ctx context.Context) ([]ServiceCategory, error) {
@@ -25,10 +25,10 @@ func (q *Queries) ListAllServiceCategories(ctx context.Context) ([]ServiceCatego
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
-			&i.ShortDescription,
 			&i.ImageUrl,
+			&i.ShortDescription,
 			&i.Slug,
-			&i.Price,
+			&i.Cost,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err
@@ -45,7 +45,7 @@ func (q *Queries) ListAllServiceCategories(ctx context.Context) ([]ServiceCatego
 }
 
 const listAllServicesOfACategory = `-- name: ListAllServicesOfACategory :many
-SELECT id, name, category_id, unit, price, warranty_duration, created_at FROM services WHERE category_id = $1
+SELECT id, name, category_id, unit, cost, warranty_duration, created_at FROM services WHERE category_id = $1
 `
 
 func (q *Queries) ListAllServicesOfACategory(ctx context.Context, categoryID int64) ([]Service, error) {
@@ -62,7 +62,7 @@ func (q *Queries) ListAllServicesOfACategory(ctx context.Context, categoryID int
 			&i.Name,
 			&i.CategoryID,
 			&i.Unit,
-			&i.Price,
+			&i.Cost,
 			&i.WarrantyDuration,
 			&i.CreatedAt,
 		); err != nil {

@@ -35,10 +35,10 @@ CREATE TABLE "service_categories"
 (
     "id"                bigserial PRIMARY KEY,
     "name"              text        NOT NULL,
-    "short_description" text        NOT NULL,
     "image_url"         text        NOT NULL,
+    "short_description" text        NOT NULL,
     "slug"              text        NOT NULL,
-    "price"             bigint      NOT NULL,
+    "cost"              bigint      NOT NULL,
     "created_at"        timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -48,7 +48,7 @@ CREATE TABLE "services"
     "name"        text        NOT NULL,
     "category_id" bigint      NOT NULL,
     "unit"        text        NOT NULL,
-    "price"       bigint      NOT NULL,
+    "cost"        bigint      NOT NULL,
     "warranty_duration" interval NOT NULL,
     "created_at"  timestamptz NOT NULL DEFAULT (now())
 );
@@ -91,13 +91,15 @@ CREATE TABLE "appointments"
 
 CREATE TABLE "bookings"
 (
-    "id"             bigserial PRIMARY KEY,
-    "patient_id"     bigint      NOT NULL,
-    "patient_note"   text        NOT NULL DEFAULT '',
-    "payment_status" text        NOT NULL DEFAULT 'not yet',
-    "payment_id"     bigint      NOT NULL,
-    "status"         text        NOT NULL DEFAULT 'waiting',
-    "created_at"     timestamptz NOT NULL DEFAULT (now())
+    "id"               bigserial PRIMARY KEY,
+    "patient_id"       bigint      NOT NULL,
+    "patient_note"     text        NOT NULL DEFAULT '',
+    "payment_status"   text        NOT NULL DEFAULT 'not yet',
+    "payment_id"       bigint      NOT NULL,
+    "total_cost"       bigint      NOT NULL DEFAULT 0,
+    "appointment_date" DATE        NOT NULL,
+    "status"           text        NOT NULL DEFAULT 'waiting',
+    "created_at"       timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "payments"

@@ -18,13 +18,15 @@ type Appointment struct {
 }
 
 type Booking struct {
-	ID            int64     `json:"id"`
-	PatientID     int64     `json:"patient_id"`
-	PatientNote   string    `json:"patient_note"`
-	PaymentStatus string    `json:"payment_status"`
-	PaymentID     int64     `json:"payment_id"`
-	Status        string    `json:"status"`
-	CreatedAt     time.Time `json:"created_at"`
+	ID              int64     `json:"id"`
+	PatientID       int64     `json:"patient_id"`
+	PatientNote     string    `json:"patient_note"`
+	PaymentStatus   string    `json:"payment_status"`
+	PaymentID       int64     `json:"payment_id"`
+	TotalCost       int64     `json:"total_cost"`
+	AppointmentDate time.Time `json:"appointment_date"`
+	Status          string    `json:"status"`
+	CreatedAt       time.Time `json:"created_at"`
 }
 
 type DentistDetail struct {
@@ -67,18 +69,18 @@ type Service struct {
 	Name             string    `json:"name"`
 	CategoryID       int64     `json:"category_id"`
 	Unit             string    `json:"unit"`
-	Price            int64     `json:"price"`
-	WarrantyDuration int64     `json:"warranty_duration"`
+	Cost             int64     `json:"cost"`
+	WarrantyDuration string    `json:"warranty_duration"`
 	CreatedAt        time.Time `json:"created_at"`
 }
 
 type ServiceCategory struct {
 	ID               int64     `json:"id"`
 	Name             string    `json:"name"`
-	ShortDescription string    `json:"short_description"`
 	ImageUrl         string    `json:"image_url"`
+	ShortDescription string    `json:"short_description"`
 	Slug             string    `json:"slug"`
-	Price            int64     `json:"price"`
+	Cost             int64     `json:"cost"`
 	CreatedAt        time.Time `json:"created_at"`
 }
 
