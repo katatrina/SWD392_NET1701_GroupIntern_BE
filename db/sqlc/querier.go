@@ -13,6 +13,7 @@ type Querier interface {
 	CreateExaminationBooking(ctx context.Context, arg CreateExaminationBookingParams) (Booking, error)
 	CreatePatient(ctx context.Context, arg CreatePatientParams) (User, error)
 	GetExaminationScheduleDetail(ctx context.Context, scheduleID int64) (GetExaminationScheduleDetailRow, error)
+	GetPatient(ctx context.Context, id int64) (User, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	ListAllPaymentMethods(ctx context.Context) ([]Payment, error)
 	ListAllServiceCategories(ctx context.Context) ([]ServiceCategory, error)

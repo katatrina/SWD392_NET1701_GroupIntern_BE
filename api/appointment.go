@@ -22,7 +22,7 @@ type createExaminationAppointmentByPatientRequest struct {
 
 // createExaminationAppointmentByPatient creates a new examination appointment for a patient
 //
-//	@Router		/patients/me/appointments/examination [post]
+//	@Router		/patients/appointments/examination [post]
 //	@Summary	Cho phép bệnh nhân đặt lịch khám
 //	@Description
 //	@Security	accessToken
@@ -67,7 +67,7 @@ func (server *Server) createExaminationAppointmentByPatient(ctx *gin.Context) {
 
 // getAllExaminationBookingsByPatient returns all examination bookings of a patient
 //
-//	@Router		/patients/me/bookings/examination [get]
+//	@Router		/patients/bookings/examination [get]
 //	@Summary	Lấy tất cả danh sách lịch khám của bệnh nhân
 //	@Produce	json
 //	@Description

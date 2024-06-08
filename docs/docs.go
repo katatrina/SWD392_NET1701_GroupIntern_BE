@@ -18,7 +18,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/patients/me/appointments/examination": {
+        "/patients/appointments/examination": {
             "post": {
                 "security": [
                     {
@@ -59,7 +59,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/patients/me/bookings/examination": {
+        "/patients/bookings/examination": {
             "get": {
                 "security": [
                     {
@@ -85,6 +85,51 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/patients/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "accessToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Lấy thông tin bệnh nhân",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Patient ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.userInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
                     },
                     "500": {
                         "description": "Internal Server Error"

@@ -150,7 +150,35 @@ info:
   title: Dental Clinic API
   version: 1.0.0
 paths:
-  /patients/me/appointments/examination:
+  /patients/{id}:
+    get:
+      parameters:
+      - description: Patient ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/api.userInfo'
+        "400":
+          description: Bad Request
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - accessToken: []
+      summary: Lấy thông tin bệnh nhân
+      tags:
+      - users
+  /patients/appointments/examination:
     post:
       consumes:
       - application/json
@@ -175,7 +203,7 @@ paths:
       summary: Cho phép bệnh nhân đặt lịch khám
       tags:
       - appointments
-  /patients/me/bookings/examination:
+  /patients/bookings/examination:
     get:
       produces:
       - application/json

@@ -13,8 +13,6 @@ var (
 	ErrAuthorizationHeaderNotProvided   = errors.New("authorization header is not provided")
 	ErrInvalidAuthorizationHeaderFormat = errors.New("invalid authorization header format")
 	ErrAuthorizationTypeNotSupported    = errors.New("authorization type is not supported")
-
-	ErrMismatchedUser = errors.New("provided id doesn't match the authenticated user")
 )
 
 var (

@@ -58,10 +58,11 @@ func (server *Server) setupRouter() {
 	authorized := v1.Group("/")
 	authorized.Use(authMiddleware(server.tokenMaker))
 	{
-		patientGroup := authorized.Group("/patients/me")
+		patientGroup := authorized.Group("/patients")
 		{
-			patientGroup.POST("appointments/examination", server.createExaminationAppointmentByPatient)
-			patientGroup.GET("bookings/examination", server.getAllExaminationBookingsByPatient)
+			patientGroup.POST("/appointments/examination", server.createExaminationAppointmentByPatient)
+			patientGroup.GET("/bookings/examination", server.getAllExaminationBookingsByPatient)
+			patientGroup.GET("/:id", server.getPatientInfo)
 		}
 	}
 

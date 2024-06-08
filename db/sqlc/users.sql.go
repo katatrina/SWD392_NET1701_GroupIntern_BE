@@ -41,8 +41,32 @@ func (q *Queries) CreatePatient(ctx context.Context, arg CreatePatientParams) (U
 	return i, err
 }
 
+const getPatient = `-- name: GetPatient :one
+SELECT id, full_name, hashed_password, email, phone_number, role, created_at
+FROM users
+WHERE id = $1
+  AND role = 'patient'
+`
+
+func (q *Queries) GetPatient(ctx context.Context, id int64) (User, error) {
+	row := q.db.QueryRowContext(ctx, getPatient, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.FullName,
+		&i.HashedPassword,
+		&i.Email,
+		&i.PhoneNumber,
+		&i.Role,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, full_name, hashed_password, email, phone_number, role, created_at FROM users WHERE email = $1
+SELECT id, full_name, hashed_password, email, phone_number, role, created_at
+FROM users
+WHERE email = $1
 `
 
 func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
