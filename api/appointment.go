@@ -104,9 +104,9 @@ type getExaminationAppointmentDetailsRequest struct {
 	ExaminationAppointmentID int64 `uri:"id" binding:"required"`
 }
 
-// getExaminationAppointmentDetailsByPatient returns the details of an examination appointment
+// getExaminationAppointmentByPatient returns the details of an examination appointment
 //
-//	@Router		/patients/appointments/examination/{id}/details [get]
+//	@Router		/patients/appointments/examination/{id} [get]
 //	@Summary	Lấy thông tin chi tiết của một lịch khám
 //	@Description
 //	@Tags		appointments
@@ -116,7 +116,7 @@ type getExaminationAppointmentDetailsRequest struct {
 //	@Success	200	{object}	db.GetExaminationAppointmentDetailsRow
 //	@Failure	400
 //	@Failure	500
-func (server *Server) getExaminationAppointmentDetailsByPatient(ctx *gin.Context) {
+func (server *Server) getExaminationAppointmentByPatient(ctx *gin.Context) {
 	var req getExaminationAppointmentDetailsRequest
 	
 	if err := ctx.ShouldBindUri(&req); err != nil {

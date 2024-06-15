@@ -126,7 +126,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/patients/appointments/examination/{id}/details": {
+        "/patients/appointments/examination/{id}": {
             "get": {
                 "security": [
                     {
@@ -598,7 +598,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "warranty_duration": {
-                    "type": "integer"
+                    "type": "string"
                 }
             }
         },

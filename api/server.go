@@ -63,7 +63,7 @@ func (server *Server) setupRouter() {
 			patientGroup.POST("/appointments/examination", server.createExaminationAppointmentByPatient)
 			patientGroup.GET("/appointments/examination", server.listExaminationAppointmentsByPatient)
 			patientGroup.GET("", server.getPatientInfo)
-			patientGroup.GET("/appointments/examination/:id/details", server.getExaminationAppointmentDetailsByPatient)
+			patientGroup.GET("/appointments/examination/:id", server.getExaminationAppointmentByPatient)
 		}
 	}
 	

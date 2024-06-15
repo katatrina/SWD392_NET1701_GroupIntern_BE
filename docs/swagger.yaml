@@ -145,7 +145,7 @@ definitions:
       unit:
         type: string
       warranty_duration:
-        type: integer
+        type: string
     type: object
   db.ServiceCategory:
     properties:
@@ -239,7 +239,7 @@ paths:
       summary: Cho phép bệnh nhân đặt lịch khám
       tags:
       - appointments
-  /patients/appointments/examination/{id}/details:
+  /patients/appointments/examination/{id}:
     get:
       parameters:
       - description: Examination Appointment ID
