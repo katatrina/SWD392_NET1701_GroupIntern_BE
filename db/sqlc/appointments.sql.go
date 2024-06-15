@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"time"
 )
 
 const createAppointment = `-- name: CreateAppointment :exec
@@ -23,4 +24,54 @@ type CreateAppointmentParams struct {
 func (q *Queries) CreateAppointment(ctx context.Context, arg CreateAppointmentParams) error {
 	_, err := q.db.ExecContext(ctx, createAppointment, arg.BookingID, arg.ScheduleID, arg.PatientID)
 	return err
+}
+
+const getExaminationAppointmentDetails = `-- name: GetExaminationAppointmentDetails :one
+SELECT b.id as booking_id, b.status as booking_status, b.payment_status, b.patient_note, s.start_time, s.end_time, u.full_name as dentist_name, specialties.name as dentist_specialty, r.name as room_name, b.total_cost
+FROM bookings b
+         JOIN appointments a ON b.id = a.booking_id
+         JOIN schedules s ON a.schedule_id = s.id
+         JOIN examination_schedule_detail sd ON s.id = sd.schedule_id
+         JOIN users u ON s.dentist_id = u.id
+         JOIN dentist_detail dd ON u.id = dd.dentist_id
+         JOIN specialties ON dd.specialty_id = specialties.id
+         JOIN rooms r ON s.room_id = r.id
+         JOIN service_categories sc ON sd.service_category_id = sc.id
+WHERE b.id = $1 AND b.patient_id = $2
+`
+
+type GetExaminationAppointmentDetailsParams struct {
+	BookingID int64 `json:"booking_id"`
+	PatientID int64 `json:"patient_id"`
+}
+
+type GetExaminationAppointmentDetailsRow struct {
+	BookingID        int64     `json:"booking_id"`
+	BookingStatus    string    `json:"booking_status"`
+	PaymentStatus    string    `json:"payment_status"`
+	PatientNote      string    `json:"patient_note"`
+	StartTime        time.Time `json:"start_time"`
+	EndTime          time.Time `json:"end_time"`
+	DentistName      string    `json:"dentist_name"`
+	DentistSpecialty string    `json:"dentist_specialty"`
+	RoomName         string    `json:"room_name"`
+	TotalCost        int64     `json:"total_cost"`
+}
+
+func (q *Queries) GetExaminationAppointmentDetails(ctx context.Context, arg GetExaminationAppointmentDetailsParams) (GetExaminationAppointmentDetailsRow, error) {
+	row := q.db.QueryRowContext(ctx, getExaminationAppointmentDetails, arg.BookingID, arg.PatientID)
+	var i GetExaminationAppointmentDetailsRow
+	err := row.Scan(
+		&i.BookingID,
+		&i.BookingStatus,
+		&i.PaymentStatus,
+		&i.PatientNote,
+		&i.StartTime,
+		&i.EndTime,
+		&i.DentistName,
+		&i.DentistSpecialty,
+		&i.RoomName,
+		&i.TotalCost,
+	)
+	return i, err
 }

@@ -2,7 +2,7 @@ package api
 
 import (
 	"net/http"
-
+	
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,7 +21,7 @@ func (server *Server) listAllServiceCategories(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-
+	
 	ctx.JSON(http.StatusOK, categories)
 }
 
@@ -31,27 +31,27 @@ type listAllServicesOfCategoryRequest struct {
 
 // listAllServicesOfACategory returns a list of all services of a category
 //
-//	@Router		/service-categories/{categoryID}/services [get]
+//	@Router		/service-categories/{id}/services [get]
 //	@Summary	liệt kê tất cả dịch vụ của một danh mục
 //	@Produce	json
 //	@Description
-//	@Param		categoryID	path	int	true	"Category ID"
+//	@Param		id	path	int	true	"Category ID"
 //	@Tags		services
 //	@Success	200 {object} []db.Service
 //	@Failure	500
 func (server *Server) listAllServicesOfACategory(ctx *gin.Context) {
 	var req listAllServicesOfCategoryRequest
-
+	
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-
+	
 	services, err := server.store.ListAllServicesOfACategory(ctx, req.CategoryID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-
+	
 	ctx.JSON(http.StatusOK, services)
 }

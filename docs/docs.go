@@ -18,7 +18,74 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/patients": {
+            "get": {
+                "security": [
+                    {
+                        "accessToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Lấy thông tin bệnh nhân",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.userInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/patients/appointments/examination": {
+            "get": {
+                "security": [
+                    {
+                        "accessToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "Lấy tất cả danh sách lịch khám của bệnh nhân",
+                "responses": {
+                    "200": {
+                        "description": "List of examination bookings",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.Booking"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -59,7 +126,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/patients/bookings/examination": {
+        "/patients/appointments/examination/{id}/details": {
             "get": {
                 "security": [
                     {
@@ -72,44 +139,11 @@ const docTemplate = `{
                 "tags": [
                     "appointments"
                 ],
-                "summary": "Lấy tất cả danh sách lịch khám của bệnh nhân",
-                "responses": {
-                    "200": {
-                        "description": "List of examination bookings",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/db.Booking"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/patients/{id}": {
-            "get": {
-                "security": [
-                    {
-                        "accessToken": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Lấy thông tin bệnh nhân",
+                "summary": "Lấy thông tin chi tiết của một lịch khám",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Patient ID",
+                        "description": "Examination Appointment ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -119,17 +153,11 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/api.userInfo"
+                            "$ref": "#/definitions/db.GetExaminationAppointmentDetailsRow"
                         }
                     },
                     "400": {
                         "description": "Bad Request"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "Not Found"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -231,7 +259,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/service-categories/{categoryID}/services": {
+        "/service-categories/{id}/services": {
             "get": {
                 "produces": [
                     "application/json"
@@ -244,7 +272,7 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Category ID",
-                        "name": "categoryID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
@@ -473,6 +501,41 @@ const docTemplate = `{
                 },
                 "type": {
                     "type": "string"
+                }
+            }
+        },
+        "db.GetExaminationAppointmentDetailsRow": {
+            "type": "object",
+            "properties": {
+                "booking_id": {
+                    "type": "integer"
+                },
+                "booking_status": {
+                    "type": "string"
+                },
+                "dentist_name": {
+                    "type": "string"
+                },
+                "dentist_specialty": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "patient_note": {
+                    "type": "string"
+                },
+                "payment_status": {
+                    "type": "string"
+                },
+                "room_name": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "total_cost": {
+                    "type": "integer"
                 }
             }
         },

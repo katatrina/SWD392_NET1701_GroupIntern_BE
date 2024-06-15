@@ -1,6 +1,6 @@
 -- name: CreatePatient :one
 INSERT INTO users (full_name, hashed_password, email, phone_number, role)
-VALUES ($1, $2, $3, $4, 'patient') RETURNING *;
+VALUES ($1, $2, $3, $4, 'Patient') RETURNING *;
 
 -- name: GetUserByEmail :one
 SELECT *
@@ -11,4 +11,4 @@ WHERE email = $1;
 SELECT *
 FROM users
 WHERE id = $1
-  AND role = 'patient';
+  AND role = 'Patient';

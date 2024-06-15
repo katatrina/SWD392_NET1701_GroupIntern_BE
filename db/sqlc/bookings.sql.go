@@ -12,7 +12,7 @@ import (
 
 const createExaminationBooking = `-- name: CreateExaminationBooking :one
 INSERT INTO bookings (patient_id, patient_note, payment_id, total_cost, appointment_date, type)
-VALUES ($1, $2, $3, $4, $5, 'examination') RETURNING id, patient_id, patient_note, type, payment_status, payment_id, total_cost, appointment_date, status, created_at
+VALUES ($1, $2, $3, $4, $5, 'Examination') RETURNING id, patient_id, patient_note, type, payment_status, payment_id, total_cost, appointment_date, status, created_at
 `
 
 type CreateExaminationBookingParams struct {
@@ -51,7 +51,7 @@ const listExaminationBookings = `-- name: ListExaminationBookings :many
 SELECT id, patient_id, patient_note, type, payment_status, payment_id, total_cost, appointment_date, status, created_at
 FROM bookings
 WHERE patient_id = $1
-  AND type = 'examination'
+  AND type = 'Examination'
 `
 
 func (q *Queries) ListExaminationBookings(ctx context.Context, patientID int64) ([]Booking, error) {

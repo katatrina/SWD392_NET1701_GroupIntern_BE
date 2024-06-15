@@ -11,7 +11,7 @@ import (
 
 const createPatient = `-- name: CreatePatient :one
 INSERT INTO users (full_name, hashed_password, email, phone_number, role)
-VALUES ($1, $2, $3, $4, 'patient') RETURNING id, full_name, hashed_password, email, phone_number, role, created_at
+VALUES ($1, $2, $3, $4, 'Patient') RETURNING id, full_name, hashed_password, email, phone_number, role, created_at
 `
 
 type CreatePatientParams struct {
@@ -45,7 +45,7 @@ const getPatient = `-- name: GetPatient :one
 SELECT id, full_name, hashed_password, email, phone_number, role, created_at
 FROM users
 WHERE id = $1
-  AND role = 'patient'
+  AND role = 'Patient'
 `
 
 func (q *Queries) GetPatient(ctx context.Context, id int64) (User, error) {

@@ -49,7 +49,7 @@ CREATE TABLE "services"
     "category_id" bigint      NOT NULL,
     "unit"        text        NOT NULL,
     "cost"        bigint      NOT NULL,
-    "warranty_duration" interval NOT NULL,
+    "warranty_duration" text NOT NULL,
     "created_at"  timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -85,7 +85,7 @@ CREATE TABLE "appointments"
     "booking_id"  bigint      NOT NULL,
     "schedule_id" bigint      NOT NULL,
     "patient_id"  bigint      NOT NULL,
-    "status"      text        NOT NULL DEFAULT 'waiting',
+    "status"      text        NOT NULL DEFAULT 'Đang chờ',
     "created_at"  timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -95,11 +95,11 @@ CREATE TABLE "bookings"
     "patient_id"       bigint      NOT NULL,
     "patient_note"     text        NOT NULL DEFAULT '',
     "type"             text        NOT NULL,
-    "payment_status"   text        NOT NULL DEFAULT 'not yet',
+    "payment_status"   text        NOT NULL DEFAULT 'Chưa thanh toán',
     "payment_id"       bigint      NOT NULL,
     "total_cost"       bigint      NOT NULL DEFAULT 0,
     "appointment_date" DATE        NOT NULL,
-    "status"           text        NOT NULL DEFAULT 'waiting',
+    "status"           text        NOT NULL DEFAULT 'Đang chờ',
     "created_at"       timestamptz NOT NULL DEFAULT (now())
 );
 
