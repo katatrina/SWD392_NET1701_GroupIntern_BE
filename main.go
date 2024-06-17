@@ -3,10 +3,10 @@ package main
 import (
 	"database/sql"
 	"log"
-
+	
 	"github.com/katatrina/SWD392/api"
 	db "github.com/katatrina/SWD392/db/sqlc"
-
+	
 	_ "github.com/lib/pq"
 )
 
@@ -34,17 +34,17 @@ func main() {
 	if err != nil {
 		log.Fatal("cannot connect to database:", err)
 	}
-
+	
 	if err = dbConn.Ping(); err != nil {
 		log.Fatal("cannot connect to database:", err)
 	}
-
+	
 	// Initialize database store
 	store := db.NewStore(dbConn)
-
+	
 	// Initialize our HTTP server
 	server := api.NewServer(store)
-
+	
 	// Start our HTTP server
 	err = server.Start()
 	if err != nil {

@@ -81,6 +81,9 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request"
                     },
+                    "404": {
+                        "description": "Not Found"
+                    },
                     "500": {
                         "description": "Internal Server Error"
                     }
@@ -173,7 +176,7 @@ const docTemplate = `{
                 "tags": [
                     "payments"
                 ],
-                "summary": "liệt kê tất cả phương thức thanh toán",
+                "summary": "Liệt kê tất cả phương thức thanh toán",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -198,7 +201,7 @@ const docTemplate = `{
                 "tags": [
                     "schedules"
                 ],
-                "summary": "liệt kê tất cả lịch khám trong một ngày của một danh mục dịch vụ",
+                "summary": "Liệt kê tất cả lịch khám trong một ngày của một danh mục dịch vụ",
                 "parameters": [
                     {
                         "type": "string",
@@ -242,7 +245,7 @@ const docTemplate = `{
                 "tags": [
                     "services"
                 ],
-                "summary": "liệt kê tất cả danh mục dịch vụ hiện có",
+                "summary": "Liệt kê tất cả danh mục dịch vụ hiện có",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -259,7 +262,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/service-categories/{id}/services": {
+        "/service-categories/{slug}": {
             "get": {
                 "produces": [
                     "application/json"
@@ -267,12 +270,46 @@ const docTemplate = `{
                 "tags": [
                     "services"
                 ],
-                "summary": "liệt kê tất cả dịch vụ của một danh mục",
+                "summary": "Lấy thông tin của một danh mục dịch vụ",
                 "parameters": [
                     {
-                        "type": "integer",
-                        "description": "Category ID",
-                        "name": "id",
+                        "type": "string",
+                        "description": "Category Slug",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/db.ServiceCategory"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/service-categories/{slug}/services": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "Liệt kê tất cả dịch vụ của một danh mục",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Category Slug",
+                        "name": "slug",
                         "in": "path",
                         "required": true
                     }
@@ -605,22 +642,25 @@ const docTemplate = `{
         "db.ServiceCategory": {
             "type": "object",
             "properties": {
+                "banner_url": {
+                    "type": "string"
+                },
                 "cost": {
                     "type": "integer"
                 },
                 "created_at": {
                     "type": "string"
                 },
+                "description": {
+                    "type": "string"
+                },
+                "icon_url": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
-                "image_url": {
-                    "type": "string"
-                },
                 "name": {
-                    "type": "string"
-                },
-                "short_description": {
                     "type": "string"
                 },
                 "slug": {

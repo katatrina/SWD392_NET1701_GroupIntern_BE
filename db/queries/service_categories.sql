@@ -1,5 +1,12 @@
--- name: ListAllServiceCategories :many
+-- name: ListServiceCategories :many
 SELECT * FROM service_categories;
 
--- name: ListAllServicesOfACategory :many
-SELECT * FROM services WHERE category_id = $1;
+-- name: ListServicesOfOneCategory :many
+SELECT * FROM services WHERE category_id = (SELECT id FROM service_categories WHERE slug = $1);
+
+-- name: CreateServiceCategory :one
+INSERT INTO service_categories (name, icon_url, banner_url, slug, cost, description)
+VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
+
+-- name: GetServiceCategoryBySlug :one
+SELECT * FROM service_categories WHERE slug = $1;

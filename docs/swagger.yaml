@@ -149,17 +149,19 @@ definitions:
     type: object
   db.ServiceCategory:
     properties:
+      banner_url:
+        type: string
       cost:
         type: integer
       created_at:
         type: string
+      description:
+        type: string
+      icon_url:
+        type: string
       id:
         type: integer
-      image_url:
-        type: string
       name:
-        type: string
-      short_description:
         type: string
       slug:
         type: string
@@ -208,6 +210,8 @@ paths:
             type: array
         "400":
           description: Bad Request
+        "404":
+          description: Not Found
         "500":
           description: Internal Server Error
       security:
@@ -276,7 +280,7 @@ paths:
             type: array
         "500":
           description: Internal Server Error
-      summary: liệt kê tất cả phương thức thanh toán
+      summary: Liệt kê tất cả phương thức thanh toán
       tags:
       - payments
   /schedules/examination:
@@ -305,7 +309,7 @@ paths:
           description: Bad Request
         "500":
           description: Internal Server Error
-      summary: liệt kê tất cả lịch khám trong một ngày của một danh mục dịch vụ
+      summary: Liệt kê tất cả lịch khám trong một ngày của một danh mục dịch vụ
       tags:
       - schedules
   /service-categories:
@@ -321,17 +325,39 @@ paths:
             type: array
         "500":
           description: Internal Server Error
-      summary: liệt kê tất cả danh mục dịch vụ hiện có
+      summary: Liệt kê tất cả danh mục dịch vụ hiện có
       tags:
       - services
-  /service-categories/{id}/services:
+  /service-categories/{slug}:
     get:
       parameters:
-      - description: Category ID
+      - description: Category Slug
         in: path
-        name: id
+        name: slug
         required: true
-        type: integer
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.ServiceCategory'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Lấy thông tin của một danh mục dịch vụ
+      tags:
+      - services
+  /service-categories/{slug}/services:
+    get:
+      parameters:
+      - description: Category Slug
+        in: path
+        name: slug
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -343,7 +369,7 @@ paths:
             type: array
         "500":
           description: Internal Server Error
-      summary: liệt kê tất cả dịch vụ của một danh mục
+      summary: Liệt kê tất cả dịch vụ của một danh mục
       tags:
       - services
   /users:

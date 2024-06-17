@@ -9,13 +9,24 @@ import (
 	"context"
 )
 
-const listAllPaymentMethods = `-- name: ListAllPaymentMethods :many
-SELECT id, name, created_at
-FROM payments
+const createPayment = `-- name: CreatePayment :one
+INSERT INTO payments (name)
+VALUES ($1) RETURNING id, name, created_at
 `
 
-func (q *Queries) ListAllPaymentMethods(ctx context.Context) ([]Payment, error) {
-	rows, err := q.db.QueryContext(ctx, listAllPaymentMethods)
+func (q *Queries) CreatePayment(ctx context.Context, name string) (Payment, error) {
+	row := q.db.QueryRowContext(ctx, createPayment, name)
+	var i Payment
+	err := row.Scan(&i.ID, &i.Name, &i.CreatedAt)
+	return i, err
+}
+
+const listPayments = `-- name: ListPayments :many
+SELECT id, name, created_at FROM payments
+`
+
+func (q *Queries) ListPayments(ctx context.Context) ([]Payment, error) {
+	rows, err := q.db.QueryContext(ctx, listPayments)
 	if err != nil {
 		return nil, err
 	}

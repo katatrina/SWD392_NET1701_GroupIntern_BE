@@ -35,7 +35,7 @@ VALUES ('Bọc răng sứ', '', 'boc-rang-su', 500000,
        ('Điều trị tủy răng', '', 'dieu-tri-tuy-rang', 1100000,
         'Điều trị tủy răng là phương pháp điều trị các bệnh lý tủy răng.');
 
--- Insert payments
+-- Insert payments.sql
 INSERT INTO payments (name)
 VALUES ('Tiền mặt');
 
@@ -59,6 +59,16 @@ INSERT INTO users (full_name, hashed_password, email, phone_number, role) -- id 
 VALUES ('Lại Ngọc Khánh Thư', '123', 'thulnk@gmail.com', '0806465865', 'dentist');
 INSERT INTO dentist_detail (dentist_id, sex, date_of_birth, specialty_id)
 VALUES (4, 'female', '2000-12-30 00:00:00+07', 6);
+
+INSERT INTO users (full_name, hashed_password, email, phone_number, role) -- id 5
+VALUES ('Nguyễn Thị Lan Hương', '123', 'lanhuong.nguyen@gmail.com', '0987654321', 'dentist');
+INSERT INTO dentist_detail (dentist_id, sex, date_of_birth, specialty_id)
+VALUES (5, 'female', '1985-06-30 00:00:00+07', 7);
+
+INSERT INTO users (full_name, hashed_password, email, phone_number, role) -- id 6
+VALUES ('Trần Văn Minh', '123', 'minhtvan.tran@gmail.com', '0912345678', 'dentist');
+INSERT INTO dentist_detail (dentist_id, sex, date_of_birth, specialty_id)
+VALUES (5, 'male', '1985-06-30 00:00:00+07', 1);
 
 -- Insert examination schedules
 INSERT INTO schedules (type, start_time, end_time, dentist_id, room_id)

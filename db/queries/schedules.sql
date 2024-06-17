@@ -22,3 +22,11 @@ FROM schedules s
          JOIN rooms r ON s.room_id = r.id
          JOIN service_categories sc ON sd.service_category_id = sc.id
 WHERE s.id = sqlc.arg(schedule_id);
+
+-- name: CreateSchedule :one
+INSERT INTO schedules (type, start_time, end_time, dentist_id, room_id)
+VALUES ($1, $2, $3, $4, $5) RETURNING *;
+
+-- name: CreateExaminationScheduleDetail :one
+INSERT INTO examination_schedule_detail (schedule_id, service_category_id)
+VALUES ($1, $2) RETURNING *;

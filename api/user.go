@@ -58,15 +58,16 @@ func (server *Server) createPatient(ctx *gin.Context) {
 		return
 	}
 	
-	arg := db.CreatePatientParams{
+	arg := db.CreateUserParams{
 		FullName:       req.FullName,
 		HashedPassword: hashedPassword,
 		Email:          req.Email,
 		PhoneNumber:    req.PhoneNumber,
+		Role:           "Patient",
 	}
 	
 	// Create a new customer
-	_, err = server.store.CreatePatient(ctx, arg)
+	_, err = server.store.CreateUser(ctx, arg)
 	if err != nil {
 		var pqErr *pq.Error
 		if errors.As(err, &pqErr) {
