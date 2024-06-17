@@ -40,6 +40,7 @@ type DentistDetail struct {
 type ExaminationScheduleDetail struct {
 	ScheduleID        int64     `json:"schedule_id"`
 	ServiceCategoryID int64     `json:"service_category_id"`
+	SlotsRemain       int64     `json:"slots_remain"`
 	CreatedAt         time.Time `json:"created_at"`
 }
 
@@ -76,13 +77,14 @@ type Service struct {
 }
 
 type ServiceCategory struct {
-	ID               int64     `json:"id"`
-	Name             string    `json:"name"`
-	ImageUrl         string    `json:"image_url"`
-	ShortDescription string    `json:"short_description"`
-	Slug             string    `json:"slug"`
-	Cost             int64     `json:"cost"`
-	CreatedAt        time.Time `json:"created_at"`
+	ID          int64     `json:"id"`
+	Name        string    `json:"name"`
+	IconUrl     string    `json:"icon_url"`
+	BannerUrl   string    `json:"banner_url"`
+	Description string    `json:"description"`
+	Slug        string    `json:"slug"`
+	Cost        int64     `json:"cost"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type Specialty struct {
@@ -95,6 +97,7 @@ type TreatmentScheduleDetail struct {
 	ScheduleID      int64     `json:"schedule_id"`
 	ServiceID       int64     `json:"service_id"`
 	ServiceQuantity int64     `json:"service_quantity"`
+	SlotRemains     int64     `json:"slot_remains"`
 	CreatedAt       time.Time `json:"created_at"`
 }
 

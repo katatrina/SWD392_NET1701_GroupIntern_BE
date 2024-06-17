@@ -76,6 +76,7 @@ func (server *Server) createExaminationAppointmentByPatient(ctx *gin.Context) {
 //	@Tags		appointments
 //	@Success	200	{object}	[]db.Booking	"List of examination bookings"
 //	@Failure	400
+//	@Failure	404
 //	@Failure	500
 func (server *Server) listExaminationAppointmentsByPatient(ctx *gin.Context) {
 	authorizedPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)

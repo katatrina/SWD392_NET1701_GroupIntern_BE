@@ -9,12 +9,69 @@ import (
 	"context"
 )
 
-const listAllServiceCategories = `-- name: ListAllServiceCategories :many
-SELECT id, name, image_url, short_description, slug, cost, created_at FROM service_categories
+const createServiceCategory = `-- name: CreateServiceCategory :one
+INSERT INTO service_categories (name, icon_url, banner_url, slug, cost, description)
+VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, name, icon_url, banner_url, description, slug, cost, created_at
 `
 
-func (q *Queries) ListAllServiceCategories(ctx context.Context) ([]ServiceCategory, error) {
-	rows, err := q.db.QueryContext(ctx, listAllServiceCategories)
+type CreateServiceCategoryParams struct {
+	Name        string `json:"name"`
+	IconUrl     string `json:"icon_url"`
+	BannerUrl   string `json:"banner_url"`
+	Slug        string `json:"slug"`
+	Cost        int64  `json:"cost"`
+	Description string `json:"description"`
+}
+
+func (q *Queries) CreateServiceCategory(ctx context.Context, arg CreateServiceCategoryParams) (ServiceCategory, error) {
+	row := q.db.QueryRowContext(ctx, createServiceCategory,
+		arg.Name,
+		arg.IconUrl,
+		arg.BannerUrl,
+		arg.Slug,
+		arg.Cost,
+		arg.Description,
+	)
+	var i ServiceCategory
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.IconUrl,
+		&i.BannerUrl,
+		&i.Description,
+		&i.Slug,
+		&i.Cost,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getServiceCategoryBySlug = `-- name: GetServiceCategoryBySlug :one
+SELECT id, name, icon_url, banner_url, description, slug, cost, created_at FROM service_categories WHERE slug = $1
+`
+
+func (q *Queries) GetServiceCategoryBySlug(ctx context.Context, slug string) (ServiceCategory, error) {
+	row := q.db.QueryRowContext(ctx, getServiceCategoryBySlug, slug)
+	var i ServiceCategory
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.IconUrl,
+		&i.BannerUrl,
+		&i.Description,
+		&i.Slug,
+		&i.Cost,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const listServiceCategories = `-- name: ListServiceCategories :many
+SELECT id, name, icon_url, banner_url, description, slug, cost, created_at FROM service_categories
+`
+
+func (q *Queries) ListServiceCategories(ctx context.Context) ([]ServiceCategory, error) {
+	rows, err := q.db.QueryContext(ctx, listServiceCategories)
 	if err != nil {
 		return nil, err
 	}
@@ -25,8 +82,9 @@ func (q *Queries) ListAllServiceCategories(ctx context.Context) ([]ServiceCatego
 		if err := rows.Scan(
 			&i.ID,
 			&i.Name,
-			&i.ImageUrl,
-			&i.ShortDescription,
+			&i.IconUrl,
+			&i.BannerUrl,
+			&i.Description,
 			&i.Slug,
 			&i.Cost,
 			&i.CreatedAt,
@@ -44,12 +102,12 @@ func (q *Queries) ListAllServiceCategories(ctx context.Context) ([]ServiceCatego
 	return items, nil
 }
 
-const listAllServicesOfACategory = `-- name: ListAllServicesOfACategory :many
-SELECT id, name, category_id, unit, cost, warranty_duration, created_at FROM services WHERE category_id = $1
+const listServicesOfOneCategory = `-- name: ListServicesOfOneCategory :many
+SELECT id, name, category_id, unit, cost, warranty_duration, created_at FROM services WHERE category_id = (SELECT id FROM service_categories WHERE slug = $1)
 `
 
-func (q *Queries) ListAllServicesOfACategory(ctx context.Context, categoryID int64) ([]Service, error) {
-	rows, err := q.db.QueryContext(ctx, listAllServicesOfACategory, categoryID)
+func (q *Queries) ListServicesOfOneCategory(ctx context.Context, slug string) ([]Service, error) {
+	rows, err := q.db.QueryContext(ctx, listServicesOfOneCategory, slug)
 	if err != nil {
 		return nil, err
 	}

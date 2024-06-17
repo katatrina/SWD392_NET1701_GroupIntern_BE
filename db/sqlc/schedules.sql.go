@@ -10,6 +10,62 @@ import (
 	"time"
 )
 
+const createExaminationScheduleDetail = `-- name: CreateExaminationScheduleDetail :one
+INSERT INTO examination_schedule_detail (schedule_id, service_category_id)
+VALUES ($1, $2) RETURNING schedule_id, service_category_id, slots_remain, created_at
+`
+
+type CreateExaminationScheduleDetailParams struct {
+	ScheduleID        int64 `json:"schedule_id"`
+	ServiceCategoryID int64 `json:"service_category_id"`
+}
+
+func (q *Queries) CreateExaminationScheduleDetail(ctx context.Context, arg CreateExaminationScheduleDetailParams) (ExaminationScheduleDetail, error) {
+	row := q.db.QueryRowContext(ctx, createExaminationScheduleDetail, arg.ScheduleID, arg.ServiceCategoryID)
+	var i ExaminationScheduleDetail
+	err := row.Scan(
+		&i.ScheduleID,
+		&i.ServiceCategoryID,
+		&i.SlotsRemain,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const createSchedule = `-- name: CreateSchedule :one
+INSERT INTO schedules (type, start_time, end_time, dentist_id, room_id)
+VALUES ($1, $2, $3, $4, $5) RETURNING id, type, start_time, end_time, dentist_id, room_id, created_at
+`
+
+type CreateScheduleParams struct {
+	Type      string    `json:"type"`
+	StartTime time.Time `json:"start_time"`
+	EndTime   time.Time `json:"end_time"`
+	DentistID int64     `json:"dentist_id"`
+	RoomID    int64     `json:"room_id"`
+}
+
+func (q *Queries) CreateSchedule(ctx context.Context, arg CreateScheduleParams) (Schedule, error) {
+	row := q.db.QueryRowContext(ctx, createSchedule,
+		arg.Type,
+		arg.StartTime,
+		arg.EndTime,
+		arg.DentistID,
+		arg.RoomID,
+	)
+	var i Schedule
+	err := row.Scan(
+		&i.ID,
+		&i.Type,
+		&i.StartTime,
+		&i.EndTime,
+		&i.DentistID,
+		&i.RoomID,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getExaminationScheduleDetail = `-- name: GetExaminationScheduleDetail :one
 SELECT s.id        as schedule_id,
        s.start_time,

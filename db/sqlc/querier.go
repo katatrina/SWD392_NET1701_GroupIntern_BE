@@ -10,17 +10,27 @@ import (
 
 type Querier interface {
 	CreateAppointment(ctx context.Context, arg CreateAppointmentParams) error
+	CreateDentist(ctx context.Context, arg CreateDentistParams) (User, error)
+	CreateDentistDetail(ctx context.Context, arg CreateDentistDetailParams) (DentistDetail, error)
 	CreateExaminationBooking(ctx context.Context, arg CreateExaminationBookingParams) (Booking, error)
-	CreatePatient(ctx context.Context, arg CreatePatientParams) (User, error)
+	CreateExaminationScheduleDetail(ctx context.Context, arg CreateExaminationScheduleDetailParams) (ExaminationScheduleDetail, error)
+	CreatePayment(ctx context.Context, name string) (Payment, error)
+	CreateRoom(ctx context.Context, name string) (Room, error)
+	CreateSchedule(ctx context.Context, arg CreateScheduleParams) (Schedule, error)
+	CreateService(ctx context.Context, arg CreateServiceParams) (Service, error)
+	CreateServiceCategory(ctx context.Context, arg CreateServiceCategoryParams) (ServiceCategory, error)
+	CreateSpecialty(ctx context.Context, name string) (Specialty, error)
+	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	GetExaminationAppointmentDetails(ctx context.Context, arg GetExaminationAppointmentDetailsParams) (GetExaminationAppointmentDetailsRow, error)
 	GetExaminationScheduleDetail(ctx context.Context, scheduleID int64) (GetExaminationScheduleDetailRow, error)
 	GetPatient(ctx context.Context, id int64) (User, error)
+	GetServiceCategoryBySlug(ctx context.Context, slug string) (ServiceCategory, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
-	ListAllPaymentMethods(ctx context.Context) ([]Payment, error)
-	ListAllServiceCategories(ctx context.Context) ([]ServiceCategory, error)
-	ListAllServicesOfACategory(ctx context.Context, categoryID int64) ([]Service, error)
 	ListExaminationBookings(ctx context.Context, patientID int64) ([]Booking, error)
 	ListExaminationSchedulesByDateAndServiceCategory(ctx context.Context, arg ListExaminationSchedulesByDateAndServiceCategoryParams) ([]ListExaminationSchedulesByDateAndServiceCategoryRow, error)
+	ListPayments(ctx context.Context) ([]Payment, error)
+	ListServiceCategories(ctx context.Context) ([]ServiceCategory, error)
+	ListServicesOfOneCategory(ctx context.Context, slug string) ([]Service, error)
 }
 
 var _ Querier = (*Queries)(nil)

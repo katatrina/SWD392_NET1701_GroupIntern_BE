@@ -9,24 +9,26 @@ import (
 	"context"
 )
 
-const createPatient = `-- name: CreatePatient :one
+const createUser = `-- name: CreateUser :one
 INSERT INTO users (full_name, hashed_password, email, phone_number, role)
-VALUES ($1, $2, $3, $4, 'Patient') RETURNING id, full_name, hashed_password, email, phone_number, role, created_at
+VALUES ($1, $2, $3, $4, $5) RETURNING id, full_name, hashed_password, email, phone_number, role, created_at
 `
 
-type CreatePatientParams struct {
+type CreateUserParams struct {
 	FullName       string `json:"full_name"`
 	HashedPassword string `json:"hashed_password"`
 	Email          string `json:"email"`
 	PhoneNumber    string `json:"phone_number"`
+	Role           string `json:"role"`
 }
 
-func (q *Queries) CreatePatient(ctx context.Context, arg CreatePatientParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, createPatient,
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, createUser,
 		arg.FullName,
 		arg.HashedPassword,
 		arg.Email,
 		arg.PhoneNumber,
+		arg.Role,
 	)
 	var i User
 	err := row.Scan(

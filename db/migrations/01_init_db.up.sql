@@ -12,9 +12,9 @@ CREATE TABLE "users"
 CREATE TABLE "dentist_detail"
 (
     "dentist_id"    bigint PRIMARY KEY,
-    "date_of_birth" timestamptz NOT NULL,
-    "sex"           text        NOT NULL,
-    "specialty_id"  bigint      NOT NULL
+    "date_of_birth" DATE   NOT NULL,
+    "sex"           text   NOT NULL,
+    "specialty_id"  bigint NOT NULL
 );
 
 CREATE TABLE "specialties"
@@ -33,24 +33,25 @@ CREATE TABLE "rooms"
 
 CREATE TABLE "service_categories"
 (
-    "id"                bigserial PRIMARY KEY,
-    "name"              text        NOT NULL,
-    "image_url"         text        NOT NULL,
-    "short_description" text        NOT NULL,
-    "slug"              text        NOT NULL,
-    "cost"              bigint      NOT NULL,
-    "created_at"        timestamptz NOT NULL DEFAULT (now())
+    "id"          bigserial PRIMARY KEY,
+    "name"        text        NOT NULL,
+    "icon_url"    text        NOT NULL,
+    "banner_url"  text        NOT NULL,
+    "description" text        NOT NULL,
+    "slug"        text        NOT NULL,
+    "cost"        bigint      NOT NULL,
+    "created_at"  timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "services"
 (
-    "id"          bigserial PRIMARY KEY,
-    "name"        text        NOT NULL,
-    "category_id" bigint      NOT NULL,
-    "unit"        text        NOT NULL,
-    "cost"        bigint      NOT NULL,
-    "warranty_duration" text NOT NULL,
-    "created_at"  timestamptz NOT NULL DEFAULT (now())
+    "id"                bigserial PRIMARY KEY,
+    "name"              text        NOT NULL,
+    "category_id"       bigint      NOT NULL,
+    "unit"              text        NOT NULL,
+    "cost"              bigint      NOT NULL,
+    "warranty_duration" text        NOT NULL DEFAULT '',
+    "created_at"        timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "schedules"
@@ -68,6 +69,7 @@ CREATE TABLE "examination_schedule_detail"
 (
     "schedule_id"         bigint PRIMARY KEY,
     "service_category_id" bigint      NOT NULL,
+    "slots_remain"        bigint      NOT NULL DEFAULT 3,
     "created_at"          timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -76,6 +78,7 @@ CREATE TABLE "treatment_schedule_detail"
     "schedule_id"      bigint PRIMARY KEY,
     "service_id"       bigint      NOT NULL,
     "service_quantity" bigint      NOT NULL,
+    "slot_remains"     bigint      NOT NULL DEFAULT 1,
     "created_at"       timestamptz NOT NULL DEFAULT (now())
 );
 

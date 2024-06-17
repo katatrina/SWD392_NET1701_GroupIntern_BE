@@ -1,6 +1,6 @@
--- name: CreatePatient :one
+-- name: CreateUser :one
 INSERT INTO users (full_name, hashed_password, email, phone_number, role)
-VALUES ($1, $2, $3, $4, 'Patient') RETURNING *;
+VALUES ($1, $2, $3, $4, $5) RETURNING *;
 
 -- name: GetUserByEmail :one
 SELECT *
