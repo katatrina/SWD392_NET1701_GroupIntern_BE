@@ -18,7 +18,7 @@ func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context
 		if err != nil {
 			return err
 		}
-
+		
 		// Create a new booking
 		booking, err := q.CreateExaminationBooking(ctx, CreateExaminationBookingParams{
 			PatientID:       arg.PatientID,
@@ -30,16 +30,22 @@ func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context
 		if err != nil {
 			return err
 		}
-
+		
 		// Create a new examination appointment
 		err = q.CreateAppointment(ctx, CreateAppointmentParams{
 			BookingID:  booking.ID,
 			ScheduleID: arg.ExaminationScheduleID,
 			PatientID:  arg.PatientID,
 		})
-
+		
+		// Update slots remaining
+		err = q.UpdateExaminationScheduleSlotsRemaining(ctx, schedule.ScheduleID)
+		if err != nil {
+			return err
+		}
+		
 		return err
 	})
-
+	
 	return err
 }

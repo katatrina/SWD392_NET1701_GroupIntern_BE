@@ -12,7 +12,7 @@ import (
 
 const createExaminationScheduleDetail = `-- name: CreateExaminationScheduleDetail :one
 INSERT INTO examination_schedule_detail (schedule_id, service_category_id)
-VALUES ($1, $2) RETURNING schedule_id, service_category_id, slots_remain, created_at
+VALUES ($1, $2) RETURNING schedule_id, service_category_id, slots_remaining, created_at
 `
 
 type CreateExaminationScheduleDetailParams struct {
@@ -26,7 +26,7 @@ func (q *Queries) CreateExaminationScheduleDetail(ctx context.Context, arg Creat
 	err := row.Scan(
 		&i.ScheduleID,
 		&i.ServiceCategoryID,
-		&i.SlotsRemain,
+		&i.SlotsRemaining,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -160,4 +160,15 @@ func (q *Queries) ListExaminationSchedulesByDateAndServiceCategory(ctx context.C
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateExaminationScheduleSlotsRemaining = `-- name: UpdateExaminationScheduleSlotsRemaining :exec
+UPDATE examination_schedule_detail
+SET slots_remaining = slots_remaining - 1
+WHERE schedule_id = $1
+`
+
+func (q *Queries) UpdateExaminationScheduleSlotsRemaining(ctx context.Context, scheduleID int64) error {
+	_, err := q.db.ExecContext(ctx, updateExaminationScheduleSlotsRemaining, scheduleID)
+	return err
 }

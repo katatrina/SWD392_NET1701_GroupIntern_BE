@@ -31,6 +31,7 @@ type Querier interface {
 	ListPayments(ctx context.Context) ([]Payment, error)
 	ListServiceCategories(ctx context.Context) ([]ServiceCategory, error)
 	ListServicesOfOneCategory(ctx context.Context, slug string) ([]Service, error)
+	UpdateExaminationScheduleSlotsRemaining(ctx context.Context, scheduleID int64) error
 }
 
 var _ Querier = (*Queries)(nil)
