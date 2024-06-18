@@ -30,3 +30,8 @@ VALUES ($1, $2, $3, $4, $5) RETURNING *;
 -- name: CreateExaminationScheduleDetail :one
 INSERT INTO examination_schedule_detail (schedule_id, service_category_id)
 VALUES ($1, $2) RETURNING *;
+
+-- name: UpdateExaminationScheduleSlotsRemaining :exec
+UPDATE examination_schedule_detail
+SET slots_remaining = slots_remaining - 1
+WHERE schedule_id = $1;

@@ -40,7 +40,7 @@ type DentistDetail struct {
 type ExaminationScheduleDetail struct {
 	ScheduleID        int64     `json:"schedule_id"`
 	ServiceCategoryID int64     `json:"service_category_id"`
-	SlotsRemain       int64     `json:"slots_remain"`
+	SlotsRemaining    int64     `json:"slots_remaining"`
 	CreatedAt         time.Time `json:"created_at"`
 }
 

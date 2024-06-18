@@ -317,6 +317,17 @@ func TestInitDB(t *testing.T) {
 	_, err = testQueries.CreateUser(context.Background(), arg)
 	require.NoError(t, err)
 	
+	// Create sample admin account
+	hashedPassword, err = util.GenerateHashedPassword("123456")
+	require.NoError(t, err)
+	arg = CreateUserParams{
+		FullName:       "Admin",
+		HashedPassword: hashedPassword,
+		Email:          "admin@gmail.com",
+		PhoneNumber:    "0987692730",
+		Role:           "Admin",
+	}
+	
 	// Insert services
 	services := []map[string]interface{}{
 		// Service category: Bọc răng sứ
@@ -384,5 +395,4 @@ func TestInitDB(t *testing.T) {
 		_, err := testQueries.CreateService(context.Background(), arg)
 		require.NoError(t, err)
 	}
-	
 }

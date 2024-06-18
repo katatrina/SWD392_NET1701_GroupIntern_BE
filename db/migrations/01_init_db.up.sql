@@ -69,7 +69,7 @@ CREATE TABLE "examination_schedule_detail"
 (
     "schedule_id"         bigint PRIMARY KEY,
     "service_category_id" bigint      NOT NULL,
-    "slots_remain"        bigint      NOT NULL DEFAULT 3,
+    "slots_remaining"     bigint      NOT NULL DEFAULT 3,
     "created_at"          timestamptz NOT NULL DEFAULT (now())
 );
 
