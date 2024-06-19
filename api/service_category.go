@@ -152,6 +152,7 @@ func (server *Server) updateServiceCategory(ctx *gin.Context) {
 		ID:          category.ID,
 		Name:        category.Name,
 		Slug:        category.Slug,
+		IconUrl:     category.IconUrl,
 		BannerUrl:   category.BannerUrl,
 		Description: category.Description,
 	}

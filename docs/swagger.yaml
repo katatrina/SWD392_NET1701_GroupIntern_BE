@@ -25,6 +25,25 @@ definitions:
     - password
     - phone_number
     type: object
+  api.createServiceRequest:
+    properties:
+      category_id:
+        type: integer
+      cost:
+        type: integer
+      name:
+        type: string
+      unit:
+        type: string
+      warranty_duration:
+        type: string
+    required:
+    - category_id
+    - cost
+    - name
+    - unit
+    - warranty_duration
+    type: object
   api.loginUserRequest:
     properties:
       email:
@@ -422,6 +441,33 @@ paths:
         "500":
           description: Internal Server Error
       summary: Liệt kê tất cả dịch vụ của một loại hình dịch vụ
+      tags:
+      - services
+  /services:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create service info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.createServiceRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/db.Service'
+        "400":
+          description: Bad Request
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal Server Error
+      summary: Tạo mới dịch vụ
       tags:
       - services
   /users:

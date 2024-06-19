@@ -395,6 +395,48 @@ const docTemplate = `{
                 }
             }
         },
+        "/services": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "Tạo mới dịch vụ",
+                "parameters": [
+                    {
+                        "description": "Create service info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.createServiceRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/db.Service"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/users": {
             "post": {
                 "consumes": [
@@ -514,6 +556,33 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "phone_number": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.createServiceRequest": {
+            "type": "object",
+            "required": [
+                "category_id",
+                "cost",
+                "name",
+                "unit",
+                "warranty_duration"
+            ],
+            "properties": {
+                "category_id": {
+                    "type": "integer"
+                },
+                "cost": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "unit": {
+                    "type": "string"
+                },
+                "warranty_duration": {
                     "type": "string"
                 }
             }
