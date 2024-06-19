@@ -18,14 +18,12 @@ import (
 var (
 	ErrEmailNotFound     = errors.New("email not found")
 	ErrPasswordIncorrect = errors.New("password is incorrect")
-	
-	ErrMissMatchedUserID = errors.New("provided id does not match the authorized user id")
 )
 
 type createPatientRequest struct {
 	Password    string `json:"password" binding:"required"`
 	FullName    string `json:"full_name" binding:"required"`
-	Email       string `json:"email" binding:"required,email"`
+	Email       string `json:"email" binding:"required"`
 	PhoneNumber string `json:"phone_number" binding:"required"`
 }
 
