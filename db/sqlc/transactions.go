@@ -41,6 +41,9 @@ func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context
 			ScheduleID: schedule.ID,
 			PatientID:  arg.PatientID,
 		})
+		if err != nil {
+			return err
+		}
 		
 		// Update service category ID
 		if arg.ServiceCategoryID > 0 {

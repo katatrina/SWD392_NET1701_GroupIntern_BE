@@ -44,7 +44,9 @@ func (q *Queries) CreateServiceCategory(ctx context.Context, arg CreateServiceCa
 }
 
 const getServiceCategoryBySlug = `-- name: GetServiceCategoryBySlug :one
-SELECT id, name, icon_url, banner_url, description, slug, created_at FROM service_categories WHERE slug = $1
+SELECT id, name, icon_url, banner_url, description, slug, created_at
+FROM service_categories
+WHERE slug = $1
 `
 
 func (q *Queries) GetServiceCategoryBySlug(ctx context.Context, slug string) (ServiceCategory, error) {
@@ -63,7 +65,8 @@ func (q *Queries) GetServiceCategoryBySlug(ctx context.Context, slug string) (Se
 }
 
 const listServiceCategories = `-- name: ListServiceCategories :many
-SELECT id, name, icon_url, banner_url, description, slug, created_at FROM service_categories
+SELECT id, name, icon_url, banner_url, description, slug, created_at
+FROM service_categories
 `
 
 func (q *Queries) ListServiceCategories(ctx context.Context) ([]ServiceCategory, error) {
@@ -98,7 +101,9 @@ func (q *Queries) ListServiceCategories(ctx context.Context) ([]ServiceCategory,
 }
 
 const listServicesOfOneCategory = `-- name: ListServicesOfOneCategory :many
-SELECT id, name, category_id, unit, cost, warranty_duration, created_at FROM services WHERE category_id = (SELECT id FROM service_categories WHERE slug = $1)
+SELECT id, name, category_id, unit, cost, warranty_duration, created_at
+FROM services
+WHERE category_id = (SELECT id FROM service_categories WHERE slug = $1)
 `
 
 func (q *Queries) ListServicesOfOneCategory(ctx context.Context, slug string) ([]Service, error) {
@@ -130,4 +135,32 @@ func (q *Queries) ListServicesOfOneCategory(ctx context.Context, slug string) ([
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateServiceCategory = `-- name: UpdateServiceCategory :exec
+UPDATE service_categories
+SET name        = $2,
+    icon_url    = $3,
+    banner_url  = $4,
+    description = $5
+WHERE slug = $1
+`
+
+type UpdateServiceCategoryParams struct {
+	Slug        string `json:"slug"`
+	Name        string `json:"name"`
+	IconUrl     string `json:"icon_url"`
+	BannerUrl   string `json:"banner_url"`
+	Description string `json:"description"`
+}
+
+func (q *Queries) UpdateServiceCategory(ctx context.Context, arg UpdateServiceCategoryParams) error {
+	_, err := q.db.ExecContext(ctx, updateServiceCategory,
+		arg.Slug,
+		arg.Name,
+		arg.IconUrl,
+		arg.BannerUrl,
+		arg.Description,
+	)
+	return err
 }

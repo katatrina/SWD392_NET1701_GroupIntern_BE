@@ -42,6 +42,17 @@ definitions:
       user_info:
         $ref: '#/definitions/api.userInfo'
     type: object
+  api.updateServiceCategoryRequest:
+    properties:
+      banner_url:
+        type: string
+      description:
+        type: string
+      icon_url:
+        type: string
+      name:
+        type: string
+    type: object
   api.userInfo:
     properties:
       created_at:
@@ -319,7 +330,7 @@ paths:
             type: array
         "500":
           description: Internal Server Error
-      summary: Liệt kê tất cả danh mục dịch vụ hiện có
+      summary: Liệt kê tất cả loại hình dịch vụ hiện có
       tags:
       - services
   /service-categories/{slug}:
@@ -341,7 +352,34 @@ paths:
           description: Bad Request
         "500":
           description: Internal Server Error
-      summary: Lấy thông tin của một danh mục dịch vụ
+      summary: Lấy thông tin của một loại hình dịch vụ
+      tags:
+      - services
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Category Slug
+        in: path
+        name: slug
+        required: true
+        type: string
+      - description: Update service category info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.updateServiceCategoryRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Cập nhật thông tin của một loại hình dịch vụ
       tags:
       - services
   /service-categories/{slug}/services:
@@ -363,7 +401,7 @@ paths:
             type: array
         "500":
           description: Internal Server Error
-      summary: Liệt kê tất cả dịch vụ của một danh mục
+      summary: Liệt kê tất cả dịch vụ của một loại hình dịch vụ
       tags:
       - services
   /users:

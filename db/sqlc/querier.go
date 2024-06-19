@@ -33,6 +33,7 @@ type Querier interface {
 	ListServiceCategories(ctx context.Context) ([]ServiceCategory, error)
 	ListServicesOfOneCategory(ctx context.Context, slug string) ([]Service, error)
 	UpdateExaminationScheduleSlotsRemaining(ctx context.Context, scheduleID int64) error
+	UpdateServiceCategory(ctx context.Context, arg UpdateServiceCategoryParams) error
 	UpdateServiceCategoryOfExaminationSchedule(ctx context.Context, arg UpdateServiceCategoryOfExaminationScheduleParams) error
 }
 

@@ -238,7 +238,7 @@ const docTemplate = `{
                 "tags": [
                     "services"
                 ],
-                "summary": "Liệt kê tất cả danh mục dịch vụ hiện có",
+                "summary": "Liệt kê tất cả loại hình dịch vụ hiện có",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -263,7 +263,7 @@ const docTemplate = `{
                 "tags": [
                     "services"
                 ],
-                "summary": "Lấy thông tin của một danh mục dịch vụ",
+                "summary": "Lấy thông tin của một loại hình dịch vụ",
                 "parameters": [
                     {
                         "type": "string",
@@ -287,6 +287,47 @@ const docTemplate = `{
                         "description": "Internal Server Error"
                     }
                 }
+            },
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "Cập nhật thông tin của một loại hình dịch vụ",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Category Slug",
+                        "name": "slug",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update service category info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.updateServiceCategoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
             }
         },
         "/service-categories/{slug}/services": {
@@ -297,7 +338,7 @@ const docTemplate = `{
                 "tags": [
                     "services"
                 ],
-                "summary": "Liệt kê tất cả dịch vụ của một danh mục",
+                "summary": "Liệt kê tất cả dịch vụ của một loại hình dịch vụ",
                 "parameters": [
                     {
                         "type": "string",
@@ -469,6 +510,23 @@ const docTemplate = `{
                 },
                 "user_info": {
                     "$ref": "#/definitions/api.userInfo"
+                }
+            }
+        },
+        "api.updateServiceCategoryRequest": {
+            "type": "object",
+            "properties": {
+                "banner_url": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "icon_url": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },

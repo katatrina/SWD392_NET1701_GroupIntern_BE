@@ -4,12 +4,13 @@ import (
 	"net/http"
 	
 	"github.com/gin-gonic/gin"
+	db "github.com/katatrina/SWD392/db/sqlc"
 )
 
 // listServiceCategories returns a list of all service categories
 //
 //	@Router		/service-categories [get]
-//	@Summary	Liệt kê tất cả danh mục dịch vụ hiện có
+//	@Summary	Liệt kê tất cả loại hình dịch vụ hiện có
 //	@Produce	json
 //	@Description
 //	@Tags		services
@@ -32,7 +33,7 @@ type listServicesOfOneCategoryRequest struct {
 // listServicesOfOneCategory returns a list of all services of a category
 //
 //	@Router		/service-categories/{slug}/services [get]
-//	@Summary	Liệt kê tất cả dịch vụ của một danh mục
+//	@Summary	Liệt kê tất cả dịch vụ của một loại hình dịch vụ
 //	@Produce	json
 //	@Description
 //	@Param		slug	path	string	true	"Category Slug"
@@ -63,7 +64,7 @@ type getServiceCategoryBySlugRequest struct {
 // getServiceCategoryBySlug returns information of a service category
 //
 //	@Router		/service-categories/{slug} [get]
-//	@Summary	Lấy thông tin của một danh mục dịch vụ
+//	@Summary	Lấy thông tin của một loại hình dịch vụ
 //	@Produce	json
 //	@Description
 //	@Param		slug	path	string	true	"Category Slug"
@@ -86,4 +87,68 @@ func (server *Server) getServiceCategoryBySlug(ctx *gin.Context) {
 	}
 	
 	ctx.JSON(http.StatusOK, category)
+}
+
+type updateServiceCategoryRequest struct {
+	Name        *string `json:"name"`
+	IconURL     *string `json:"icon_url"`
+	BannerURL   *string `json:"banner_url"`
+	Description *string `json:"description"`
+}
+
+// updateServiceCategory updates information of a service category
+//
+//	@Router		/service-categories/{slug} [patch]
+//	@Summary	Cập nhật thông tin của một loại hình dịch vụ
+//	@Produce	json
+//	@Accept		json
+//	@Description
+//	@Param		slug	path	string							true	"Category Slug"
+//	@Param		request	body	updateServiceCategoryRequest	true	"Update service category info"
+//	@Tags		services
+//	@Success	200
+//	@Failure	400
+//	@Failure	500
+func (server *Server) updateServiceCategory(ctx *gin.Context) {
+	var req updateServiceCategoryRequest
+	
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	categorySlug := ctx.Param("slug")
+	category, err := server.store.GetServiceCategoryBySlug(ctx, categorySlug)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	if req.Name != nil {
+		category.Name = *req.Name
+	}
+	if req.IconURL != nil {
+		category.IconUrl = *req.IconURL
+	}
+	if req.BannerURL != nil {
+		category.BannerUrl = *req.BannerURL
+	}
+	if req.Description != nil {
+		category.Description = *req.Description
+	}
+	
+	arg := db.UpdateServiceCategoryParams{
+		Slug:        category.Slug,
+		Name:        category.Name,
+		IconUrl:     category.IconUrl,
+		BannerUrl:   category.BannerUrl,
+		Description: category.Description,
+	}
+	err = server.store.UpdateServiceCategory(ctx, arg)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	ctx.JSON(http.StatusOK, nil)
 }

@@ -72,6 +72,7 @@ func (server *Server) setupRouter() {
 		serviceCategoryGroup.GET("", server.listServiceCategories)
 		serviceCategoryGroup.GET("/:slug/services", server.listServicesOfOneCategory)
 		serviceCategoryGroup.GET("/:slug", server.getServiceCategoryBySlug)
+		serviceCategoryGroup.PATCH("/:slug", server.updateServiceCategory)
 	}
 	
 	v1.GET("/schedules/examination", server.listExaminationSchedulesByDate)
