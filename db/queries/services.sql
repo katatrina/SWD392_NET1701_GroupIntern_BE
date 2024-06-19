@@ -15,3 +15,7 @@ SET name              = $2,
     cost              = $5,
     warranty_duration = $6
 WHERE id = $1;
+
+-- name: DeleteService :exec
+DELETE FROM services
+WHERE id = $1;

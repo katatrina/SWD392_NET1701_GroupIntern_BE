@@ -236,7 +236,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "services"
+                    "service categories"
                 ],
                 "summary": "Liệt kê tất cả loại hình dịch vụ hiện có",
                 "responses": {
@@ -258,7 +258,7 @@ const docTemplate = `{
         "/service-categories/{id}": {
             "delete": {
                 "tags": [
-                    "services"
+                    "service categories"
                 ],
                 "summary": "Xóa một loại hình dịch vụ",
                 "parameters": [
@@ -293,7 +293,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "services"
+                    "service categories"
                 ],
                 "summary": "Cập nhật thông tin của một loại hình dịch vụ",
                 "parameters": [
@@ -333,7 +333,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "services"
+                    "service categories"
                 ],
                 "summary": "Lấy thông tin của một loại hình dịch vụ",
                 "parameters": [
@@ -367,7 +367,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "services"
+                    "service categories"
                 ],
                 "summary": "Liệt kê tất cả dịch vụ của một loại hình dịch vụ",
                 "parameters": [
@@ -464,6 +464,35 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "services"
+                ],
+                "summary": "Xóa một dịch vụ",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Service ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Forbidden"
                     },
                     "500": {
                         "description": "Internal Server Error"

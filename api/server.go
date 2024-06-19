@@ -82,6 +82,7 @@ func (server *Server) setupRouter() {
 		serviceGroup.POST("", server.createService)
 		serviceGroup.GET("/:id", server.getService)
 		serviceGroup.PATCH("/:id", server.updateService)
+		serviceGroup.DELETE("/:id", server.deleteService)
 	}
 	
 	v1.GET("/schedules/examination", server.listExaminationSchedulesByDate)

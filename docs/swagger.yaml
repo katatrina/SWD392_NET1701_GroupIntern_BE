@@ -364,7 +364,7 @@ paths:
           description: Internal Server Error
       summary: Liệt kê tất cả loại hình dịch vụ hiện có
       tags:
-      - services
+      - service categories
   /service-categories/{id}:
     delete:
       parameters:
@@ -384,7 +384,7 @@ paths:
           description: Internal Server Error
       summary: Xóa một loại hình dịch vụ
       tags:
-      - services
+      - service categories
     patch:
       consumes:
       - application/json
@@ -411,7 +411,7 @@ paths:
           description: Internal Server Error
       summary: Cập nhật thông tin của một loại hình dịch vụ
       tags:
-      - services
+      - service categories
   /service-categories/{slug}:
     get:
       parameters:
@@ -433,7 +433,7 @@ paths:
           description: Internal Server Error
       summary: Lấy thông tin của một loại hình dịch vụ
       tags:
-      - services
+      - service categories
   /service-categories/{slug}/services:
     get:
       parameters:
@@ -455,7 +455,7 @@ paths:
           description: Internal Server Error
       summary: Liệt kê tất cả dịch vụ của một loại hình dịch vụ
       tags:
-      - services
+      - service categories
   /services:
     post:
       consumes:
@@ -484,6 +484,25 @@ paths:
       tags:
       - services
   /services/{id}:
+    delete:
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal Server Error
+      summary: Xóa một dịch vụ
+      tags:
+      - services
     get:
       parameters:
       - description: Service ID

@@ -18,7 +18,7 @@ import (
 //	@Summary	Liệt kê tất cả loại hình dịch vụ hiện có
 //	@Produce	json
 //	@Description
-//	@Tags		services
+//	@Tags		service categories
 //	@Success	200	{object}	[]db.ServiceCategory
 //	@Failure	500
 func (server *Server) listServiceCategories(ctx *gin.Context) {
@@ -42,7 +42,7 @@ type listServicesOfOneCategoryRequest struct {
 //	@Produce	json
 //	@Description
 //	@Param		slug	path	string	true	"Category Slug"
-//	@Tags		services
+//	@Tags		service categories
 //	@Success	200	{object}	[]db.Service
 //	@Failure	500
 func (server *Server) listServicesOfOneCategory(ctx *gin.Context) {
@@ -73,7 +73,7 @@ type getServiceCategoryBySlugRequest struct {
 //	@Produce	json
 //	@Description
 //	@Param		slug	path	string	true	"Category Slug"
-//	@Tags		services
+//	@Tags		service categories
 //	@Success	200	{object}	db.ServiceCategory
 //	@Failure	400
 //	@Failure	500
@@ -110,7 +110,7 @@ type updateServiceCategoryRequest struct {
 //	@Description
 //	@Param		id		path	string							true	"Service Category ID"
 //	@Param		request	body	updateServiceCategoryRequest	true	"Update service category info"
-//	@Tags		services
+//	@Tags		service categories
 //	@Success	200
 //	@Failure	400
 //	@Failure	500
@@ -171,7 +171,7 @@ func (server *Server) updateServiceCategory(ctx *gin.Context) {
 //	@Summary	Xóa một loại hình dịch vụ
 //	@Description
 //	@Param		id	path	int	true	"Service Category ID"
-//	@Tags		services
+//	@Tags		service categories
 //	@Success	204
 //	@Failure	400
 //	@Failure	403
