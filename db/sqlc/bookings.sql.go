@@ -7,26 +7,29 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
-const createExaminationBooking = `-- name: CreateExaminationBooking :one
-INSERT INTO bookings (patient_id, patient_note, payment_id, total_cost, appointment_date, type)
-VALUES ($1, $2, $3, $4, $5, 'Examination') RETURNING id, patient_id, patient_note, type, payment_status, payment_id, total_cost, appointment_date, status, created_at
+const createBooking = `-- name: CreateBooking :one
+INSERT INTO bookings (patient_id, type, payment_status, payment_id, total_cost, appointment_date)
+VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, patient_id, type, payment_status, payment_id, total_cost, appointment_date, status, created_at
 `
 
-type CreateExaminationBookingParams struct {
-	PatientID       int64     `json:"patient_id"`
-	PatientNote     string    `json:"patient_note"`
-	PaymentID       int64     `json:"payment_id"`
-	TotalCost       int64     `json:"total_cost"`
-	AppointmentDate time.Time `json:"appointment_date"`
+type CreateBookingParams struct {
+	PatientID       int64         `json:"patient_id"`
+	Type            string        `json:"type"`
+	PaymentStatus   string        `json:"payment_status"`
+	PaymentID       sql.NullInt64 `json:"payment_id"`
+	TotalCost       int64         `json:"total_cost"`
+	AppointmentDate time.Time     `json:"appointment_date"`
 }
 
-func (q *Queries) CreateExaminationBooking(ctx context.Context, arg CreateExaminationBookingParams) (Booking, error) {
-	row := q.db.QueryRowContext(ctx, createExaminationBooking,
+func (q *Queries) CreateBooking(ctx context.Context, arg CreateBookingParams) (Booking, error) {
+	row := q.db.QueryRowContext(ctx, createBooking,
 		arg.PatientID,
-		arg.PatientNote,
+		arg.Type,
+		arg.PaymentStatus,
 		arg.PaymentID,
 		arg.TotalCost,
 		arg.AppointmentDate,
@@ -35,7 +38,6 @@ func (q *Queries) CreateExaminationBooking(ctx context.Context, arg CreateExamin
 	err := row.Scan(
 		&i.ID,
 		&i.PatientID,
-		&i.PatientNote,
 		&i.Type,
 		&i.PaymentStatus,
 		&i.PaymentID,
@@ -48,7 +50,7 @@ func (q *Queries) CreateExaminationBooking(ctx context.Context, arg CreateExamin
 }
 
 const listExaminationBookings = `-- name: ListExaminationBookings :many
-SELECT id, patient_id, patient_note, type, payment_status, payment_id, total_cost, appointment_date, status, created_at
+SELECT id, patient_id, type, payment_status, payment_id, total_cost, appointment_date, status, created_at
 FROM bookings
 WHERE patient_id = $1
   AND type = 'Examination'
@@ -66,7 +68,6 @@ func (q *Queries) ListExaminationBookings(ctx context.Context, patientID int64) 
 		if err := rows.Scan(
 			&i.ID,
 			&i.PatientID,
-			&i.PatientNote,
 			&i.Type,
 			&i.PaymentStatus,
 			&i.PaymentID,

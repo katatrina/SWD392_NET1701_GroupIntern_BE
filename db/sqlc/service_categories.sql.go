@@ -10,8 +10,8 @@ import (
 )
 
 const createServiceCategory = `-- name: CreateServiceCategory :one
-INSERT INTO service_categories (name, icon_url, banner_url, slug, cost, description)
-VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, name, icon_url, banner_url, description, slug, cost, created_at
+INSERT INTO service_categories (name, icon_url, banner_url, slug, description)
+VALUES ($1, $2, $3, $4, $5) RETURNING id, name, icon_url, banner_url, description, slug, created_at
 `
 
 type CreateServiceCategoryParams struct {
@@ -19,7 +19,6 @@ type CreateServiceCategoryParams struct {
 	IconUrl     string `json:"icon_url"`
 	BannerUrl   string `json:"banner_url"`
 	Slug        string `json:"slug"`
-	Cost        int64  `json:"cost"`
 	Description string `json:"description"`
 }
 
@@ -29,7 +28,6 @@ func (q *Queries) CreateServiceCategory(ctx context.Context, arg CreateServiceCa
 		arg.IconUrl,
 		arg.BannerUrl,
 		arg.Slug,
-		arg.Cost,
 		arg.Description,
 	)
 	var i ServiceCategory
@@ -40,14 +38,13 @@ func (q *Queries) CreateServiceCategory(ctx context.Context, arg CreateServiceCa
 		&i.BannerUrl,
 		&i.Description,
 		&i.Slug,
-		&i.Cost,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getServiceCategoryBySlug = `-- name: GetServiceCategoryBySlug :one
-SELECT id, name, icon_url, banner_url, description, slug, cost, created_at FROM service_categories WHERE slug = $1
+SELECT id, name, icon_url, banner_url, description, slug, created_at FROM service_categories WHERE slug = $1
 `
 
 func (q *Queries) GetServiceCategoryBySlug(ctx context.Context, slug string) (ServiceCategory, error) {
@@ -60,14 +57,13 @@ func (q *Queries) GetServiceCategoryBySlug(ctx context.Context, slug string) (Se
 		&i.BannerUrl,
 		&i.Description,
 		&i.Slug,
-		&i.Cost,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const listServiceCategories = `-- name: ListServiceCategories :many
-SELECT id, name, icon_url, banner_url, description, slug, cost, created_at FROM service_categories
+SELECT id, name, icon_url, banner_url, description, slug, created_at FROM service_categories
 `
 
 func (q *Queries) ListServiceCategories(ctx context.Context) ([]ServiceCategory, error) {
@@ -86,7 +82,6 @@ func (q *Queries) ListServiceCategories(ctx context.Context) ([]ServiceCategory,
 			&i.BannerUrl,
 			&i.Description,
 			&i.Slug,
-			&i.Cost,
 			&i.CreatedAt,
 		); err != nil {
 			return nil, err

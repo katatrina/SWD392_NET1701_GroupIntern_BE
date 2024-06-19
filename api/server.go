@@ -74,7 +74,7 @@ func (server *Server) setupRouter() {
 		serviceCategoryGroup.GET("/:slug", server.getServiceCategoryBySlug)
 	}
 	
-	v1.GET("/schedules/examination", server.listExaminationSchedulesByDateAndServiceCategory)
+	v1.GET("/schedules/examination", server.listExaminationSchedulesByDate)
 	
 	v1.GET("/payment-methods", server.listAllPaymentMethods)
 	

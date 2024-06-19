@@ -104,7 +104,7 @@ const docTemplate = `{
                 "tags": [
                     "appointments"
                 ],
-                "summary": "Cho phép bệnh nhân đặt lịch khám",
+                "summary": "Cho phép bệnh nhân đặt lịch khám tổng quát",
                 "parameters": [
                     {
                         "description": "Examination Appointment Request",
@@ -201,19 +201,12 @@ const docTemplate = `{
                 "tags": [
                     "schedules"
                 ],
-                "summary": "Liệt kê tất cả lịch khám trong một ngày của một danh mục dịch vụ",
+                "summary": "Liệt kê tất cả lịch khám trong một ngày",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "Date in the format YYYY-MM-DD",
                         "name": "date",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Service Category ID",
-                        "name": "service_category_id",
                         "in": "query",
                         "required": true
                     }
@@ -224,7 +217,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/db.ListExaminationSchedulesByDateAndServiceCategoryRow"
+                                "$ref": "#/definitions/db.ListExaminationSchedulesByDateRow"
                             }
                         }
                     },
@@ -419,17 +412,13 @@ const docTemplate = `{
         "api.createExaminationAppointmentByPatientRequest": {
             "type": "object",
             "required": [
-                "examination_schedule_id",
-                "payment_id"
+                "examination_schedule_id"
             ],
             "properties": {
                 "examination_schedule_id": {
                     "type": "integer"
                 },
-                "patient_note": {
-                    "type": "string"
-                },
-                "payment_id": {
+                "service_category_id": {
                     "type": "integer"
                 }
             }
@@ -521,11 +510,8 @@ const docTemplate = `{
                 "patient_id": {
                     "type": "integer"
                 },
-                "patient_note": {
-                    "type": "string"
-                },
                 "payment_id": {
-                    "type": "integer"
+                    "$ref": "#/definitions/sql.NullInt64"
                 },
                 "payment_status": {
                     "type": "string"
@@ -559,9 +545,6 @@ const docTemplate = `{
                 "end_time": {
                     "type": "string"
                 },
-                "patient_note": {
-                    "type": "string"
-                },
                 "payment_status": {
                     "type": "string"
                 },
@@ -576,7 +559,7 @@ const docTemplate = `{
                 }
             }
         },
-        "db.ListExaminationSchedulesByDateAndServiceCategoryRow": {
+        "db.ListExaminationSchedulesByDateRow": {
             "type": "object",
             "properties": {
                 "dentist_name": {
@@ -645,9 +628,6 @@ const docTemplate = `{
                 "banner_url": {
                     "type": "string"
                 },
-                "cost": {
-                    "type": "integer"
-                },
                 "created_at": {
                     "type": "string"
                 },
@@ -665,6 +645,18 @@ const docTemplate = `{
                 },
                 "slug": {
                     "type": "string"
+                }
+            }
+        },
+        "sql.NullInt64": {
+            "type": "object",
+            "properties": {
+                "int64": {
+                    "type": "integer"
+                },
+                "valid": {
+                    "description": "Valid is true if Int64 is not NULL",
+                    "type": "boolean"
                 }
             }
         }

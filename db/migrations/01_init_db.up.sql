@@ -39,7 +39,6 @@ CREATE TABLE "service_categories"
     "banner_url"  text        NOT NULL,
     "description" text        NOT NULL,
     "slug"        text        NOT NULL,
-    "cost"        bigint      NOT NULL,
     "created_at"  timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -50,7 +49,7 @@ CREATE TABLE "services"
     "category_id"       bigint      NOT NULL,
     "unit"              text        NOT NULL,
     "cost"              bigint      NOT NULL,
-    "warranty_duration" text        NOT NULL DEFAULT '',
+    "warranty_duration" text        NOT NULL,
     "created_at"        timestamptz NOT NULL DEFAULT (now())
 );
 
@@ -68,7 +67,7 @@ CREATE TABLE "schedules"
 CREATE TABLE "examination_schedule_detail"
 (
     "schedule_id"         bigint PRIMARY KEY,
-    "service_category_id" bigint      NOT NULL,
+    "service_category_id" bigint,
     "slots_remaining"     bigint      NOT NULL DEFAULT 3,
     "created_at"          timestamptz NOT NULL DEFAULT (now())
 );
@@ -96,10 +95,9 @@ CREATE TABLE "bookings"
 (
     "id"               bigserial PRIMARY KEY,
     "patient_id"       bigint      NOT NULL,
-    "patient_note"     text        NOT NULL DEFAULT '',
     "type"             text        NOT NULL,
     "payment_status"   text        NOT NULL DEFAULT 'Chưa thanh toán',
-    "payment_id"       bigint      NOT NULL,
+    "payment_id"       bigint,
     "total_cost"       bigint      NOT NULL DEFAULT 0,
     "appointment_date" DATE        NOT NULL,
     "status"           text        NOT NULL DEFAULT 'Đang chờ',

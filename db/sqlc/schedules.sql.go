@@ -7,21 +7,17 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
 const createExaminationScheduleDetail = `-- name: CreateExaminationScheduleDetail :one
-INSERT INTO examination_schedule_detail (schedule_id, service_category_id)
-VALUES ($1, $2) RETURNING schedule_id, service_category_id, slots_remaining, created_at
+INSERT INTO examination_schedule_detail (schedule_id)
+VALUES ($1) RETURNING schedule_id, service_category_id, slots_remaining, created_at
 `
 
-type CreateExaminationScheduleDetailParams struct {
-	ScheduleID        int64 `json:"schedule_id"`
-	ServiceCategoryID int64 `json:"service_category_id"`
-}
-
-func (q *Queries) CreateExaminationScheduleDetail(ctx context.Context, arg CreateExaminationScheduleDetailParams) (ExaminationScheduleDetail, error) {
-	row := q.db.QueryRowContext(ctx, createExaminationScheduleDetail, arg.ScheduleID, arg.ServiceCategoryID)
+func (q *Queries) CreateExaminationScheduleDetail(ctx context.Context, scheduleID int64) (ExaminationScheduleDetail, error) {
+	row := q.db.QueryRowContext(ctx, createExaminationScheduleDetail, scheduleID)
 	var i ExaminationScheduleDetail
 	err := row.Scan(
 		&i.ScheduleID,
@@ -67,63 +63,50 @@ func (q *Queries) CreateSchedule(ctx context.Context, arg CreateScheduleParams) 
 }
 
 const getExaminationScheduleDetail = `-- name: GetExaminationScheduleDetail :one
-SELECT s.id        as schedule_id,
+SELECT s.id,
        s.start_time,
        s.end_time,
        u.full_name as dentist_name,
-       r.name      as room_name,
-       sc.name     as service_category_name,
-       sc.cost     as service_category_cost
+       r.name      as room_name
 FROM schedules s
          JOIN examination_schedule_detail sd ON s.id = sd.schedule_id
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id
-         JOIN service_categories sc ON sd.service_category_id = sc.id
 WHERE s.id = $1
 `
 
 type GetExaminationScheduleDetailRow struct {
-	ScheduleID          int64     `json:"schedule_id"`
-	StartTime           time.Time `json:"start_time"`
-	EndTime             time.Time `json:"end_time"`
-	DentistName         string    `json:"dentist_name"`
-	RoomName            string    `json:"room_name"`
-	ServiceCategoryName string    `json:"service_category_name"`
-	ServiceCategoryCost int64     `json:"service_category_cost"`
+	ID          int64     `json:"id"`
+	StartTime   time.Time `json:"start_time"`
+	EndTime     time.Time `json:"end_time"`
+	DentistName string    `json:"dentist_name"`
+	RoomName    string    `json:"room_name"`
 }
 
 func (q *Queries) GetExaminationScheduleDetail(ctx context.Context, scheduleID int64) (GetExaminationScheduleDetailRow, error) {
 	row := q.db.QueryRowContext(ctx, getExaminationScheduleDetail, scheduleID)
 	var i GetExaminationScheduleDetailRow
 	err := row.Scan(
-		&i.ScheduleID,
+		&i.ID,
 		&i.StartTime,
 		&i.EndTime,
 		&i.DentistName,
 		&i.RoomName,
-		&i.ServiceCategoryName,
-		&i.ServiceCategoryCost,
 	)
 	return i, err
 }
 
-const listExaminationSchedulesByDateAndServiceCategory = `-- name: ListExaminationSchedulesByDateAndServiceCategory :many
+const listExaminationSchedulesByDate = `-- name: ListExaminationSchedulesByDate :many
 SELECT s.id as schedule_id, s.type, s.start_time, s.end_time, u.full_name as dentist_name, r.name as room_name
 FROM schedules s
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id
          JOIN examination_schedule_detail esd ON s.id = esd.schedule_id
 WHERE s.start_time::date = $1::date
-AND esd.service_category_id = $2
 ORDER BY s.start_time ASC
 `
 
-type ListExaminationSchedulesByDateAndServiceCategoryParams struct {
-	Date              time.Time `json:"date"`
-	ServiceCategoryID int64     `json:"service_category_id"`
-}
-
-type ListExaminationSchedulesByDateAndServiceCategoryRow struct {
+type ListExaminationSchedulesByDateRow struct {
 	ScheduleID  int64     `json:"schedule_id"`
 	Type        string    `json:"type"`
 	StartTime   time.Time `json:"start_time"`
@@ -132,15 +115,15 @@ type ListExaminationSchedulesByDateAndServiceCategoryRow struct {
 	RoomName    string    `json:"room_name"`
 }
 
-func (q *Queries) ListExaminationSchedulesByDateAndServiceCategory(ctx context.Context, arg ListExaminationSchedulesByDateAndServiceCategoryParams) ([]ListExaminationSchedulesByDateAndServiceCategoryRow, error) {
-	rows, err := q.db.QueryContext(ctx, listExaminationSchedulesByDateAndServiceCategory, arg.Date, arg.ServiceCategoryID)
+func (q *Queries) ListExaminationSchedulesByDate(ctx context.Context, date time.Time) ([]ListExaminationSchedulesByDateRow, error) {
+	rows, err := q.db.QueryContext(ctx, listExaminationSchedulesByDate, date)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []ListExaminationSchedulesByDateAndServiceCategoryRow{}
+	items := []ListExaminationSchedulesByDateRow{}
 	for rows.Next() {
-		var i ListExaminationSchedulesByDateAndServiceCategoryRow
+		var i ListExaminationSchedulesByDateRow
 		if err := rows.Scan(
 			&i.ScheduleID,
 			&i.Type,
@@ -170,5 +153,21 @@ WHERE schedule_id = $1
 
 func (q *Queries) UpdateExaminationScheduleSlotsRemaining(ctx context.Context, scheduleID int64) error {
 	_, err := q.db.ExecContext(ctx, updateExaminationScheduleSlotsRemaining, scheduleID)
+	return err
+}
+
+const updateServiceCategoryOfExaminationSchedule = `-- name: UpdateServiceCategoryOfExaminationSchedule :exec
+UPDATE examination_schedule_detail
+SET service_category_id = $2
+WHERE schedule_id = $1
+`
+
+type UpdateServiceCategoryOfExaminationScheduleParams struct {
+	ScheduleID        int64         `json:"schedule_id"`
+	ServiceCategoryID sql.NullInt64 `json:"service_category_id"`
+}
+
+func (q *Queries) UpdateServiceCategoryOfExaminationSchedule(ctx context.Context, arg UpdateServiceCategoryOfExaminationScheduleParams) error {
+	_, err := q.db.ExecContext(ctx, updateServiceCategoryOfExaminationSchedule, arg.ScheduleID, arg.ServiceCategoryID)
 	return err
 }

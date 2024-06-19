@@ -6,14 +6,15 @@ package db
 
 import (
 	"context"
+	"time"
 )
 
 type Querier interface {
 	CreateAppointment(ctx context.Context, arg CreateAppointmentParams) error
+	CreateBooking(ctx context.Context, arg CreateBookingParams) (Booking, error)
 	CreateDentist(ctx context.Context, arg CreateDentistParams) (User, error)
 	CreateDentistDetail(ctx context.Context, arg CreateDentistDetailParams) (DentistDetail, error)
-	CreateExaminationBooking(ctx context.Context, arg CreateExaminationBookingParams) (Booking, error)
-	CreateExaminationScheduleDetail(ctx context.Context, arg CreateExaminationScheduleDetailParams) (ExaminationScheduleDetail, error)
+	CreateExaminationScheduleDetail(ctx context.Context, scheduleID int64) (ExaminationScheduleDetail, error)
 	CreatePayment(ctx context.Context, name string) (Payment, error)
 	CreateRoom(ctx context.Context, name string) (Room, error)
 	CreateSchedule(ctx context.Context, arg CreateScheduleParams) (Schedule, error)
@@ -27,11 +28,12 @@ type Querier interface {
 	GetServiceCategoryBySlug(ctx context.Context, slug string) (ServiceCategory, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	ListExaminationBookings(ctx context.Context, patientID int64) ([]Booking, error)
-	ListExaminationSchedulesByDateAndServiceCategory(ctx context.Context, arg ListExaminationSchedulesByDateAndServiceCategoryParams) ([]ListExaminationSchedulesByDateAndServiceCategoryRow, error)
+	ListExaminationSchedulesByDate(ctx context.Context, date time.Time) ([]ListExaminationSchedulesByDateRow, error)
 	ListPayments(ctx context.Context) ([]Payment, error)
 	ListServiceCategories(ctx context.Context) ([]ServiceCategory, error)
 	ListServicesOfOneCategory(ctx context.Context, slug string) ([]Service, error)
 	UpdateExaminationScheduleSlotsRemaining(ctx context.Context, scheduleID int64) error
+	UpdateServiceCategoryOfExaminationSchedule(ctx context.Context, arg UpdateServiceCategoryOfExaminationScheduleParams) error
 }
 
 var _ Querier = (*Queries)(nil)

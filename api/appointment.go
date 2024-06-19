@@ -16,15 +16,14 @@ var (
 )
 
 type createExaminationAppointmentByPatientRequest struct {
-	PatientNote           string `json:"patient_note"`
-	ExaminationScheduleID int64  `json:"examination_schedule_id" binding:"required"`
-	PaymentID             int64  `json:"payment_id" binding:"required"`
+	ExaminationScheduleID int64 `json:"examination_schedule_id" binding:"required"`
+	ServiceCategoryID     int64 `json:"service_category_id"`
 }
 
 // createExaminationAppointmentByPatient creates a new examination appointment for a patient
 //
 //	@Router		/patients/appointments/examination [post]
-//	@Summary	Cho phép bệnh nhân đặt lịch khám
+//	@Summary	Cho phép bệnh nhân đặt lịch khám tổng quát
 //	@Description
 //	@Security	accessToken
 //	@Tags		appointments
@@ -52,9 +51,8 @@ func (server *Server) createExaminationAppointmentByPatient(ctx *gin.Context) {
 	
 	arg := db.BookExaminationAppointmentParams{
 		PatientID:             patientID,
-		PatientNote:           req.PatientNote,
 		ExaminationScheduleID: req.ExaminationScheduleID,
-		PaymentID:             req.PaymentID,
+		ServiceCategoryID:     req.ServiceCategoryID,
 	}
 	
 	err = server.store.BookExaminationAppointmentByPatientTx(ctx, arg)

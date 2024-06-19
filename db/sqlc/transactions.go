@@ -2,13 +2,13 @@ package db
 
 import (
 	"context"
+	"database/sql"
 )
 
 type BookExaminationAppointmentParams struct {
 	PatientID             int64
-	PatientNote           string
 	ExaminationScheduleID int64
-	PaymentID             int64
+	ServiceCategoryID     int64
 }
 
 func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context, arg BookExaminationAppointmentParams) error {
@@ -20,11 +20,15 @@ func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context
 		}
 		
 		// Create a new booking
-		booking, err := q.CreateExaminationBooking(ctx, CreateExaminationBookingParams{
-			PatientID:       arg.PatientID,
-			PatientNote:     arg.PatientNote,
-			PaymentID:       arg.PaymentID,
-			TotalCost:       schedule.ServiceCategoryCost,
+		booking, err := q.CreateBooking(ctx, CreateBookingParams{
+			PatientID:     arg.PatientID,
+			Type:          "Examination",
+			PaymentStatus: "Không cần thanh toán",
+			PaymentID: sql.NullInt64{
+				Int64: 0,
+				Valid: false,
+			},
+			TotalCost:       0,
 			AppointmentDate: schedule.StartTime,
 		})
 		if err != nil {
@@ -34,12 +38,26 @@ func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context
 		// Create a new examination appointment
 		err = q.CreateAppointment(ctx, CreateAppointmentParams{
 			BookingID:  booking.ID,
-			ScheduleID: arg.ExaminationScheduleID,
+			ScheduleID: schedule.ID,
 			PatientID:  arg.PatientID,
 		})
 		
+		// Update service category ID
+		if arg.ServiceCategoryID > 0 {
+			err = q.UpdateServiceCategoryOfExaminationSchedule(ctx, UpdateServiceCategoryOfExaminationScheduleParams{
+				ScheduleID: schedule.ID,
+				ServiceCategoryID: sql.NullInt64{
+					Int64: arg.ServiceCategoryID,
+					Valid: true,
+				},
+			})
+			if err != nil {
+				return err
+			}
+		}
+		
 		// Update slots remaining
-		err = q.UpdateExaminationScheduleSlotsRemaining(ctx, schedule.ScheduleID)
+		err = q.UpdateExaminationScheduleSlotsRemaining(ctx, schedule.ID)
 		if err != nil {
 			return err
 		}

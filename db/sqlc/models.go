@@ -5,6 +5,7 @@
 package db
 
 import (
+	"database/sql"
 	"time"
 )
 
@@ -18,16 +19,15 @@ type Appointment struct {
 }
 
 type Booking struct {
-	ID              int64     `json:"id"`
-	PatientID       int64     `json:"patient_id"`
-	PatientNote     string    `json:"patient_note"`
-	Type            string    `json:"type"`
-	PaymentStatus   string    `json:"payment_status"`
-	PaymentID       int64     `json:"payment_id"`
-	TotalCost       int64     `json:"total_cost"`
-	AppointmentDate time.Time `json:"appointment_date"`
-	Status          string    `json:"status"`
-	CreatedAt       time.Time `json:"created_at"`
+	ID              int64         `json:"id"`
+	PatientID       int64         `json:"patient_id"`
+	Type            string        `json:"type"`
+	PaymentStatus   string        `json:"payment_status"`
+	PaymentID       sql.NullInt64 `json:"payment_id"`
+	TotalCost       int64         `json:"total_cost"`
+	AppointmentDate time.Time     `json:"appointment_date"`
+	Status          string        `json:"status"`
+	CreatedAt       time.Time     `json:"created_at"`
 }
 
 type DentistDetail struct {
@@ -38,10 +38,10 @@ type DentistDetail struct {
 }
 
 type ExaminationScheduleDetail struct {
-	ScheduleID        int64     `json:"schedule_id"`
-	ServiceCategoryID int64     `json:"service_category_id"`
-	SlotsRemaining    int64     `json:"slots_remaining"`
-	CreatedAt         time.Time `json:"created_at"`
+	ScheduleID        int64         `json:"schedule_id"`
+	ServiceCategoryID sql.NullInt64 `json:"service_category_id"`
+	SlotsRemaining    int64         `json:"slots_remaining"`
+	CreatedAt         time.Time     `json:"created_at"`
 }
 
 type Payment struct {
@@ -83,7 +83,6 @@ type ServiceCategory struct {
 	BannerUrl   string    `json:"banner_url"`
 	Description string    `json:"description"`
 	Slug        string    `json:"slug"`
-	Cost        int64     `json:"cost"`
 	CreatedAt   time.Time `json:"created_at"`
 }
 
