@@ -10,7 +10,6 @@ import (
 	
 	"github.com/gin-gonic/gin"
 	db "github.com/katatrina/SWD392/db/sqlc"
-	"github.com/katatrina/SWD392/internal/token"
 	"github.com/katatrina/SWD392/internal/util"
 	"github.com/lib/pq"
 )
@@ -187,8 +186,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 //	@Failure	404
 //	@Failure	500
 func (server *Server) getPatientInfo(ctx *gin.Context) {
-	authorizedPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
-	patientID, err := strconv.ParseInt(authorizedPayload.Subject, 10, 64)
+	patientID, err := server.getAuthorizedUserID(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

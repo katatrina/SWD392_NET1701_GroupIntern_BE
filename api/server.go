@@ -1,6 +1,7 @@
 package api
 
 import (
+	"strconv"
 	"time"
 	
 	"github.com/gin-contrib/cors"
@@ -79,7 +80,7 @@ func (server *Server) setupRouter() {
 	serviceGroup := v1.Group("/services")
 	{
 		serviceGroup.POST("", server.createService)
-		// serviceGroup.PATCH("/:id", server.updateService)
+		serviceGroup.PATCH("/:id", server.updateService)
 	}
 	
 	v1.GET("/schedules/examination", server.listExaminationSchedulesByDate)
@@ -95,4 +96,23 @@ func (server *Server) Start() error {
 
 func errorResponse(err error) gin.H {
 	return gin.H{"error": err.Error()}
+}
+
+func (server *Server) getIDParam(ctx *gin.Context) (int64, error) {
+	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		return id, err
+	}
+	
+	return id, nil
+}
+
+func (server *Server) getAuthorizedUserID(ctx *gin.Context) (int64, error) {
+	payload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	userID, err := strconv.ParseInt(payload.Subject, 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	
+	return userID, nil
 }

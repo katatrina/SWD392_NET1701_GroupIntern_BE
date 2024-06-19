@@ -26,6 +26,7 @@ type Querier interface {
 	GetExaminationAppointmentDetails(ctx context.Context, arg GetExaminationAppointmentDetailsParams) (GetExaminationAppointmentDetailsRow, error)
 	GetExaminationScheduleDetail(ctx context.Context, scheduleID int64) (GetExaminationScheduleDetailRow, error)
 	GetPatient(ctx context.Context, id int64) (User, error)
+	GetService(ctx context.Context, id int64) (Service, error)
 	GetServiceCategoryByID(ctx context.Context, id int64) (ServiceCategory, error)
 	GetServiceCategoryBySlug(ctx context.Context, slug string) (ServiceCategory, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
@@ -35,6 +36,7 @@ type Querier interface {
 	ListServiceCategories(ctx context.Context) ([]ServiceCategory, error)
 	ListServicesOfOneCategory(ctx context.Context, slug string) ([]Service, error)
 	UpdateExaminationScheduleSlotsRemaining(ctx context.Context, scheduleID int64) error
+	UpdateService(ctx context.Context, arg UpdateServiceParams) error
 	UpdateServiceCategory(ctx context.Context, arg UpdateServiceCategoryParams) error
 	UpdateServiceCategoryOfExaminationSchedule(ctx context.Context, arg UpdateServiceCategoryOfExaminationScheduleParams) error
 }

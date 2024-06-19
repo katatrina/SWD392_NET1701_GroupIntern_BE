@@ -122,7 +122,7 @@ func (server *Server) updateServiceCategory(ctx *gin.Context) {
 		return
 	}
 	
-	categoryID, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	categoryID, err := server.getIDParam(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

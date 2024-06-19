@@ -42,3 +42,55 @@ func (q *Queries) CreateService(ctx context.Context, arg CreateServiceParams) (S
 	)
 	return i, err
 }
+
+const getService = `-- name: GetService :one
+SELECT id, name, category_id, unit, cost, warranty_duration, created_at
+FROM services
+WHERE id = $1
+`
+
+func (q *Queries) GetService(ctx context.Context, id int64) (Service, error) {
+	row := q.db.QueryRowContext(ctx, getService, id)
+	var i Service
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.CategoryID,
+		&i.Unit,
+		&i.Cost,
+		&i.WarrantyDuration,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const updateService = `-- name: UpdateService :exec
+UPDATE services
+SET name              = $2,
+    category_id       = $3,
+    unit              = $4,
+    cost              = $5,
+    warranty_duration = $6
+WHERE id = $1
+`
+
+type UpdateServiceParams struct {
+	ID               int64  `json:"id"`
+	Name             string `json:"name"`
+	CategoryID       int64  `json:"category_id"`
+	Unit             string `json:"unit"`
+	Cost             int64  `json:"cost"`
+	WarrantyDuration string `json:"warranty_duration"`
+}
+
+func (q *Queries) UpdateService(ctx context.Context, arg UpdateServiceParams) error {
+	_, err := q.db.ExecContext(ctx, updateService,
+		arg.ID,
+		arg.Name,
+		arg.CategoryID,
+		arg.Unit,
+		arg.Cost,
+		arg.WarrantyDuration,
+	)
+	return err
+}

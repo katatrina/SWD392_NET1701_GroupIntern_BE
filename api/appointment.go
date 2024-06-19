@@ -4,11 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
-	"strconv"
 	
 	"github.com/gin-gonic/gin"
 	db "github.com/katatrina/SWD392/db/sqlc"
-	"github.com/katatrina/SWD392/internal/token"
 )
 
 var (
@@ -41,11 +39,9 @@ func (server *Server) createExaminationAppointmentByPatient(ctx *gin.Context) {
 		return
 	}
 	
-	authorizedPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
-	
-	patientID, err := strconv.ParseInt(authorizedPayload.Subject, 10, 64)
+	patientID, err := server.getAuthorizedUserID(ctx)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 	
@@ -77,11 +73,9 @@ func (server *Server) createExaminationAppointmentByPatient(ctx *gin.Context) {
 //	@Failure	404
 //	@Failure	500
 func (server *Server) listExaminationAppointmentsByPatient(ctx *gin.Context) {
-	authorizedPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
-	
-	patientID, err := strconv.ParseInt(authorizedPayload.Subject, 10, 64)
+	patientID, err := server.getAuthorizedUserID(ctx)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 	
@@ -123,10 +117,9 @@ func (server *Server) getExaminationAppointmentByPatient(ctx *gin.Context) {
 		return
 	}
 	
-	authorizedPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
-	patientID, err := strconv.ParseInt(authorizedPayload.Subject, 10, 64)
+	patientID, err := server.getAuthorizedUserID(ctx)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 	
