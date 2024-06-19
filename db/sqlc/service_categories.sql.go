@@ -43,6 +43,38 @@ func (q *Queries) CreateServiceCategory(ctx context.Context, arg CreateServiceCa
 	return i, err
 }
 
+const deleteServiceCategory = `-- name: DeleteServiceCategory :exec
+DELETE
+FROM service_categories
+WHERE id = $1
+`
+
+func (q *Queries) DeleteServiceCategory(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteServiceCategory, id)
+	return err
+}
+
+const getServiceCategoryByID = `-- name: GetServiceCategoryByID :one
+SELECT id, name, icon_url, banner_url, description, slug, created_at
+FROM service_categories
+WHERE id = $1
+`
+
+func (q *Queries) GetServiceCategoryByID(ctx context.Context, id int64) (ServiceCategory, error) {
+	row := q.db.QueryRowContext(ctx, getServiceCategoryByID, id)
+	var i ServiceCategory
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.IconUrl,
+		&i.BannerUrl,
+		&i.Description,
+		&i.Slug,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getServiceCategoryBySlug = `-- name: GetServiceCategoryBySlug :one
 SELECT id, name, icon_url, banner_url, description, slug, created_at
 FROM service_categories
@@ -142,24 +174,27 @@ UPDATE service_categories
 SET name        = $2,
     icon_url    = $3,
     banner_url  = $4,
-    description = $5
-WHERE slug = $1
+    slug        = $5,
+    description = $6
+WHERE id = $1
 `
 
 type UpdateServiceCategoryParams struct {
-	Slug        string `json:"slug"`
+	ID          int64  `json:"id"`
 	Name        string `json:"name"`
 	IconUrl     string `json:"icon_url"`
 	BannerUrl   string `json:"banner_url"`
+	Slug        string `json:"slug"`
 	Description string `json:"description"`
 }
 
 func (q *Queries) UpdateServiceCategory(ctx context.Context, arg UpdateServiceCategoryParams) error {
 	_, err := q.db.ExecContext(ctx, updateServiceCategory,
-		arg.Slug,
+		arg.ID,
 		arg.Name,
 		arg.IconUrl,
 		arg.BannerUrl,
+		arg.Slug,
 		arg.Description,
 	)
 	return err

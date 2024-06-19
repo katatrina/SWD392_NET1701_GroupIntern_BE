@@ -22,9 +22,11 @@ type Querier interface {
 	CreateServiceCategory(ctx context.Context, arg CreateServiceCategoryParams) (ServiceCategory, error)
 	CreateSpecialty(ctx context.Context, name string) (Specialty, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	DeleteServiceCategory(ctx context.Context, id int64) error
 	GetExaminationAppointmentDetails(ctx context.Context, arg GetExaminationAppointmentDetailsParams) (GetExaminationAppointmentDetailsRow, error)
 	GetExaminationScheduleDetail(ctx context.Context, scheduleID int64) (GetExaminationScheduleDetailRow, error)
 	GetPatient(ctx context.Context, id int64) (User, error)
+	GetServiceCategoryByID(ctx context.Context, id int64) (ServiceCategory, error)
 	GetServiceCategoryBySlug(ctx context.Context, slug string) (ServiceCategory, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	ListExaminationBookings(ctx context.Context, patientID int64) ([]Booking, error)

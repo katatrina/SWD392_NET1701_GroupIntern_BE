@@ -255,6 +255,78 @@ const docTemplate = `{
                 }
             }
         },
+        "/service-categories/{id}": {
+            "delete": {
+                "tags": [
+                    "services"
+                ],
+                "summary": "Xóa một loại hình dịch vụ",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Service Category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "Cập nhật thông tin của một loại hình dịch vụ",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service Category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update service category info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.updateServiceCategoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/service-categories/{slug}": {
             "get": {
                 "produces": [
@@ -279,47 +351,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/db.ServiceCategory"
                         }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            },
-            "patch": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "services"
-                ],
-                "summary": "Cập nhật thông tin của một loại hình dịch vụ",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Category Slug",
-                        "name": "slug",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Update service category info",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/api.updateServiceCategoryRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
                     },
                     "400": {
                         "description": "Bad Request"
