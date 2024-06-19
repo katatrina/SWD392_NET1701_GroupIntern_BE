@@ -127,3 +127,30 @@ func (server *Server) updateService(ctx *gin.Context) {
 	
 	ctx.JSON(http.StatusNoContent, nil)
 }
+
+// getService returns a service
+//
+//	@Router		/services/{id} [get]
+//	@Summary	Lấy thông tin của một dịch vụ
+//	@Description
+//	@Tags		services
+//	@Produce	json
+//	@Param		id	path		int	true	"Service ID"
+//	@Success	200	{object}	db.Service
+//	@Failure	400
+//	@Failure	500
+func (server *Server) getService(ctx *gin.Context) {
+	serviceID, err := server.getIDParam(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	service, err := server.store.GetService(ctx, serviceID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	ctx.JSON(http.StatusOK, service)
+}

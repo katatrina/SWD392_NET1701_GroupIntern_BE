@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// listAllPaymentMethods returns a list of all payment methods
+// listPaymentMethods returns a list of all payment methods
 //
 //	@Router		/payment-methods [get]
 //	@Summary	Liệt kê tất cả phương thức thanh toán
@@ -15,7 +15,7 @@ import (
 //	@Tags		payments
 //	@Success	200 {object} []db.Payment
 //	@Failure	500
-func (server *Server) listAllPaymentMethods(ctx *gin.Context) {
+func (server *Server) listPaymentMethods(ctx *gin.Context) {
 	payments, err := server.store.ListPayments(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))

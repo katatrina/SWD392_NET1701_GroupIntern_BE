@@ -484,6 +484,27 @@ paths:
       tags:
       - services
   /services/{id}:
+    get:
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Service'
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Lấy thông tin của một dịch vụ
+      tags:
+      - services
     patch:
       consumes:
       - application/json

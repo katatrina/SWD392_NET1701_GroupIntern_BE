@@ -80,12 +80,13 @@ func (server *Server) setupRouter() {
 	serviceGroup := v1.Group("/services")
 	{
 		serviceGroup.POST("", server.createService)
+		serviceGroup.GET("/:id", server.getService)
 		serviceGroup.PATCH("/:id", server.updateService)
 	}
 	
 	v1.GET("/schedules/examination", server.listExaminationSchedulesByDate)
 	
-	v1.GET("/payment-methods", server.listAllPaymentMethods)
+	v1.GET("/payment-methods", server.listPaymentMethods)
 	
 	server.router = router
 }
