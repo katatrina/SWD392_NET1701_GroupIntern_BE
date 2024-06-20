@@ -36,3 +36,9 @@ WHERE id = $1;
 DELETE
 FROM service_categories
 WHERE id = $1;
+
+-- name: ListServiceCategoriesByName :many
+SELECT *
+FROM service_categories
+WHERE name ILIKE '%' || sqlc.arg(name)::text || '%'
+ORDER BY created_at DESC;

@@ -238,7 +238,15 @@ const docTemplate = `{
                 "tags": [
                     "service categories"
                 ],
-                "summary": "Liệt kê tất cả loại hình dịch vụ hiện có",
+                "summary": "Liệt kê các loại hình dịch vụ",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search query by name",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -248,6 +256,9 @@ const docTemplate = `{
                                 "$ref": "#/definitions/db.ServiceCategory"
                             }
                         }
+                    },
+                    "404": {
+                        "description": "Not Found"
                     },
                     "500": {
                         "description": "Internal Server Error"

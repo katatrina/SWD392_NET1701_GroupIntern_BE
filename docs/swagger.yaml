@@ -351,6 +351,11 @@ paths:
       - schedules
   /service-categories:
     get:
+      parameters:
+      - description: Search query by name
+        in: query
+        name: q
+        type: string
       produces:
       - application/json
       responses:
@@ -360,9 +365,11 @@ paths:
             items:
               $ref: '#/definitions/db.ServiceCategory'
             type: array
+        "404":
+          description: Not Found
         "500":
           description: Internal Server Error
-      summary: Liệt kê tất cả loại hình dịch vụ hiện có
+      summary: Liệt kê các loại hình dịch vụ
       tags:
       - service categories
   /service-categories/{id}:

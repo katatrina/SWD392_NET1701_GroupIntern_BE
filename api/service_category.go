@@ -12,26 +12,45 @@ import (
 	"github.com/lib/pq"
 )
 
-// listServiceCategories returns a list of all service categories
+// listServiceCategories returns a list of service categories
 //
 //	@Router		/service-categories [get]
-//	@Summary	Liệt kê tất cả loại hình dịch vụ hiện có
+//	@Summary	Liệt kê các loại hình dịch vụ
 //	@Produce	json
+//	@Param		q	query	string	false	"Search query by name"
 //	@Description
 //	@Tags		service categories
-//	@Success	200	{object}	[]db.ServiceCategory
+//	@Success	200	{array}	db.ServiceCategory
+//	@Failure	404
 //	@Failure	500
 func (server *Server) listServiceCategories(ctx *gin.Context) {
-	categories, err := server.store.ListServiceCategories(ctx)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+	searchQuery := ctx.Query("q")
+	if searchQuery == "" {
+		serviceCategories, err := server.store.ListServiceCategories(ctx)
+		switch {
+		case err != nil:
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		case len(serviceCategories) == 0:
+			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+		default:
+			ctx.JSON(http.StatusOK, serviceCategories)
+		}
+		
 		return
 	}
 	
-	ctx.JSON(http.StatusOK, categories)
+	serviceCategories, err := server.store.ListServiceCategoriesByName(ctx, searchQuery)
+	switch {
+	case err != nil:
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+	case len(serviceCategories) == 0:
+		ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+	default:
+		ctx.JSON(http.StatusOK, serviceCategories)
+	}
 }
 
-type listServicesOfOneCategoryRequest struct {
+type listServicesByCategoryRequest struct {
 	CategorySlug string `uri:"slug" binding:"required"`
 }
 
@@ -46,7 +65,7 @@ type listServicesOfOneCategoryRequest struct {
 //	@Success	200	{object}	[]db.Service
 //	@Failure	500
 func (server *Server) listServicesByCategory(ctx *gin.Context) {
-	var req listServicesOfOneCategoryRequest
+	var req listServicesByCategoryRequest
 	
 	if err := ctx.ShouldBindUri(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))

@@ -34,6 +34,7 @@ type Querier interface {
 	ListExaminationSchedulesByDate(ctx context.Context, date time.Time) ([]ListExaminationSchedulesByDateRow, error)
 	ListPayments(ctx context.Context) ([]Payment, error)
 	ListServiceCategories(ctx context.Context) ([]ServiceCategory, error)
+	ListServiceCategoriesByName(ctx context.Context, name string) ([]ServiceCategory, error)
 	ListServices(ctx context.Context) ([]Service, error)
 	ListServicesByCategory(ctx context.Context, slug string) ([]Service, error)
 	ListServicesByName(ctx context.Context, name string) ([]Service, error)

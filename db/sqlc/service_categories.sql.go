@@ -133,6 +133,44 @@ func (q *Queries) ListServiceCategories(ctx context.Context) ([]ServiceCategory,
 	return items, nil
 }
 
+const listServiceCategoriesByName = `-- name: ListServiceCategoriesByName :many
+SELECT id, name, icon_url, banner_url, description, slug, created_at
+FROM service_categories
+WHERE name ILIKE '%' || $1::text || '%'
+ORDER BY created_at DESC
+`
+
+func (q *Queries) ListServiceCategoriesByName(ctx context.Context, name string) ([]ServiceCategory, error) {
+	rows, err := q.db.QueryContext(ctx, listServiceCategoriesByName, name)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ServiceCategory{}
+	for rows.Next() {
+		var i ServiceCategory
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.IconUrl,
+			&i.BannerUrl,
+			&i.Description,
+			&i.Slug,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listServicesByCategory = `-- name: ListServicesByCategory :many
 SELECT id, name, category_id, unit, cost, warranty_duration, created_at
 FROM services
