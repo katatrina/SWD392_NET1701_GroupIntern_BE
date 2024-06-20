@@ -38,3 +38,62 @@ func (q *Queries) CreateDentistDetail(ctx context.Context, arg CreateDentistDeta
 	)
 	return i, err
 }
+
+const listDentists = `-- name: ListDentists :many
+SELECT users.id,
+       users.full_name,
+       users.email,
+       users.phone_number,
+       users.created_at,
+       dentist_detail.date_of_birth,
+       dentist_detail.sex,
+       specialties.name AS specialty
+FROM users
+         JOIN dentist_detail ON users.id = dentist_detail.dentist_id
+         JOIN specialties ON dentist_detail.specialty_id = specialties.id
+WHERE users.role = 'Dentist'
+ORDER BY users.created_at DESC
+`
+
+type ListDentistsRow struct {
+	ID          int64     `json:"id"`
+	FullName    string    `json:"full_name"`
+	Email       string    `json:"email"`
+	PhoneNumber string    `json:"phone_number"`
+	CreatedAt   time.Time `json:"created_at"`
+	DateOfBirth time.Time `json:"date_of_birth"`
+	Sex         string    `json:"sex"`
+	Specialty   string    `json:"specialty"`
+}
+
+func (q *Queries) ListDentists(ctx context.Context) ([]ListDentistsRow, error) {
+	rows, err := q.db.QueryContext(ctx, listDentists)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListDentistsRow{}
+	for rows.Next() {
+		var i ListDentistsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.FullName,
+			&i.Email,
+			&i.PhoneNumber,
+			&i.CreatedAt,
+			&i.DateOfBirth,
+			&i.Sex,
+			&i.Specialty,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

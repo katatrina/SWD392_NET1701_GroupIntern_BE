@@ -87,6 +87,11 @@ func (server *Server) setupRouter() {
 		serviceGroup.DELETE("/:id", server.deleteService)
 	}
 	
+	dentistGroup := v1.Group("/dentists")
+	{
+		dentistGroup.GET("", server.listDentists)
+	}
+	
 	v1.GET("/schedules/examination", server.listExaminationSchedulesByDate)
 	
 	v1.GET("/payment-methods", server.listPaymentMethods)
