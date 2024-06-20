@@ -781,7 +781,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "date": {
-                    "type": "string"
+                    "$ref": "#/definitions/util.CustomDate"
                 },
                 "email": {
                     "type": "string"
@@ -1167,6 +1167,14 @@ const docTemplate = `{
                 "valid": {
                     "description": "Valid is true if Int64 is not NULL",
                     "type": "boolean"
+                }
+            }
+        },
+        "util.CustomDate": {
+            "type": "object",
+            "properties": {
+                "time.Time": {
+                    "type": "string"
                 }
             }
         }

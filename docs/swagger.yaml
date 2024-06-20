@@ -3,7 +3,7 @@ definitions:
   api.createDentistRequest:
     properties:
       date:
-        type: string
+        $ref: '#/definitions/util.CustomDate'
       email:
         type: string
       full_name:
@@ -267,6 +267,11 @@ definitions:
       valid:
         description: Valid is true if Int64 is not NULL
         type: boolean
+    type: object
+  util.CustomDate:
+    properties:
+      time.Time:
+        type: string
     type: object
 host: localhost:8080
 info:
