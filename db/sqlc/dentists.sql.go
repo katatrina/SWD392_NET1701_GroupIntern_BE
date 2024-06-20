@@ -10,38 +10,6 @@ import (
 	"time"
 )
 
-const createDentist = `-- name: CreateDentist :one
-INSERT INTO users (full_name, hashed_password, email, phone_number, role)
-VALUES ($1, $2, $3, $4, 'Dentist') RETURNING id, full_name, hashed_password, email, phone_number, role, created_at
-`
-
-type CreateDentistParams struct {
-	FullName       string `json:"full_name"`
-	HashedPassword string `json:"hashed_password"`
-	Email          string `json:"email"`
-	PhoneNumber    string `json:"phone_number"`
-}
-
-func (q *Queries) CreateDentist(ctx context.Context, arg CreateDentistParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, createDentist,
-		arg.FullName,
-		arg.HashedPassword,
-		arg.Email,
-		arg.PhoneNumber,
-	)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.FullName,
-		&i.HashedPassword,
-		&i.Email,
-		&i.PhoneNumber,
-		&i.Role,
-		&i.CreatedAt,
-	)
-	return i, err
-}
-
 const createDentistDetail = `-- name: CreateDentistDetail :one
 INSERT INTO dentist_detail (dentist_id, date_of_birth, sex, specialty_id)
 VALUES ($1, $2, $3, $4) RETURNING dentist_id, date_of_birth, sex, specialty_id

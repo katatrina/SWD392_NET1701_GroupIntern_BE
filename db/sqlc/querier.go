@@ -12,7 +12,6 @@ import (
 type Querier interface {
 	CreateAppointment(ctx context.Context, arg CreateAppointmentParams) error
 	CreateBooking(ctx context.Context, arg CreateBookingParams) (Booking, error)
-	CreateDentist(ctx context.Context, arg CreateDentistParams) (User, error)
 	CreateDentistDetail(ctx context.Context, arg CreateDentistDetailParams) (DentistDetail, error)
 	CreateExaminationScheduleDetail(ctx context.Context, scheduleID int64) (ExaminationScheduleDetail, error)
 	CreatePayment(ctx context.Context, name string) (Payment, error)
@@ -31,11 +30,13 @@ type Querier interface {
 	GetServiceCategoryByID(ctx context.Context, id int64) (ServiceCategory, error)
 	GetServiceCategoryBySlug(ctx context.Context, slug string) (ServiceCategory, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
-	ListExaminationBookings(ctx context.Context, patientID int64) ([]Booking, error)
+	ListBookings(ctx context.Context, arg ListBookingsParams) ([]Booking, error)
 	ListExaminationSchedulesByDate(ctx context.Context, date time.Time) ([]ListExaminationSchedulesByDateRow, error)
 	ListPayments(ctx context.Context) ([]Payment, error)
 	ListServiceCategories(ctx context.Context) ([]ServiceCategory, error)
-	ListServicesOfOneCategory(ctx context.Context, slug string) ([]Service, error)
+	ListServices(ctx context.Context) ([]Service, error)
+	ListServicesByCategory(ctx context.Context, slug string) ([]Service, error)
+	ListServicesByName(ctx context.Context, name string) ([]Service, error)
 	UpdateExaminationScheduleSlotsRemaining(ctx context.Context, scheduleID int64) error
 	UpdateService(ctx context.Context, arg UpdateServiceParams) error
 	UpdateServiceCategory(ctx context.Context, arg UpdateServiceCategoryParams) error

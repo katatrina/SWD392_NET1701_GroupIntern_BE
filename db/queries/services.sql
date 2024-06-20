@@ -19,3 +19,14 @@ WHERE id = $1;
 -- name: DeleteService :exec
 DELETE FROM services
 WHERE id = $1;
+
+-- name: ListServices :many
+SELECT *
+FROM services
+ORDER BY id;
+
+-- name: ListServicesByName :many
+SELECT *
+FROM services
+WHERE name ILIKE '%' || sqlc.arg(name)::text || '%'
+ORDER BY id;

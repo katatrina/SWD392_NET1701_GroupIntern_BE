@@ -13,5 +13,14 @@ sqlc:
 test:
 	go test -v -cover ./db/sqlc
 
+swag-fmt:
+	swag fmt
+
+swag-init:
+	swag init --pd
+
+swag: swag-fmt swag-init
+	@echo 'API Docs generated. Happy Coding!'
+
 server:
 	go run main.go

@@ -198,3 +198,41 @@ func (server *Server) deleteService(ctx *gin.Context) {
 	
 	ctx.JSON(http.StatusNoContent, nil)
 }
+
+// listServices returns a list of services
+//
+//	@Router		/services [get]
+//	@Summary	Lấy danh sách các dịch vụ
+//	@Description
+//	@Tags		services
+//	@Produce	json
+//	@Param		q	query	string	false	"Search query by name"
+//	@Success	200	{array}	db.Service
+//	@Failure	404
+//	@Failure	500
+func (server *Server) listServices(ctx *gin.Context) {
+	searchQuery := ctx.Query("q")
+	if searchQuery == "" {
+		services, err := server.store.ListServices(ctx)
+		switch {
+		case err != nil:
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		case len(services) == 0:
+			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+		default:
+			ctx.JSON(http.StatusOK, services)
+		}
+		
+		return
+	}
+	
+	services, err := server.store.ListServicesByName(ctx, searchQuery)
+	switch {
+	case err != nil:
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+	case len(services) == 0:
+		ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+	default:
+		ctx.JSON(http.StatusOK, services)
+	}
+}

@@ -35,17 +35,17 @@ type listServicesOfOneCategoryRequest struct {
 	CategorySlug string `uri:"slug" binding:"required"`
 }
 
-// listServicesOfOneCategory returns a list of all services of a category
+// listServicesByCategory returns a list of all services of a category
 //
 //	@Router		/service-categories/{slug}/services [get]
-//	@Summary	Liệt kê tất cả dịch vụ của một loại hình dịch vụ
+//	@Summary	Liệt kê tất cả dịch vụ của một loại hình
 //	@Produce	json
 //	@Description
 //	@Param		slug	path	string	true	"Category Slug"
 //	@Tags		service categories
 //	@Success	200	{object}	[]db.Service
 //	@Failure	500
-func (server *Server) listServicesOfOneCategory(ctx *gin.Context) {
+func (server *Server) listServicesByCategory(ctx *gin.Context) {
 	var req listServicesOfOneCategoryRequest
 	
 	if err := ctx.ShouldBindUri(&req); err != nil {
@@ -53,7 +53,7 @@ func (server *Server) listServicesOfOneCategory(ctx *gin.Context) {
 		return
 	}
 	
-	services, err := server.store.ListServicesOfOneCategory(ctx, req.CategorySlug)
+	services, err := server.store.ListServicesByCategory(ctx, req.CategorySlug)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

@@ -79,7 +79,12 @@ func (server *Server) listExaminationAppointmentsByPatient(ctx *gin.Context) {
 		return
 	}
 	
-	bookings, err := server.store.ListExaminationBookings(ctx, patientID)
+	arg := db.ListBookingsParams{
+		PatientID: patientID,
+		Type:      "Examination",
+	}
+	
+	bookings, err := server.store.ListBookings(ctx, arg)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))

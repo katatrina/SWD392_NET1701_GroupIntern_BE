@@ -99,6 +99,7 @@ func (q *Queries) GetServiceCategoryBySlug(ctx context.Context, slug string) (Se
 const listServiceCategories = `-- name: ListServiceCategories :many
 SELECT id, name, icon_url, banner_url, description, slug, created_at
 FROM service_categories
+ORDER BY created_at DESC
 `
 
 func (q *Queries) ListServiceCategories(ctx context.Context) ([]ServiceCategory, error) {
@@ -132,14 +133,15 @@ func (q *Queries) ListServiceCategories(ctx context.Context) ([]ServiceCategory,
 	return items, nil
 }
 
-const listServicesOfOneCategory = `-- name: ListServicesOfOneCategory :many
+const listServicesByCategory = `-- name: ListServicesByCategory :many
 SELECT id, name, category_id, unit, cost, warranty_duration, created_at
 FROM services
 WHERE category_id = (SELECT id FROM service_categories WHERE slug = $1)
+ORDER BY created_at DESC
 `
 
-func (q *Queries) ListServicesOfOneCategory(ctx context.Context, slug string) ([]Service, error) {
-	rows, err := q.db.QueryContext(ctx, listServicesOfOneCategory, slug)
+func (q *Queries) ListServicesByCategory(ctx context.Context, slug string) ([]Service, error) {
+	rows, err := q.db.QueryContext(ctx, listServicesByCategory, slug)
 	if err != nil {
 		return nil, err
 	}

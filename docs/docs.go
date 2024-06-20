@@ -369,7 +369,7 @@ const docTemplate = `{
                 "tags": [
                     "service categories"
                 ],
-                "summary": "Liệt kê tất cả dịch vụ của một loại hình dịch vụ",
+                "summary": "Liệt kê tất cả dịch vụ của một loại hình",
                 "parameters": [
                     {
                         "type": "string",
@@ -396,6 +396,40 @@ const docTemplate = `{
             }
         },
         "/services": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "services"
+                ],
+                "summary": "Lấy danh sách các dịch vụ",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search query by name",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.Service"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "post": {
                 "consumes": [
                     "application/json"

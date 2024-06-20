@@ -172,13 +172,14 @@ func TestInitDB(t *testing.T) {
 		hashedPassword, err := util.GenerateHashedPassword("123456")
 		require.NoError(t, err)
 		
-		arg := CreateDentistParams{
+		arg := CreateUserParams{
 			FullName:       dentist["full_name"].(string),
 			HashedPassword: hashedPassword,
 			Email:          dentist["email"].(string),
 			PhoneNumber:    dentist["phone"].(string),
+			Role:           "Dentist",
 		}
-		user, err := testQueries.CreateDentist(context.Background(), arg)
+		user, err := testQueries.CreateUser(context.Background(), arg)
 		require.NoError(t, err)
 		
 		argDetail := CreateDentistDetailParams{

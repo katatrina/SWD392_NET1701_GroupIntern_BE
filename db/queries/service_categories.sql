@@ -1,11 +1,13 @@
 -- name: ListServiceCategories :many
 SELECT *
-FROM service_categories;
+FROM service_categories
+ORDER BY created_at DESC;
 
--- name: ListServicesOfOneCategory :many
+-- name: ListServicesByCategory :many
 SELECT *
 FROM services
-WHERE category_id = (SELECT id FROM service_categories WHERE slug = $1);
+WHERE category_id = (SELECT id FROM service_categories WHERE slug = $1)
+ORDER BY created_at DESC;
 
 -- name: CreateServiceCategory :one
 INSERT INTO service_categories (name, icon_url, banner_url, slug, description)

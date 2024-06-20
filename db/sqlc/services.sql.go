@@ -74,6 +74,81 @@ func (q *Queries) GetService(ctx context.Context, id int64) (Service, error) {
 	return i, err
 }
 
+const listServices = `-- name: ListServices :many
+SELECT id, name, category_id, unit, cost, warranty_duration, created_at
+FROM services
+ORDER BY id
+`
+
+func (q *Queries) ListServices(ctx context.Context) ([]Service, error) {
+	rows, err := q.db.QueryContext(ctx, listServices)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Service{}
+	for rows.Next() {
+		var i Service
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.CategoryID,
+			&i.Unit,
+			&i.Cost,
+			&i.WarrantyDuration,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listServicesByName = `-- name: ListServicesByName :many
+SELECT id, name, category_id, unit, cost, warranty_duration, created_at
+FROM services
+WHERE name ILIKE '%' || $1::text || '%'
+ORDER BY id
+`
+
+func (q *Queries) ListServicesByName(ctx context.Context, name string) ([]Service, error) {
+	rows, err := q.db.QueryContext(ctx, listServicesByName, name)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Service{}
+	for rows.Next() {
+		var i Service
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.CategoryID,
+			&i.Unit,
+			&i.Cost,
+			&i.WarrantyDuration,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateService = `-- name: UpdateService :exec
 UPDATE services
 SET name              = $2,

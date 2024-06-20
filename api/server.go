@@ -71,7 +71,7 @@ func (server *Server) setupRouter() {
 	serviceCategoryGroup := v1.Group("/service-categories")
 	{
 		serviceCategoryGroup.GET("", server.listServiceCategories)
-		serviceCategoryGroup.GET("/:slug/services", server.listServicesOfOneCategory)
+		serviceCategoryGroup.GET("/:slug/services", server.listServicesByCategory)
 		serviceCategoryGroup.GET("/:slug", server.getServiceCategoryBySlug)
 		serviceCategoryGroup.PATCH("/:id", server.updateServiceCategory)
 		serviceCategoryGroup.DELETE("/:id", server.deleteServiceCategory)
@@ -79,6 +79,7 @@ func (server *Server) setupRouter() {
 	
 	serviceGroup := v1.Group("/services")
 	{
+		serviceGroup.GET("", server.listServices)
 		serviceGroup.POST("", server.createService)
 		serviceGroup.GET("/:id", server.getService)
 		serviceGroup.PATCH("/:id", server.updateService)
