@@ -41,6 +41,40 @@ const docTemplate = `{
                         "description": "Internal Server Error"
                     }
                 }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dentists"
+                ],
+                "summary": "Tạo mới bác sĩ",
+                "parameters": [
+                    {
+                        "description": "Create dentist info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.createDentistRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
             }
         },
         "/patients": {
@@ -734,6 +768,41 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "api.createDentistRequest": {
+            "type": "object",
+            "required": [
+                "date",
+                "email",
+                "full_name",
+                "password",
+                "phone_number",
+                "sex",
+                "specialty_id"
+            ],
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "sex": {
+                    "type": "string"
+                },
+                "specialty_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "api.createExaminationAppointmentByPatientRequest": {
             "type": "object",
             "required": [

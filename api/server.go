@@ -90,6 +90,7 @@ func (server *Server) setupRouter() {
 	dentistGroup := v1.Group("/dentists")
 	{
 		dentistGroup.GET("", server.listDentists)
+		dentistGroup.POST("", server.createDentist)
 	}
 	
 	v1.GET("/schedules/examination", server.listExaminationSchedulesByDate)

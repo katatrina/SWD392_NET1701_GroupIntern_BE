@@ -1,5 +1,30 @@
 basePath: /api/v1
 definitions:
+  api.createDentistRequest:
+    properties:
+      date:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      password:
+        type: string
+      phone_number:
+        type: string
+      sex:
+        type: string
+      specialty_id:
+        type: integer
+    required:
+    - date
+    - email
+    - full_name
+    - password
+    - phone_number
+    - sex
+    - specialty_id
+    type: object
   api.createExaminationAppointmentByPatientRequest:
     properties:
       examination_schedule_id:
@@ -266,6 +291,28 @@ paths:
         "500":
           description: Internal Server Error
       summary: Lấy danh sách bác sĩ
+      tags:
+      - dentists
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Create dentist info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.createDentistRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Tạo mới bác sĩ
       tags:
       - dentists
   /patients:
