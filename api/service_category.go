@@ -12,6 +12,50 @@ import (
 	"github.com/lib/pq"
 )
 
+type createServiceCategoryRequest struct {
+	Name        string `json:"name" binding:"required"`
+	IconURL     string `json:"icon_url" binding:"required"`
+	BannerURL   string `json:"banner_url" binding:"required"`
+	Description string `json:"description" binding:"required"`
+}
+
+// createServiceCategory creates a new service category
+//
+//	@Router		/service-categories [post]
+//	@Summary	Tạo mới loại hình dịch vụ
+//	@Produce	json
+//	@Accept		json
+//	@Param		request	body	createServiceCategoryRequest	true	"Create service category info"
+//	@Description
+//	@Tags		service categories
+//	@Success	201	{object}	db.ServiceCategory
+//	@Failure	400
+//	@Failure	500
+func (server *Server) createServiceCategory(ctx *gin.Context) {
+	var req createServiceCategoryRequest
+	
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	arg := db.CreateServiceCategoryParams{
+		Name:        req.Name,
+		Slug:        util.Slugify(req.Name),
+		IconUrl:     req.IconURL,
+		BannerUrl:   req.BannerURL,
+		Description: req.Description,
+	}
+	
+	category, err := server.store.CreateServiceCategory(ctx, arg)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	ctx.JSON(http.StatusCreated, category)
+}
+
 // listServiceCategories returns a list of service categories
 //
 //	@Router		/service-categories [get]

@@ -70,6 +70,7 @@ func (server *Server) setupRouter() {
 	
 	serviceCategoryGroup := v1.Group("/service-categories")
 	{
+		serviceCategoryGroup.POST("", server.createServiceCategory)
 		serviceCategoryGroup.GET("", server.listServiceCategories)
 		serviceCategoryGroup.GET("/:slug/services", server.listServicesByCategory)
 		serviceCategoryGroup.GET("/:slug", server.getServiceCategoryBySlug)

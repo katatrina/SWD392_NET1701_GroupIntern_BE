@@ -264,6 +264,43 @@ const docTemplate = `{
                         "description": "Internal Server Error"
                     }
                 }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "service categories"
+                ],
+                "summary": "Tạo mới loại hình dịch vụ",
+                "parameters": [
+                    {
+                        "description": "Create service category info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.createServiceCategoryRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/db.ServiceCategory"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
             }
         },
         "/service-categories/{id}": {
@@ -705,6 +742,29 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "phone_number": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.createServiceCategoryRequest": {
+            "type": "object",
+            "required": [
+                "banner_url",
+                "description",
+                "icon_url",
+                "name"
+            ],
+            "properties": {
+                "banner_url": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "icon_url": {
+                    "type": "string"
+                },
+                "name": {
                     "type": "string"
                 }
             }
