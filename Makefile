@@ -11,7 +11,7 @@ sqlc:
 	sqlc generate
 
 test:
-	go test -v -cover ./db/sqlc
+	go test -count=1 -v -cover ./db/sqlc
 
 swag-fmt:
 	swag fmt
