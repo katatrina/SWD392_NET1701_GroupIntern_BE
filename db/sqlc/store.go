@@ -9,6 +9,7 @@ import (
 type Store interface {
 	Querier
 	BookExaminationAppointmentByPatientTx(ctx context.Context, arg BookExaminationAppointmentParams) error
+	CreateDentistAccountTx(ctx context.Context, arg CreateDentistAccountParams) (CreateDentistAccountResult, error)
 }
 
 type SQLStore struct {
@@ -29,17 +30,17 @@ func (store *SQLStore) execTx(ctx context.Context, fn func(*Queries) error) erro
 	if err != nil {
 		return err
 	}
-
+	
 	qtx := New(tx)
-
+	
 	err = fn(qtx)
 	if err != nil {
 		if rbErr := tx.Rollback(); rbErr != nil {
 			return fmt.Errorf("tx error: %w, rollback error: %w", err, rbErr)
 		}
-
+		
 		return err
 	}
-
+	
 	return tx.Commit()
 }

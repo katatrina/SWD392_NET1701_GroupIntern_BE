@@ -30,6 +30,7 @@ type Querier interface {
 	GetService(ctx context.Context, id int64) (Service, error)
 	GetServiceCategoryByID(ctx context.Context, id int64) (ServiceCategory, error)
 	GetServiceCategoryBySlug(ctx context.Context, slug string) (ServiceCategory, error)
+	GetSpecialty(ctx context.Context, id int64) (Specialty, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	ListBookings(ctx context.Context, arg ListBookingsParams) ([]Booking, error)
 	ListDentists(ctx context.Context) ([]ListDentistsRow, error)

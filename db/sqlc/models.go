@@ -33,7 +33,7 @@ type Booking struct {
 type DentistDetail struct {
 	DentistID   int64     `json:"dentist_id"`
 	DateOfBirth time.Time `json:"date_of_birth"`
-	Sex         string    `json:"sex"`
+	Gender      string    `json:"gender"`
 	SpecialtyID int64     `json:"specialty_id"`
 }
 

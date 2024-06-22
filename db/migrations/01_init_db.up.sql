@@ -13,7 +13,7 @@ CREATE TABLE "dentist_detail"
 (
     "dentist_id"    bigint PRIMARY KEY,
     "date_of_birth" DATE   NOT NULL,
-    "sex"           text   NOT NULL,
+    "gender"        text   NOT NULL,
     "specialty_id"  bigint NOT NULL
 );
 

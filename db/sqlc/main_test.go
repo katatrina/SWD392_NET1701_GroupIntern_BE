@@ -116,56 +116,56 @@ func TestInitDB(t *testing.T) {
 			"email":       "dungan@gmail.com",
 			"phone":       "0987654321",
 			"dateOfBirth": time.Date(1990, 1, 1, 0, 0, 0, 0, time.Local),
-			"sex":         "Nam",
+			"gender":      "Nam",
 		},
 		{
 			"full_name":   "Trần Văn Lâm",
 			"email":       "lamtv@gmail.com",
 			"phone":       "0987654322",
 			"dateOfBirth": time.Date(1990, 1, 2, 0, 0, 0, 0, time.Local),
-			"sex":         "Nam",
+			"gender":      "Nam",
 		},
 		{
 			"full_name":   "Nguyễn Thị Hương",
 			"email":       "huongnt10@gmail.com",
 			"phone":       "0987654323",
 			"dateOfBirth": time.Date(1990, 1, 10, 0, 0, 0, 0, time.Local),
-			"sex":         "Nữ",
+			"gender":      "Nữ",
 		},
 		{
 			"full_name":   "Lê Thị Hồng",
 			"email":       "huonglt20@gmail.com",
 			"phone":       "0987654324",
 			"dateOfBirth": time.Date(1990, 1, 4, 0, 0, 0, 0, time.Local),
-			"sex":         "Nữ",
+			"gender":      "Nữ",
 		},
 		{
 			"full_name":   "Nguyễn Văn Hùng",
 			"email":       "hungnv@gmail.com",
 			"phone":       "0987654325",
 			"dateOfBirth": time.Date(1990, 1, 5, 0, 0, 0, 0, time.Local),
-			"sex":         "Nam",
+			"gender":      "Nam",
 		},
 		{
 			"full_name":   "Phạm Thị Bích Ngọc",
 			"email":       "ngocptb@gmail.com",
 			"phone":       "0987654326",
 			"dateOfBirth": time.Date(1990, 1, 6, 0, 0, 0, 0, time.Local),
-			"sex":         "Nữ",
+			"gender":      "Nữ",
 		},
 		{
 			"full_name":   "Lại Ngọc Khánh Thư",
 			"email":       "thulnk@gmail.com",
 			"phone":       "0987654327",
 			"dateOfBirth": time.Date(1990, 1, 7, 0, 0, 0, 0, time.Local),
-			"sex":         "Nữ",
+			"gender":      "Nữ",
 		},
 		{
 			"full_name":   "Lê Hoàng Anh",
 			"email":       "anhlh25@gmail.com",
 			"phone":       "0987654328",
 			"dateOfBirth": time.Date(1990, 1, 8, 0, 0, 0, 0, time.Local),
-			"sex":         "Nam",
+			"gender":      "Nam",
 		},
 	}
 	for _, dentist := range dentists {
@@ -185,7 +185,7 @@ func TestInitDB(t *testing.T) {
 		argDetail := CreateDentistDetailParams{
 			DentistID:   user.ID,
 			DateOfBirth: dentist["dateOfBirth"].(time.Time),
-			Sex:         dentist["sex"].(string),
+			Gender:      dentist["gender"].(string),
 			SpecialtyID: int64(util.RandomIndex(len(specialties))),
 		}
 		_, err = testQueries.CreateDentistDetail(context.Background(), argDetail)

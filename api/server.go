@@ -92,6 +92,7 @@ func (server *Server) setupRouter() {
 		dentistGroup.POST("", server.createDentist)
 		dentistGroup.GET("", server.listDentists)
 		dentistGroup.GET("/:id", server.getDentist)
+		// dentistGroup.PATCH("/:id", server.updateDentist)
 	}
 	
 	v1.GET("/schedules/examination", server.listExaminationSchedulesByDate)

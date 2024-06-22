@@ -20,3 +20,16 @@ func (q *Queries) CreateSpecialty(ctx context.Context, name string) (Specialty, 
 	err := row.Scan(&i.ID, &i.Name, &i.CreatedAt)
 	return i, err
 }
+
+const getSpecialty = `-- name: GetSpecialty :one
+SELECT id, name, created_at
+FROM specialties
+WHERE id = $1
+`
+
+func (q *Queries) GetSpecialty(ctx context.Context, id int64) (Specialty, error) {
+	row := q.db.QueryRowContext(ctx, getSpecialty, id)
+	var i Specialty
+	err := row.Scan(&i.ID, &i.Name, &i.CreatedAt)
+	return i, err
+}

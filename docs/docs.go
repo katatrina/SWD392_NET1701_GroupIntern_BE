@@ -77,7 +77,10 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created"
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/db.CreateDentistAccountResult"
+                        }
                     },
                     "400": {
                         "description": "Bad Request"
@@ -822,14 +825,14 @@ const docTemplate = `{
                 "date",
                 "email",
                 "full_name",
+                "gender",
                 "password",
                 "phone_number",
-                "sex",
                 "specialty_id"
             ],
             "properties": {
                 "date": {
-                    "$ref": "#/definitions/util.CustomDate"
+                    "type": "string"
                 },
                 "email": {
                     "type": "string"
@@ -837,13 +840,13 @@ const docTemplate = `{
                 "full_name": {
                     "type": "string"
                 },
+                "gender": {
+                    "type": "string"
+                },
                 "password": {
                     "type": "string"
                 },
                 "phone_number": {
-                    "type": "string"
-                },
-                "sex": {
                     "type": "string"
                 },
                 "specialty_id": {
@@ -1056,6 +1059,32 @@ const docTemplate = `{
                 }
             }
         },
+        "db.CreateDentistAccountResult": {
+            "type": "object",
+            "properties": {
+                "date_of_birth": {
+                    "type": "string"
+                },
+                "dentist_id": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "specialty": {
+                    "type": "string"
+                }
+            }
+        },
         "db.GetDentistRow": {
             "type": "object",
             "properties": {
@@ -1071,17 +1100,20 @@ const docTemplate = `{
                 "full_name": {
                     "type": "string"
                 },
+                "gender": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
                 "phone_number": {
                     "type": "string"
                 },
-                "sex": {
-                    "type": "string"
-                },
                 "specialty": {
                     "type": "string"
+                },
+                "specialty_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -1132,13 +1164,13 @@ const docTemplate = `{
                 "full_name": {
                     "type": "string"
                 },
+                "gender": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
                 "phone_number": {
-                    "type": "string"
-                },
-                "sex": {
                     "type": "string"
                 },
                 "specialty": {
@@ -1244,14 +1276,6 @@ const docTemplate = `{
                 "valid": {
                     "description": "Valid is true if Int64 is not NULL",
                     "type": "boolean"
-                }
-            }
-        },
-        "util.CustomDate": {
-            "type": "object",
-            "properties": {
-                "time.Time": {
-                    "type": "string"
                 }
             }
         }

@@ -53,7 +53,7 @@ type createDentistRequest struct {
 	Email       string          `json:"email" binding:"required,email"`
 	PhoneNumber string          `json:"phone_number" binding:"required"`
 	DateOfBirth util.CustomDate `json:"date" binding:"required"`
-	Sex         string          `json:"sex" binding:"required"`
+	Gender      string          `json:"gender" binding:"required"`
 	SpecialtyID int64           `json:"specialty_id" binding:"required"`
 	Password    string          `json:"password" binding:"required"`
 }
@@ -67,7 +67,7 @@ type createDentistRequest struct {
 //	@Param		request	body	createDentistRequest	true	"Create dentist info"
 //	@Description
 //	@Tags		dentists
-//	@Success	201
+//	@Success	201 {object} db.CreateDentistAccountResult
 //	@Failure	400
 //	@Failure	500
 func (server *Server) createDentist(ctx *gin.Context) {
@@ -84,34 +84,23 @@ func (server *Server) createDentist(ctx *gin.Context) {
 		return
 	}
 	
-	arg := db.CreateUserParams{
+	arg := db.CreateDentistAccountParams{
 		FullName:       req.FullName,
 		Email:          req.Email,
 		PhoneNumber:    req.PhoneNumber,
-		Role:           "Dentist",
+		DateOfBirth:    req.DateOfBirth,
+		Gender:         req.Gender,
+		SpecialtyID:    req.SpecialtyID,
 		HashedPassword: hashedPassword,
 	}
 	
-	dentist, err := server.store.CreateUser(ctx, arg)
+	result, err := server.store.CreateDentistAccountTx(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 	
-	arg2 := db.CreateDentistDetailParams{
-		DentistID:   dentist.ID,
-		DateOfBirth: req.DateOfBirth.Time,
-		Sex:         req.Sex,
-		SpecialtyID: req.SpecialtyID,
-	}
-	
-	_, err = server.store.CreateDentistDetail(ctx, arg2)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	
-	ctx.JSON(http.StatusCreated, nil)
+	ctx.JSON(http.StatusCreated, result)
 }
 
 // getDentist returns a dentist by ID
@@ -146,3 +135,54 @@ func (server *Server) getDentist(ctx *gin.Context) {
 	
 	ctx.JSON(http.StatusOK, dentist)
 }
+
+type updateDentistRequest struct {
+	FullName    *string          `json:"full_name"`
+	Email       *string          `json:"email"`
+	PhoneNumber *string          `json:"phone_number"`
+	DateOfBirth *util.CustomDate `json:"date"`
+	SpecialtyID *int64           `json:"specialty_id"`
+}
+
+// func (server *Server) updateDentist(ctx *gin.Context) {
+// 	dentistID, err := server.getIDParam(ctx)
+// 	if err != nil {
+// 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+// 		return
+// 	}
+//
+// 	dentist, err := server.store.GetDentist(ctx, dentistID)
+// 	if err != nil {
+// 		if errors.Is(err, sql.ErrNoRows) {
+// 			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+// 			return
+// 		}
+//
+// 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+// 		return
+// 	}
+//
+// 	var req updateDentistRequest
+// 	if err := ctx.ShouldBindJSON(&req); err != nil {
+// 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+// 		return
+// 	}
+//
+// 	if req.FullName != nil {
+// 		dentist.FullName = *req.FullName
+// 	}
+// 	if req.Email != nil {
+// 		dentist.Email = *req.Email
+// 	}
+// 	if req.PhoneNumber != nil {
+// 		dentist.PhoneNumber = *req.PhoneNumber
+// 	}
+// 	if req.DateOfBirth != nil {
+// 		dentist.DateOfBirth = req.DateOfBirth.Time
+// 	}
+// 	if req.SpecialtyID != nil {
+// 		dentist.SpecialtyID = *req.SpecialtyID
+// 	}
+//
+// 	err = server.store.UpdateDentistInformation(ctx, dentist)
+// }

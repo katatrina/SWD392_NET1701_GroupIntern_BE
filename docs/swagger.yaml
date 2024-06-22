@@ -3,16 +3,16 @@ definitions:
   api.createDentistRequest:
     properties:
       date:
-        $ref: '#/definitions/util.CustomDate'
+        type: string
       email:
         type: string
       full_name:
         type: string
+      gender:
+        type: string
       password:
         type: string
       phone_number:
-        type: string
-      sex:
         type: string
       specialty_id:
         type: integer
@@ -20,9 +20,9 @@ definitions:
     - date
     - email
     - full_name
+    - gender
     - password
     - phone_number
-    - sex
     - specialty_id
     type: object
   api.createExaminationAppointmentByPatientRequest:
@@ -162,6 +162,23 @@ definitions:
       type:
         type: string
     type: object
+  db.CreateDentistAccountResult:
+    properties:
+      date_of_birth:
+        type: string
+      dentist_id:
+        type: integer
+      email:
+        type: string
+      full_name:
+        type: string
+      gender:
+        type: string
+      phone_number:
+        type: string
+      specialty:
+        type: string
+    type: object
   db.GetDentistRow:
     properties:
       created_at:
@@ -172,14 +189,16 @@ definitions:
         type: string
       full_name:
         type: string
+      gender:
+        type: string
       id:
         type: integer
       phone_number:
         type: string
-      sex:
-        type: string
       specialty:
         type: string
+      specialty_id:
+        type: integer
     type: object
   db.GetExaminationAppointmentDetailsRow:
     properties:
@@ -212,11 +231,11 @@ definitions:
         type: string
       full_name:
         type: string
+      gender:
+        type: string
       id:
         type: integer
       phone_number:
-        type: string
-      sex:
         type: string
       specialty:
         type: string
@@ -287,11 +306,6 @@ definitions:
         description: Valid is true if Int64 is not NULL
         type: boolean
     type: object
-  util.CustomDate:
-    properties:
-      time.Time:
-        type: string
-    type: object
 host: localhost:8080
 info:
   contact:
@@ -339,6 +353,8 @@ paths:
       responses:
         "201":
           description: Created
+          schema:
+            $ref: '#/definitions/db.CreateDentistAccountResult'
         "400":
           description: Bad Request
         "500":

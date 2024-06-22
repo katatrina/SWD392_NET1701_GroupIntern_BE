@@ -3,6 +3,9 @@ package db
 import (
 	"context"
 	"database/sql"
+	"time"
+	
+	"github.com/katatrina/SWD392/internal/util"
 )
 
 type BookExaminationAppointmentParams struct {
@@ -69,4 +72,70 @@ func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context
 	})
 	
 	return err
+}
+
+type CreateDentistAccountParams struct {
+	FullName       string          `json:"full_name"`
+	Email          string          `json:"email"`
+	PhoneNumber    string          `json:"phone_number"`
+	DateOfBirth    util.CustomDate `json:"date"`
+	Gender         string          `json:"gender"`
+	SpecialtyID    int64           `json:"specialty_id"`
+	HashedPassword string          `json:"hashed_password"`
+}
+
+type CreateDentistAccountResult struct {
+	DentistID   int64           `json:"dentist_id"`
+	FullName    string          `json:"full_name"`
+	Email       string          `json:"email"`
+	PhoneNumber string          `json:"phone_number"`
+	Gender      string          `json:"gender"`
+	DateOfBirth util.CustomDate `json:"date_of_birth"`
+	Specialty   string          `json:"specialty"`
+}
+
+func (store *SQLStore) CreateDentistAccountTx(ctx context.Context, arg CreateDentistAccountParams) (CreateDentistAccountResult, error) {
+	var result CreateDentistAccountResult
+	
+	err := store.execTx(ctx, func(q *Queries) error {
+		// Create a new dentist account
+		dentist, err := q.CreateUser(ctx, CreateUserParams{
+			FullName:       arg.FullName,
+			Email:          arg.Email,
+			PhoneNumber:    arg.PhoneNumber,
+			Role:           "Dentist",
+			HashedPassword: arg.HashedPassword,
+		})
+		if err != nil {
+			return err
+		}
+		result.DentistID = dentist.ID
+		result.FullName = dentist.FullName
+		result.Email = dentist.Email
+		result.PhoneNumber = dentist.PhoneNumber
+		
+		// Create dentist detail
+		dentistDetail, err := q.CreateDentistDetail(ctx, CreateDentistDetailParams{
+			DentistID:   dentist.ID,
+			DateOfBirth: time.Time(arg.DateOfBirth),
+			Gender:      arg.Gender,
+			SpecialtyID: arg.SpecialtyID,
+		})
+		if err != nil {
+			return err
+		}
+		result.DateOfBirth = util.CustomDate(dentistDetail.DateOfBirth)
+		result.Gender = dentistDetail.Gender
+		
+		// Get specialty name
+		specialty, err := q.GetSpecialty(ctx, arg.SpecialtyID)
+		if err != nil {
+			return err
+		}
+		result.Specialty = specialty.Name
+		
+		return nil
+	})
+	
+	return result, err
 }

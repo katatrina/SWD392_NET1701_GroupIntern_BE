@@ -11,14 +11,14 @@ import (
 )
 
 const createDentistDetail = `-- name: CreateDentistDetail :one
-INSERT INTO dentist_detail (dentist_id, date_of_birth, sex, specialty_id)
-VALUES ($1, $2, $3, $4) RETURNING dentist_id, date_of_birth, sex, specialty_id
+INSERT INTO dentist_detail (dentist_id, date_of_birth, gender, specialty_id)
+VALUES ($1, $2, $3, $4) RETURNING dentist_id, date_of_birth, gender, specialty_id
 `
 
 type CreateDentistDetailParams struct {
 	DentistID   int64     `json:"dentist_id"`
 	DateOfBirth time.Time `json:"date_of_birth"`
-	Sex         string    `json:"sex"`
+	Gender      string    `json:"gender"`
 	SpecialtyID int64     `json:"specialty_id"`
 }
 
@@ -26,14 +26,14 @@ func (q *Queries) CreateDentistDetail(ctx context.Context, arg CreateDentistDeta
 	row := q.db.QueryRowContext(ctx, createDentistDetail,
 		arg.DentistID,
 		arg.DateOfBirth,
-		arg.Sex,
+		arg.Gender,
 		arg.SpecialtyID,
 	)
 	var i DentistDetail
 	err := row.Scan(
 		&i.DentistID,
 		&i.DateOfBirth,
-		&i.Sex,
+		&i.Gender,
 		&i.SpecialtyID,
 	)
 	return i, err
@@ -46,7 +46,8 @@ SELECT users.id,
        users.phone_number,
        users.created_at,
        dentist_detail.date_of_birth,
-       dentist_detail.sex,
+       dentist_detail.gender,
+       dentist_detail.specialty_id,
        specialties.name AS specialty
 FROM users
          JOIN dentist_detail ON users.id = dentist_detail.dentist_id
@@ -62,7 +63,8 @@ type GetDentistRow struct {
 	PhoneNumber string    `json:"phone_number"`
 	CreatedAt   time.Time `json:"created_at"`
 	DateOfBirth time.Time `json:"date_of_birth"`
-	Sex         string    `json:"sex"`
+	Gender      string    `json:"gender"`
+	SpecialtyID int64     `json:"specialty_id"`
 	Specialty   string    `json:"specialty"`
 }
 
@@ -76,7 +78,8 @@ func (q *Queries) GetDentist(ctx context.Context, id int64) (GetDentistRow, erro
 		&i.PhoneNumber,
 		&i.CreatedAt,
 		&i.DateOfBirth,
-		&i.Sex,
+		&i.Gender,
+		&i.SpecialtyID,
 		&i.Specialty,
 	)
 	return i, err
@@ -89,7 +92,7 @@ SELECT users.id,
        users.phone_number,
        users.created_at,
        dentist_detail.date_of_birth,
-       dentist_detail.sex,
+       dentist_detail.gender,
        specialties.name AS specialty
 FROM users
          JOIN dentist_detail ON users.id = dentist_detail.dentist_id
@@ -105,7 +108,7 @@ type ListDentistsRow struct {
 	PhoneNumber string    `json:"phone_number"`
 	CreatedAt   time.Time `json:"created_at"`
 	DateOfBirth time.Time `json:"date_of_birth"`
-	Sex         string    `json:"sex"`
+	Gender      string    `json:"gender"`
 	Specialty   string    `json:"specialty"`
 }
 
@@ -125,7 +128,7 @@ func (q *Queries) ListDentists(ctx context.Context) ([]ListDentistsRow, error) {
 			&i.PhoneNumber,
 			&i.CreatedAt,
 			&i.DateOfBirth,
-			&i.Sex,
+			&i.Gender,
 			&i.Specialty,
 		); err != nil {
 			return nil, err
@@ -148,7 +151,7 @@ SELECT users.id,
        users.phone_number,
        users.created_at,
        dentist_detail.date_of_birth,
-       dentist_detail.sex,
+       dentist_detail.gender,
        specialties.name AS specialty
 FROM users
          JOIN dentist_detail ON users.id = dentist_detail.dentist_id
@@ -165,7 +168,7 @@ type ListDentistsByNameRow struct {
 	PhoneNumber string    `json:"phone_number"`
 	CreatedAt   time.Time `json:"created_at"`
 	DateOfBirth time.Time `json:"date_of_birth"`
-	Sex         string    `json:"sex"`
+	Gender      string    `json:"gender"`
 	Specialty   string    `json:"specialty"`
 }
 
@@ -185,7 +188,7 @@ func (q *Queries) ListDentistsByName(ctx context.Context, name string) ([]ListDe
 			&i.PhoneNumber,
 			&i.CreatedAt,
 			&i.DateOfBirth,
-			&i.Sex,
+			&i.Gender,
 			&i.Specialty,
 		); err != nil {
 			return nil, err

@@ -1,5 +1,5 @@
 -- name: CreateDentistDetail :one
-INSERT INTO dentist_detail (dentist_id, date_of_birth, sex, specialty_id)
+INSERT INTO dentist_detail (dentist_id, date_of_birth, gender, specialty_id)
 VALUES ($1, $2, $3, $4) RETURNING *;
 
 -- name: ListDentists :many
@@ -9,7 +9,7 @@ SELECT users.id,
        users.phone_number,
        users.created_at,
        dentist_detail.date_of_birth,
-       dentist_detail.sex,
+       dentist_detail.gender,
        specialties.name AS specialty
 FROM users
          JOIN dentist_detail ON users.id = dentist_detail.dentist_id
@@ -24,7 +24,7 @@ SELECT users.id,
        users.phone_number,
        users.created_at,
        dentist_detail.date_of_birth,
-       dentist_detail.sex,
+       dentist_detail.gender,
        specialties.name AS specialty
 FROM users
          JOIN dentist_detail ON users.id = dentist_detail.dentist_id
@@ -40,10 +40,12 @@ SELECT users.id,
        users.phone_number,
        users.created_at,
        dentist_detail.date_of_birth,
-       dentist_detail.sex,
+       dentist_detail.gender,
+       dentist_detail.specialty_id,
        specialties.name AS specialty
 FROM users
          JOIN dentist_detail ON users.id = dentist_detail.dentist_id
          JOIN specialties ON dentist_detail.specialty_id = specialties.id
 WHERE users.id = $1
   AND users.role = 'Dentist';
+
