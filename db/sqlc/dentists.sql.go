@@ -39,6 +39,49 @@ func (q *Queries) CreateDentistDetail(ctx context.Context, arg CreateDentistDeta
 	return i, err
 }
 
+const getDentist = `-- name: GetDentist :one
+SELECT users.id,
+       users.full_name,
+       users.email,
+       users.phone_number,
+       users.created_at,
+       dentist_detail.date_of_birth,
+       dentist_detail.sex,
+       specialties.name AS specialty
+FROM users
+         JOIN dentist_detail ON users.id = dentist_detail.dentist_id
+         JOIN specialties ON dentist_detail.specialty_id = specialties.id
+WHERE users.id = $1
+  AND users.role = 'Dentist'
+`
+
+type GetDentistRow struct {
+	ID          int64     `json:"id"`
+	FullName    string    `json:"full_name"`
+	Email       string    `json:"email"`
+	PhoneNumber string    `json:"phone_number"`
+	CreatedAt   time.Time `json:"created_at"`
+	DateOfBirth time.Time `json:"date_of_birth"`
+	Sex         string    `json:"sex"`
+	Specialty   string    `json:"specialty"`
+}
+
+func (q *Queries) GetDentist(ctx context.Context, id int64) (GetDentistRow, error) {
+	row := q.db.QueryRowContext(ctx, getDentist, id)
+	var i GetDentistRow
+	err := row.Scan(
+		&i.ID,
+		&i.FullName,
+		&i.Email,
+		&i.PhoneNumber,
+		&i.CreatedAt,
+		&i.DateOfBirth,
+		&i.Sex,
+		&i.Specialty,
+	)
+	return i, err
+}
+
 const listDentists = `-- name: ListDentists :many
 SELECT users.id,
        users.full_name,
@@ -110,7 +153,8 @@ SELECT users.id,
 FROM users
          JOIN dentist_detail ON users.id = dentist_detail.dentist_id
          JOIN specialties ON dentist_detail.specialty_id = specialties.id
-WHERE users.role = 'Dentist' AND users.full_name ILIKE '%' || $1::text || '%'
+WHERE users.role = 'Dentist'
+  AND users.full_name ILIKE '%' || $1::text || '%'
 ORDER BY users.created_at DESC
 `
 

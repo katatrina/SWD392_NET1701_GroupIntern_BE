@@ -1,6 +1,8 @@
 package api
 
 import (
+	"database/sql"
+	"errors"
 	"net/http"
 	
 	"github.com/gin-gonic/gin"
@@ -110,4 +112,37 @@ func (server *Server) createDentist(ctx *gin.Context) {
 	}
 	
 	ctx.JSON(http.StatusCreated, nil)
+}
+
+// getDentist returns a dentist by ID
+//
+//	@Router		/dentists/{id} [get]
+//	@Summary	Lấy thông tin nha sĩ
+//	@Produce	json
+//	@Param		id	path	int	true	"Dentist ID"
+//	@Description
+//	@Tags		dentists
+//	@Success	200	{object}	db.GetDentistRow
+//	@Failure	400
+//	@Failure	404
+//	@Failure	500
+func (server *Server) getDentist(ctx *gin.Context) {
+	dentistID, err := server.getIDParam(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	dentist, err := server.store.GetDentist(ctx, dentistID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+			return
+		}
+		
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	ctx.JSON(http.StatusOK, dentist)
 }

@@ -162,6 +162,25 @@ definitions:
       type:
         type: string
     type: object
+  db.GetDentistRow:
+    properties:
+      created_at:
+        type: string
+      date_of_birth:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+      phone_number:
+        type: string
+      sex:
+        type: string
+      specialty:
+        type: string
+    type: object
   db.GetExaminationAppointmentDetailsRow:
     properties:
       booking_id:
@@ -325,6 +344,30 @@ paths:
         "500":
           description: Internal Server Error
       summary: Tạo mới nha sĩ
+      tags:
+      - dentists
+  /dentists/{id}:
+    get:
+      parameters:
+      - description: Dentist ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.GetDentistRow'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Lấy thông tin nha sĩ
       tags:
       - dentists
   /patients:
