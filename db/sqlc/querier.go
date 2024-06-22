@@ -32,6 +32,7 @@ type Querier interface {
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	ListBookings(ctx context.Context, arg ListBookingsParams) ([]Booking, error)
 	ListDentists(ctx context.Context) ([]ListDentistsRow, error)
+	ListDentistsByName(ctx context.Context, name string) ([]ListDentistsByNameRow, error)
 	ListExaminationSchedulesByDate(ctx context.Context, date time.Time) ([]ListExaminationSchedulesByDateRow, error)
 	ListPayments(ctx context.Context) ([]Payment, error)
 	ListServiceCategories(ctx context.Context) ([]ServiceCategory, error)

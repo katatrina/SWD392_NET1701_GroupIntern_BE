@@ -97,3 +97,62 @@ func (q *Queries) ListDentists(ctx context.Context) ([]ListDentistsRow, error) {
 	}
 	return items, nil
 }
+
+const listDentistsByName = `-- name: ListDentistsByName :many
+SELECT users.id,
+       users.full_name,
+       users.email,
+       users.phone_number,
+       users.created_at,
+       dentist_detail.date_of_birth,
+       dentist_detail.sex,
+       specialties.name AS specialty
+FROM users
+         JOIN dentist_detail ON users.id = dentist_detail.dentist_id
+         JOIN specialties ON dentist_detail.specialty_id = specialties.id
+WHERE users.role = 'Dentist' AND users.full_name ILIKE '%' || $1::text || '%'
+ORDER BY users.created_at DESC
+`
+
+type ListDentistsByNameRow struct {
+	ID          int64     `json:"id"`
+	FullName    string    `json:"full_name"`
+	Email       string    `json:"email"`
+	PhoneNumber string    `json:"phone_number"`
+	CreatedAt   time.Time `json:"created_at"`
+	DateOfBirth time.Time `json:"date_of_birth"`
+	Sex         string    `json:"sex"`
+	Specialty   string    `json:"specialty"`
+}
+
+func (q *Queries) ListDentistsByName(ctx context.Context, name string) ([]ListDentistsByNameRow, error) {
+	rows, err := q.db.QueryContext(ctx, listDentistsByName, name)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListDentistsByNameRow{}
+	for rows.Next() {
+		var i ListDentistsByNameRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.FullName,
+			&i.Email,
+			&i.PhoneNumber,
+			&i.CreatedAt,
+			&i.DateOfBirth,
+			&i.Sex,
+			&i.Specialty,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

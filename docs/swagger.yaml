@@ -284,6 +284,11 @@ info:
 paths:
   /dentists:
     get:
+      parameters:
+      - description: Search query by name
+        in: query
+        name: q
+        type: string
       produces:
       - application/json
       responses:
@@ -293,6 +298,8 @@ paths:
             items:
               $ref: '#/definitions/db.ListDentistsRow'
             type: array
+        "404":
+          description: Not Found
         "500":
           description: Internal Server Error
       summary: Lấy danh sách bác sĩ
@@ -317,7 +324,7 @@ paths:
           description: Bad Request
         "500":
           description: Internal Server Error
-      summary: Tạo mới bác sĩ
+      summary: Tạo mới nha sĩ
       tags:
       - dentists
   /patients:

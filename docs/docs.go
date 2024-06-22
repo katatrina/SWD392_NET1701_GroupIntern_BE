@@ -27,6 +27,14 @@ const docTemplate = `{
                     "dentists"
                 ],
                 "summary": "Lấy danh sách bác sĩ",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search query by name",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -36,6 +44,9 @@ const docTemplate = `{
                                 "$ref": "#/definitions/db.ListDentistsRow"
                             }
                         }
+                    },
+                    "404": {
+                        "description": "Not Found"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -52,7 +63,7 @@ const docTemplate = `{
                 "tags": [
                     "dentists"
                 ],
-                "summary": "Tạo mới bác sĩ",
+                "summary": "Tạo mới nha sĩ",
                 "parameters": [
                     {
                         "description": "Create dentist info",

@@ -13,19 +13,37 @@ import (
 //	@Router		/dentists [get]
 //	@Summary	Lấy danh sách bác sĩ
 //	@Produce	json
+//	@Param		q	query	string	false	"Search query by name"
 //	@Description
 //	@Tags		dentists
 //	@Success	200	{array}	db.ListDentistsRow
+//	@Failure	404
 //	@Failure	500
 func (server *Server) listDentists(ctx *gin.Context) {
-	dentists, err := server.store.ListDentists(ctx)
-	
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+	searchQuery := ctx.Query("q")
+	if searchQuery == "" {
+		services, err := server.store.ListDentists(ctx)
+		switch {
+		case err != nil:
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		case len(services) == 0:
+			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+		default:
+			ctx.JSON(http.StatusOK, services)
+		}
+		
 		return
 	}
 	
-	ctx.JSON(http.StatusOK, dentists)
+	services, err := server.store.ListDentistsByName(ctx, searchQuery)
+	switch {
+	case err != nil:
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+	case len(services) == 0:
+		ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+	default:
+		ctx.JSON(http.StatusOK, services)
+	}
 }
 
 type createDentistRequest struct {
@@ -41,7 +59,7 @@ type createDentistRequest struct {
 // createDentist creates a new dentist
 //
 //	@Router		/dentists [post]
-//	@Summary	Tạo mới bác sĩ
+//	@Summary	Tạo mới nha sĩ
 //	@Produce	json
 //	@Accept		json
 //	@Param		request	body	createDentistRequest	true	"Create dentist info"

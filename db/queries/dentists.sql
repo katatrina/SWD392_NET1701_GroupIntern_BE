@@ -16,3 +16,18 @@ FROM users
          JOIN specialties ON dentist_detail.specialty_id = specialties.id
 WHERE users.role = 'Dentist'
 ORDER BY users.created_at DESC;
+
+-- name: ListDentistsByName :many
+SELECT users.id,
+       users.full_name,
+       users.email,
+       users.phone_number,
+       users.created_at,
+       dentist_detail.date_of_birth,
+       dentist_detail.sex,
+       specialties.name AS specialty
+FROM users
+         JOIN dentist_detail ON users.id = dentist_detail.dentist_id
+         JOIN specialties ON dentist_detail.specialty_id = specialties.id
+WHERE users.role = 'Dentist' AND users.full_name ILIKE '%' || sqlc.arg(name)::text || '%'
+ORDER BY users.created_at DESC;
