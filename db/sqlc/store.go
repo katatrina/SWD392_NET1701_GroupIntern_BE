@@ -10,6 +10,7 @@ type Store interface {
 	Querier
 	BookExaminationAppointmentByPatientTx(ctx context.Context, arg BookExaminationAppointmentParams) error
 	CreateDentistAccountTx(ctx context.Context, arg CreateDentistAccountParams) (CreateDentistAccountResult, error)
+	UpdateDentistProfileTx(ctx context.Context, arg UpdateDentistProfileParams) (UpdateDentistProfileResult, error)
 }
 
 type SQLStore struct {

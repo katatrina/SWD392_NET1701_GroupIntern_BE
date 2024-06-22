@@ -26,7 +26,7 @@ const docTemplate = `{
                 "tags": [
                     "dentists"
                 ],
-                "summary": "Lấy danh sách bác sĩ",
+                "summary": "Lấy danh sách nha sĩ",
                 "parameters": [
                     {
                         "type": "string",
@@ -114,6 +114,53 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/db.GetDentistRow"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dentists"
+                ],
+                "summary": "Cập nhật thông tin nha sĩ",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Dentist ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update dentist info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.updateDentistRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/db.UpdateDentistProfileResult"
                         }
                     },
                     "400": {
@@ -967,6 +1014,29 @@ const docTemplate = `{
                 }
             }
         },
+        "api.updateDentistRequest": {
+            "type": "object",
+            "properties": {
+                "date_of_birth": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "specialty_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "api.updateServiceCategoryRequest": {
             "type": "object",
             "properties": {
@@ -1107,9 +1177,6 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "phone_number": {
-                    "type": "string"
-                },
-                "specialty": {
                     "type": "string"
                 },
                 "specialty_id": {
@@ -1263,6 +1330,32 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "slug": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.UpdateDentistProfileResult": {
+            "type": "object",
+            "properties": {
+                "date_of_birth": {
+                    "type": "string"
+                },
+                "dentist_id": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "specialty": {
                     "type": "string"
                 }
             }

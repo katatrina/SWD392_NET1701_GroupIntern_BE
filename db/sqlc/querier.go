@@ -42,10 +42,12 @@ type Querier interface {
 	ListServices(ctx context.Context) ([]Service, error)
 	ListServicesByCategory(ctx context.Context, slug string) ([]Service, error)
 	ListServicesByName(ctx context.Context, name string) ([]Service, error)
+	UpdateDentistDetail(ctx context.Context, arg UpdateDentistDetailParams) (DentistDetail, error)
 	UpdateExaminationScheduleSlotsRemaining(ctx context.Context, scheduleID int64) error
 	UpdateService(ctx context.Context, arg UpdateServiceParams) error
 	UpdateServiceCategory(ctx context.Context, arg UpdateServiceCategoryParams) error
 	UpdateServiceCategoryOfExaminationSchedule(ctx context.Context, arg UpdateServiceCategoryOfExaminationScheduleParams) error
+	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 }
 
 var _ Querier = (*Queries)(nil)

@@ -12,3 +12,11 @@ SELECT *
 FROM users
 WHERE id = $1
   AND role = 'Patient';
+
+-- name: UpdateUser :one
+UPDATE users
+SET full_name = $3,
+    email = $4,
+    phone_number = $5
+WHERE id = $1 AND role = $2
+RETURNING *;

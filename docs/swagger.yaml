@@ -102,6 +102,21 @@ definitions:
       user_info:
         $ref: '#/definitions/api.userInfo'
     type: object
+  api.updateDentistRequest:
+    properties:
+      date_of_birth:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      gender:
+        type: string
+      phone_number:
+        type: string
+      specialty_id:
+        type: integer
+    type: object
   api.updateServiceCategoryRequest:
     properties:
       banner_url:
@@ -194,8 +209,6 @@ definitions:
       id:
         type: integer
       phone_number:
-        type: string
-      specialty:
         type: string
       specialty_id:
         type: integer
@@ -298,6 +311,23 @@ definitions:
       slug:
         type: string
     type: object
+  db.UpdateDentistProfileResult:
+    properties:
+      date_of_birth:
+        type: string
+      dentist_id:
+        type: integer
+      email:
+        type: string
+      full_name:
+        type: string
+      gender:
+        type: string
+      phone_number:
+        type: string
+      specialty:
+        type: string
+    type: object
   sql.NullInt64:
     properties:
       int64:
@@ -335,7 +365,7 @@ paths:
           description: Not Found
         "500":
           description: Internal Server Error
-      summary: Lấy danh sách bác sĩ
+      summary: Lấy danh sách nha sĩ
       tags:
       - dentists
     post:
@@ -384,6 +414,37 @@ paths:
         "500":
           description: Internal Server Error
       summary: Lấy thông tin nha sĩ
+      tags:
+      - dentists
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Dentist ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update dentist info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.updateDentistRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.UpdateDentistProfileResult'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Cập nhật thông tin nha sĩ
       tags:
       - dentists
   /patients:
