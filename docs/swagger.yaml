@@ -212,6 +212,8 @@ definitions:
         type: string
       specialty_id:
         type: integer
+      specialty_name:
+        type: string
     type: object
   db.GetExaminationAppointmentDetailsRow:
     properties:
@@ -228,6 +230,8 @@ definitions:
       payment_status:
         type: string
       room_name:
+        type: string
+      service_category:
         type: string
       start_time:
         type: string
@@ -417,6 +421,25 @@ paths:
       tags:
       - dentists
   /dentists/profile:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.GetDentistRow'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - accessToken: []
+      summary: Xem thông tin cá nhân nha sĩ
+      tags:
+      - dentists
     patch:
       consumes:
       - application/json
@@ -506,6 +529,8 @@ paths:
           description: Created
         "400":
           description: Bad Request
+        "403":
+          description: Forbidden
         "500":
           description: Internal Server Error
       security:

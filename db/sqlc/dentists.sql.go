@@ -47,7 +47,8 @@ SELECT users.id,
        users.created_at,
        dentist_detail.date_of_birth,
        dentist_detail.gender,
-       dentist_detail.specialty_id
+       specialties.id   AS specialty_id,
+       specialties.name AS specialty_name
 FROM users
          JOIN dentist_detail ON users.id = dentist_detail.dentist_id
          JOIN specialties ON dentist_detail.specialty_id = specialties.id
@@ -56,14 +57,15 @@ WHERE users.id = $1
 `
 
 type GetDentistRow struct {
-	ID          int64     `json:"id"`
-	FullName    string    `json:"full_name"`
-	Email       string    `json:"email"`
-	PhoneNumber string    `json:"phone_number"`
-	CreatedAt   time.Time `json:"created_at"`
-	DateOfBirth time.Time `json:"date_of_birth"`
-	Gender      string    `json:"gender"`
-	SpecialtyID int64     `json:"specialty_id"`
+	ID            int64     `json:"id"`
+	FullName      string    `json:"full_name"`
+	Email         string    `json:"email"`
+	PhoneNumber   string    `json:"phone_number"`
+	CreatedAt     time.Time `json:"created_at"`
+	DateOfBirth   time.Time `json:"date_of_birth"`
+	Gender        string    `json:"gender"`
+	SpecialtyID   int64     `json:"specialty_id"`
+	SpecialtyName string    `json:"specialty_name"`
 }
 
 func (q *Queries) GetDentist(ctx context.Context, id int64) (GetDentistRow, error) {
@@ -78,6 +80,7 @@ func (q *Queries) GetDentist(ctx context.Context, id int64) (GetDentistRow, erro
 		&i.DateOfBirth,
 		&i.Gender,
 		&i.SpecialtyID,
+		&i.SpecialtyName,
 	)
 	return i, err
 }
@@ -204,8 +207,8 @@ func (q *Queries) ListDentistsByName(ctx context.Context, name string) ([]ListDe
 const updateDentistDetail = `-- name: UpdateDentistDetail :one
 UPDATE dentist_detail
 SET date_of_birth = $2,
-    gender = $3,
-    specialty_id = $4
+    gender        = $3,
+    specialty_id  = $4
 WHERE dentist_id = $1 RETURNING dentist_id, date_of_birth, gender, specialty_id
 `
 

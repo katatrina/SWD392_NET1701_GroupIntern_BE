@@ -11,6 +11,16 @@ import (
 	"github.com/katatrina/SWD392/internal/util"
 )
 
+type dentistResponse struct {
+	ID          int64           `json:"id"`
+	FullName    string          `json:"full_name"`
+	Email       string          `json:"email"`
+	PhoneNumber string          `json:"phone_number"`
+	DateOfBirth util.CustomDate `json:"date_of_birth"`
+	Gender      string          `json:"gender"`
+	Specialty   string          `json:"specialty"`
+}
+
 // listDentists returns a list of dentists
 //
 //	@Router		/dentists [get]
@@ -220,4 +230,37 @@ func (server *Server) updateDentistProfile(ctx *gin.Context) {
 	}
 	
 	ctx.JSON(http.StatusOK, result)
+}
+
+// getDentistProfile returns the profile of the authorized dentist
+//
+//	@Router		/dentists/profile [get]
+//	@Summary	Xem thông tin cá nhân nha sĩ
+//	@Produce	json
+//	@Security	accessToken
+//	@Description
+//	@Tags		dentists
+//	@Success	200	{object}	db.GetDentistRow
+//	@Failure	400
+//	@Failure	404
+//	@Failure	500
+func (server *Server) getDentistProfile(ctx *gin.Context) {
+	dentistID, err := server.getAuthorizedUserID(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	dentist, err := server.store.GetDentist(ctx, dentistID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+			return
+		}
+		
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	ctx.JSON(http.StatusOK, dentist)
 }

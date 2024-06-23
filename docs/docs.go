@@ -92,6 +92,37 @@ const docTemplate = `{
             }
         },
         "/dentists/profile": {
+            "get": {
+                "security": [
+                    {
+                        "accessToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dentists"
+                ],
+                "summary": "Xem thông tin cá nhân nha sĩ",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/db.GetDentistRow"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "patch": {
                 "security": [
                     {
@@ -279,6 +310,9 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Forbidden"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -1181,6 +1215,9 @@ const docTemplate = `{
                 },
                 "specialty_id": {
                     "type": "integer"
+                },
+                "specialty_name": {
+                    "type": "string"
                 }
             }
         },
@@ -1206,6 +1243,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "room_name": {
+                    "type": "string"
+                },
+                "service_category": {
                     "type": "string"
                 },
                 "start_time": {

@@ -41,7 +41,8 @@ SELECT users.id,
        users.created_at,
        dentist_detail.date_of_birth,
        dentist_detail.gender,
-       dentist_detail.specialty_id
+       specialties.id   AS specialty_id,
+       specialties.name AS specialty_name
 FROM users
          JOIN dentist_detail ON users.id = dentist_detail.dentist_id
          JOIN specialties ON dentist_detail.specialty_id = specialties.id
@@ -51,6 +52,6 @@ WHERE users.id = $1
 -- name: UpdateDentistDetail :one
 UPDATE dentist_detail
 SET date_of_birth = $2,
-    gender = $3,
-    specialty_id = $4
+    gender        = $3,
+    specialty_id  = $4
 WHERE dentist_id = $1 RETURNING *;
