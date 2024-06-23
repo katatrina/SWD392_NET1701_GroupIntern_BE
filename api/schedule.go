@@ -8,7 +8,8 @@ import (
 )
 
 type listExaminationSchedulesRequest struct {
-	Date time.Time `form:"date" time_format:"02/01/2006" binding:"required"`
+	// Date time.Time `form:"date" time_format:"02/01/2006" binding:"required"`
+	Date time.Time `form:"date" time_format:"2006-01-02" binding:"required"`
 }
 
 // listExaminationSchedulesByDate lists examination schedules by date

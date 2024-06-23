@@ -148,11 +148,11 @@ type updateDentistRequest struct {
 
 // updateDentistProfile updates a dentist's profile
 //
-//	@Router		/dentists/{id} [patch]
+//	@Router		/dentists/profile [patch]
 //	@Summary	Cập nhật thông tin nha sĩ
 //	@Produce	json
 //	@Accept		json
-//	@Param		id		path	int						true	"Dentist ID"
+//	@Security	accessToken
 //	@Param		request	body	updateDentistRequest	true	"Update dentist info"
 //	@Description
 //	@Tags		dentists
@@ -161,7 +161,7 @@ type updateDentistRequest struct {
 //	@Failure	404
 //	@Failure	500
 func (server *Server) updateDentistProfile(ctx *gin.Context) {
-	dentistID, err := server.getIDParam(ctx)
+	dentistID, err := server.getAuthorizedUserID(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

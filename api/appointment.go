@@ -30,6 +30,7 @@ type createExaminationAppointmentByPatientRequest struct {
 //	@Param		request	body	createExaminationAppointmentByPatientRequest	true	"Examination Appointment Request"
 //	@Success	201
 //	@Failure	400
+//	@Failure	403
 //	@Failure	500
 func (server *Server) createExaminationAppointmentByPatient(ctx *gin.Context) {
 	var req createExaminationAppointmentByPatientRequest
@@ -53,6 +54,11 @@ func (server *Server) createExaminationAppointmentByPatient(ctx *gin.Context) {
 	
 	err = server.store.BookExaminationAppointmentByPatientTx(ctx, arg)
 	if err != nil {
+		if errors.Is(err, db.ErrExaminationScheduleFull) {
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+			return
+		}
+		
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}

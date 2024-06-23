@@ -67,20 +67,22 @@ SELECT s.id,
        s.start_time,
        s.end_time,
        u.full_name as dentist_name,
-       r.name      as room_name
+       r.name      as room_name,
+       esd.slots_remaining
 FROM schedules s
-         JOIN examination_schedule_detail sd ON s.id = sd.schedule_id
+         JOIN examination_schedule_detail esd ON s.id = esd.schedule_id
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id
 WHERE s.id = $1
 `
 
 type GetExaminationScheduleDetailRow struct {
-	ID          int64     `json:"id"`
-	StartTime   time.Time `json:"start_time"`
-	EndTime     time.Time `json:"end_time"`
-	DentistName string    `json:"dentist_name"`
-	RoomName    string    `json:"room_name"`
+	ID             int64     `json:"id"`
+	StartTime      time.Time `json:"start_time"`
+	EndTime        time.Time `json:"end_time"`
+	DentistName    string    `json:"dentist_name"`
+	RoomName       string    `json:"room_name"`
+	SlotsRemaining int64     `json:"slots_remaining"`
 }
 
 func (q *Queries) GetExaminationScheduleDetail(ctx context.Context, scheduleID int64) (GetExaminationScheduleDetailRow, error) {
@@ -92,6 +94,7 @@ func (q *Queries) GetExaminationScheduleDetail(ctx context.Context, scheduleID i
 		&i.EndTime,
 		&i.DentistName,
 		&i.RoomName,
+		&i.SlotsRemaining,
 	)
 	return i, err
 }
@@ -103,6 +106,7 @@ FROM schedules s
          JOIN rooms r ON s.room_id = r.id
          JOIN examination_schedule_detail esd ON s.id = esd.schedule_id
 WHERE s.start_time::date = $1::date
+    AND esd.slots_remaining > 0
 ORDER BY s.start_time ASC
 `
 

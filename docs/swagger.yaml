@@ -416,15 +416,11 @@ paths:
       summary: Lấy thông tin nha sĩ
       tags:
       - dentists
+  /dentists/profile:
     patch:
       consumes:
       - application/json
       parameters:
-      - description: Dentist ID
-        in: path
-        name: id
-        required: true
-        type: integer
       - description: Update dentist info
         in: body
         name: request
@@ -444,6 +440,8 @@ paths:
           description: Not Found
         "500":
           description: Internal Server Error
+      security:
+      - accessToken: []
       summary: Cập nhật thông tin nha sĩ
       tags:
       - dentists

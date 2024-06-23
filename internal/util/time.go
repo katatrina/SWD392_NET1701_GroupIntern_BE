@@ -10,7 +10,7 @@ type CustomDate time.Time
 // UnmarshalJSON parses a JSON-encoded byte slice into the CustomDate type
 func (cd *CustomDate) UnmarshalJSON(data []byte) error {
 	// Define a custom format for parsing
-	customFormat := "02/01/2006"
+	customFormat := "2006-01-02"
 	
 	// Parse the input data using the custom format
 	parsedTime, err := time.Parse(`"`+customFormat+`"`, string(data))
@@ -27,7 +27,7 @@ func (cd *CustomDate) UnmarshalJSON(data []byte) error {
 // MarshalJSON converts a CustomDate to a JSON-encoded byte slice
 func (cd CustomDate) MarshalJSON() ([]byte, error) {
 	// Format the time.Time field in the desired format
-	formatted := time.Time(cd).Format(`"02/01/2006"`)
+	formatted := time.Time(cd).Format(`"2006-01-02"`)
 	
 	// Return the formatted time as a byte slice
 	return []byte(formatted), nil

@@ -27,7 +27,7 @@ func (q *Queries) CreateAppointment(ctx context.Context, arg CreateAppointmentPa
 }
 
 const getExaminationAppointmentDetails = `-- name: GetExaminationAppointmentDetails :one
-SELECT b.id as booking_id, b.status as booking_status, b.payment_status, s.start_time, s.end_time, u.full_name as dentist_name, specialties.name as dentist_specialty, r.name as room_name, b.total_cost
+SELECT b.id as booking_id, b.status as booking_status, b.payment_status, sc.name as service_category, s.start_time, s.end_time, u.full_name as dentist_name, specialties.name as dentist_specialty, r.name as room_name, b.total_cost
 FROM bookings b
          JOIN appointments a ON b.id = a.booking_id
          JOIN schedules s ON a.schedule_id = s.id
@@ -49,6 +49,7 @@ type GetExaminationAppointmentDetailsRow struct {
 	BookingID        int64     `json:"booking_id"`
 	BookingStatus    string    `json:"booking_status"`
 	PaymentStatus    string    `json:"payment_status"`
+	ServiceCategory  string    `json:"service_category"`
 	StartTime        time.Time `json:"start_time"`
 	EndTime          time.Time `json:"end_time"`
 	DentistName      string    `json:"dentist_name"`
@@ -64,6 +65,7 @@ func (q *Queries) GetExaminationAppointmentDetails(ctx context.Context, arg GetE
 		&i.BookingID,
 		&i.BookingStatus,
 		&i.PaymentStatus,
+		&i.ServiceCategory,
 		&i.StartTime,
 		&i.EndTime,
 		&i.DentistName,

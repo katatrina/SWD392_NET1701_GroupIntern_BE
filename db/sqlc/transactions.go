@@ -3,9 +3,14 @@ package db
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"time"
 	
 	"github.com/katatrina/SWD392/internal/util"
+)
+
+var (
+	ErrExaminationScheduleFull = errors.New("examination schedule is full")
 )
 
 type BookExaminationAppointmentParams struct {
@@ -20,6 +25,11 @@ func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context
 		schedule, err := q.GetExaminationScheduleDetail(ctx, arg.ExaminationScheduleID)
 		if err != nil {
 			return err
+		}
+		
+		// Check if the schedule is full
+		if schedule.SlotsRemaining == 0 {
+			return ErrExaminationScheduleFull
 		}
 		
 		// Create a new booking

@@ -172,7 +172,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, rsp)
 }
 
-// getPatientInfo returns the information of a patient
+// getPatientProfile returns the information of a patient
 //
 //	@Router		/patients [get]
 //	@Summary	Lấy thông tin bệnh nhân
@@ -185,7 +185,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 //	@Failure	403
 //	@Failure	404
 //	@Failure	500
-func (server *Server) getPatientInfo(ctx *gin.Context) {
+func (server *Server) getPatientProfile(ctx *gin.Context) {
 	patientID, err := server.getAuthorizedUserID(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
