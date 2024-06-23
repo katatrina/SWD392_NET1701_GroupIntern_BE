@@ -63,7 +63,7 @@ const docTemplate = `{
                 "tags": [
                     "dentists"
                 ],
-                "summary": "Tạo mới nha sĩ",
+                "summary": "Tạo tài khoản nha sĩ",
                 "parameters": [
                     {
                         "description": "Create dentist info",
@@ -138,7 +138,7 @@ const docTemplate = `{
                 "tags": [
                     "dentists"
                 ],
-                "summary": "Cập nhật thông tin nha sĩ",
+                "summary": "Cập nhật thông tin cá nhân nha sĩ",
                 "parameters": [
                     {
                         "description": "Update dentist info",
@@ -177,7 +177,7 @@ const docTemplate = `{
                 "tags": [
                     "dentists"
                 ],
-                "summary": "Lấy thông tin nha sĩ",
+                "summary": "Lấy thông tin cá nhân nha sĩ",
                 "parameters": [
                     {
                         "type": "integer",
@@ -207,34 +207,37 @@ const docTemplate = `{
             }
         },
         "/patients": {
-            "get": {
-                "security": [
-                    {
-                        "accessToken": []
-                    }
+            "post": {
+                "consumes": [
+                    "application/json"
                 ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "patients"
                 ],
-                "summary": "Lấy thông tin bệnh nhân",
-                "responses": {
-                    "200": {
-                        "description": "OK",
+                "summary": "Tạo tài khoản bệnh nhân",
+                "parameters": [
+                    {
+                        "description": "Create patient info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
                         "schema": {
-                            "$ref": "#/definitions/api.userInfo"
+                            "$ref": "#/definitions/api.createPatientRequest"
                         }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
                     },
                     "400": {
                         "description": "Bad Request"
                     },
                     "403": {
                         "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "Not Found"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -253,7 +256,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "appointments"
+                    "patients"
                 ],
                 "summary": "Lấy tất cả danh sách lịch khám của bệnh nhân",
                 "responses": {
@@ -290,7 +293,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "appointments"
+                    "patients"
                 ],
                 "summary": "Cho phép bệnh nhân đặt lịch khám tổng quát",
                 "parameters": [
@@ -331,7 +334,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "appointments"
+                    "patients"
                 ],
                 "summary": "Lấy thông tin chi tiết của một lịch khám",
                 "parameters": [
@@ -352,6 +355,42 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/patients/profile": {
+            "get": {
+                "security": [
+                    {
+                        "accessToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patients"
+                ],
+                "summary": "Lấy thông tin bệnh nhân",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.userInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -433,7 +472,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Search query by name",
+                        "description": "Search query by category name",
                         "name": "q",
                         "in": "query"
                     }
@@ -466,10 +505,10 @@ const docTemplate = `{
                 "tags": [
                     "service categories"
                 ],
-                "summary": "Tạo mới loại hình dịch vụ",
+                "summary": "Thêm một loại hình dịch vụ",
                 "parameters": [
                     {
-                        "description": "Create service category info",
+                        "description": "Service category info",
                         "name": "request",
                         "in": "body",
                         "required": true,
@@ -600,40 +639,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/service-categories/{slug}/services": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "service categories"
-                ],
-                "summary": "Liệt kê tất cả dịch vụ của một loại hình",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Category Slug",
-                        "name": "slug",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/db.Service"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
         "/services": {
             "get": {
                 "produces": [
@@ -642,11 +647,18 @@ const docTemplate = `{
                 "tags": [
                     "services"
                 ],
-                "summary": "Lấy danh sách các dịch vụ",
+                "summary": "Lấy danh sách dịch vụ của một loại hình",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Search query by name",
+                        "description": "Filter services by category slug",
+                        "name": "category",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Search query by service name",
                         "name": "q",
                         "in": "query"
                     }
@@ -679,7 +691,7 @@ const docTemplate = `{
                 "tags": [
                     "services"
                 ],
-                "summary": "Tạo mới dịch vụ",
+                "summary": "Thêm một dịch vụ",
                 "parameters": [
                     {
                         "description": "Create service info",
@@ -807,45 +819,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/users": {
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Tạo mới tài khoản bệnh nhân",
-                "parameters": [
-                    {
-                        "description": "Create patient info",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/api.createPatientRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "403": {
-                        "description": "Forbidden"
                     },
                     "500": {
                         "description": "Internal Server Error"

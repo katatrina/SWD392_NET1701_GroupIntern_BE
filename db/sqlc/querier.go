@@ -37,11 +37,11 @@ type Querier interface {
 	ListDentistsByName(ctx context.Context, name string) ([]ListDentistsByNameRow, error)
 	ListExaminationSchedulesByDate(ctx context.Context, date time.Time) ([]ListExaminationSchedulesByDateRow, error)
 	ListPayments(ctx context.Context) ([]Payment, error)
+	ListRooms(ctx context.Context) ([]Room, error)
 	ListServiceCategories(ctx context.Context) ([]ServiceCategory, error)
 	ListServiceCategoriesByName(ctx context.Context, name string) ([]ServiceCategory, error)
-	ListServices(ctx context.Context) ([]Service, error)
 	ListServicesByCategory(ctx context.Context, slug string) ([]Service, error)
-	ListServicesByName(ctx context.Context, name string) ([]Service, error)
+	ListServicesByNameAndCategory(ctx context.Context, arg ListServicesByNameAndCategoryParams) ([]Service, error)
 	UpdateDentistDetail(ctx context.Context, arg UpdateDentistDetailParams) (DentistDetail, error)
 	UpdateExaminationScheduleSlotsRemaining(ctx context.Context, scheduleID int64) error
 	UpdateService(ctx context.Context, arg UpdateServiceParams) error

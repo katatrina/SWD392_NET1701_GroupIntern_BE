@@ -3,89 +3,18 @@ package api
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
 	
 	"github.com/gin-gonic/gin"
-	db "github.com/katatrina/SWD392/db/sqlc"
 	"github.com/katatrina/SWD392/internal/util"
-	"github.com/lib/pq"
 )
 
 var (
 	ErrEmailNotFound     = errors.New("email not found")
 	ErrPasswordIncorrect = errors.New("password is incorrect")
 )
-
-type createPatientRequest struct {
-	Password    string `json:"password" binding:"required"`
-	FullName    string `json:"full_name" binding:"required"`
-	Email       string `json:"email" binding:"required"`
-	PhoneNumber string `json:"phone_number" binding:"required"`
-}
-
-// createPatient creates a new patient account
-//
-//	@Router		/users [post]
-//	@Summary	Tạo mới tài khoản bệnh nhân
-//	@Description
-//	@Tags		users
-//	@Accept		json
-//	@Produce	json
-//	@Param		request	body	createPatientRequest	true	"Create patient info"
-//	@Success	201
-//	@Failure	400
-//	@Failure	403
-//	@Failure	500
-func (server *Server) createPatient(ctx *gin.Context) {
-	var req createPatientRequest
-	
-	// Parse the JSON request body
-	if err := ctx.ShouldBindJSON(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-	
-	// Generate hashed password
-	hashedPassword, err := util.GenerateHashedPassword(req.Password)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	
-	arg := db.CreateUserParams{
-		FullName:       req.FullName,
-		HashedPassword: hashedPassword,
-		Email:          req.Email,
-		PhoneNumber:    req.PhoneNumber,
-		Role:           "Patient",
-	}
-	
-	// Create a new customer
-	_, err = server.store.CreateUser(ctx, arg)
-	if err != nil {
-		var pqErr *pq.Error
-		if errors.As(err, &pqErr) {
-			switch {
-			case pqErr.Code.Name() == "unique_violation":
-				err = fmt.Errorf("%s", pqErr.Detail)
-				ctx.JSON(http.StatusForbidden, errorResponse(err))
-				return
-			default:
-				err = fmt.Errorf("unexpected error occured: %s", pqErr.Detail)
-				ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-				return
-			}
-		}
-		
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	
-	ctx.JSON(http.StatusCreated, nil)
-}
 
 type loginUserRequest struct {
 	Email    string `json:"email" binding:"required,email"`
@@ -167,49 +96,6 @@ func (server *Server) loginUser(ctx *gin.Context) {
 			Role:        user.Role,
 			CreatedAt:   user.CreatedAt,
 		},
-	}
-	
-	ctx.JSON(http.StatusOK, rsp)
-}
-
-// getPatientProfile returns the information of a patient
-//
-//	@Router		/patients [get]
-//	@Summary	Lấy thông tin bệnh nhân
-//	@Description
-//	@Tags		users
-//	@Produce	json
-//	@Security	accessToken
-//	@Success	200	{object}	userInfo
-//	@Failure	400
-//	@Failure	403
-//	@Failure	404
-//	@Failure	500
-func (server *Server) getPatientProfile(ctx *gin.Context) {
-	patientID, err := server.getAuthorizedUserID(ctx)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	
-	patient, err := server.store.GetPatient(ctx, patientID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
-			return
-		}
-		
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	
-	rsp := userInfo{
-		ID:          patient.ID,
-		FullName:    patient.FullName,
-		Email:       patient.Email,
-		PhoneNumber: patient.PhoneNumber,
-		Role:        patient.Role,
-		CreatedAt:   patient.CreatedAt,
 	}
 	
 	ctx.JSON(http.StatusOK, rsp)

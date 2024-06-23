@@ -74,14 +74,15 @@ func (q *Queries) GetService(ctx context.Context, id int64) (Service, error) {
 	return i, err
 }
 
-const listServices = `-- name: ListServices :many
+const listServicesByCategory = `-- name: ListServicesByCategory :many
 SELECT id, name, category_id, unit, cost, warranty_duration, created_at
 FROM services
-ORDER BY id
+WHERE category_id = (SELECT id FROM service_categories WHERE slug = $1)
+ORDER BY created_at DESC
 `
 
-func (q *Queries) ListServices(ctx context.Context) ([]Service, error) {
-	rows, err := q.db.QueryContext(ctx, listServices)
+func (q *Queries) ListServicesByCategory(ctx context.Context, slug string) ([]Service, error) {
+	rows, err := q.db.QueryContext(ctx, listServicesByCategory, slug)
 	if err != nil {
 		return nil, err
 	}
@@ -111,15 +112,21 @@ func (q *Queries) ListServices(ctx context.Context) ([]Service, error) {
 	return items, nil
 }
 
-const listServicesByName = `-- name: ListServicesByName :many
+const listServicesByNameAndCategory = `-- name: ListServicesByNameAndCategory :many
 SELECT id, name, category_id, unit, cost, warranty_duration, created_at
 FROM services
 WHERE name ILIKE '%' || $1::text || '%'
+AND category_id = (SELECT id FROM service_categories WHERE slug = $2::text)
 ORDER BY id
 `
 
-func (q *Queries) ListServicesByName(ctx context.Context, name string) ([]Service, error) {
-	rows, err := q.db.QueryContext(ctx, listServicesByName, name)
+type ListServicesByNameAndCategoryParams struct {
+	Name     string `json:"name"`
+	Category string `json:"category"`
+}
+
+func (q *Queries) ListServicesByNameAndCategory(ctx context.Context, arg ListServicesByNameAndCategoryParams) ([]Service, error) {
+	rows, err := q.db.QueryContext(ctx, listServicesByNameAndCategory, arg.Name, arg.Category)
 	if err != nil {
 		return nil, err
 	}

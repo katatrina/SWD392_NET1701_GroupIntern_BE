@@ -21,7 +21,7 @@ type createServiceRequest struct {
 // createService creates a new service
 //
 //	@Router		/services [post]
-//	@Summary	Tạo mới dịch vụ
+//	@Summary	Thêm một dịch vụ
 //	@Description
 //	@Tags		services
 //	@Accept		json
@@ -199,34 +199,44 @@ func (server *Server) deleteService(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, nil)
 }
 
+type listServicesRequest struct {
+	CategorySlug string `form:"category" binding:"required"`
+	SearchQuery  string `form:"q"`
+}
+
 // listServices returns a list of services
 //
 //	@Router		/services [get]
-//	@Summary	Lấy danh sách các dịch vụ
+//	@Summary	Lấy danh sách dịch vụ của một loại hình
 //	@Description
 //	@Tags		services
 //	@Produce	json
-//	@Param		q	query	string	false	"Search query by name"
-//	@Success	200	{array}	db.Service
+//	@Param		category	query	string	true	"Filter services by category slug"
+//	@Param		q			query	string	false	"Search query by service name"
+//	@Success	200			{array}	db.Service
 //	@Failure	404
 //	@Failure	500
 func (server *Server) listServices(ctx *gin.Context) {
-	searchQuery := ctx.Query("q")
-	if searchQuery == "" {
-		services, err := server.store.ListServices(ctx)
-		switch {
-		case err != nil:
-			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		case len(services) == 0:
-			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
-		default:
-			ctx.JSON(http.StatusOK, services)
-		}
-		
+	var req listServicesRequest
+	
+	if err := ctx.ShouldBindQuery(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 	
-	services, err := server.store.ListServicesByName(ctx, searchQuery)
+	var services []db.Service
+	var err error
+	if req.SearchQuery == "" {
+		services, err = server.store.ListServicesByCategory(ctx, req.CategorySlug)
+	}
+	
+	arg := db.ListServicesByNameAndCategoryParams{
+		Name:     req.SearchQuery,
+		Category: req.CategorySlug,
+	}
+	
+	services, err = server.store.ListServicesByNameAndCategory(ctx, arg)
+	
 	switch {
 	case err != nil:
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))

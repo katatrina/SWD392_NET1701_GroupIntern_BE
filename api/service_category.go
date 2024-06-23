@@ -22,10 +22,10 @@ type createServiceCategoryRequest struct {
 // createServiceCategory creates a new service category
 //
 //	@Router		/service-categories [post]
-//	@Summary	Tạo mới loại hình dịch vụ
+//	@Summary	Thêm một loại hình dịch vụ
 //	@Produce	json
 //	@Accept		json
-//	@Param		request	body	createServiceCategoryRequest	true	"Create service category info"
+//	@Param		request	body	createServiceCategoryRequest	true	"Service category info"
 //	@Description
 //	@Tags		service categories
 //	@Success	201	{object}	db.ServiceCategory
@@ -61,7 +61,7 @@ func (server *Server) createServiceCategory(ctx *gin.Context) {
 //	@Router		/service-categories [get]
 //	@Summary	Liệt kê các loại hình dịch vụ
 //	@Produce	json
-//	@Param		q	query	string	false	"Search query by name"
+//	@Param		q	query	string	false	"Search query by category name"
 //	@Description
 //	@Tags		service categories
 //	@Success	200	{array}	db.ServiceCategory
@@ -94,9 +94,9 @@ func (server *Server) listServiceCategories(ctx *gin.Context) {
 	}
 }
 
-type listServicesByCategoryRequest struct {
-	CategorySlug string `uri:"slug" binding:"required"`
-}
+// type listServicesByCategoryRequest struct {
+// 	CategorySlug string `uri:"slug" binding:"required"`
+// }
 
 // listServicesByCategory returns a list of all services of a category
 //
@@ -108,22 +108,22 @@ type listServicesByCategoryRequest struct {
 //	@Tags		service categories
 //	@Success	200	{object}	[]db.Service
 //	@Failure	500
-func (server *Server) listServicesByCategory(ctx *gin.Context) {
-	var req listServicesByCategoryRequest
-	
-	if err := ctx.ShouldBindUri(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
-	
-	services, err := server.store.ListServicesByCategory(ctx, req.CategorySlug)
-	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	
-	ctx.JSON(http.StatusOK, services)
-}
+// func (server *Server) listServicesByCategory(ctx *gin.Context) {
+// 	var req listServicesByCategoryRequest
+//
+// 	if err := ctx.ShouldBindUri(&req); err != nil {
+// 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+// 		return
+// 	}
+//
+// 	services, err := server.store.ListServicesByCategory(ctx, req.CategorySlug)
+// 	if err != nil {
+// 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+// 		return
+// 	}
+//
+// 	ctx.JSON(http.StatusOK, services)
+// }
 
 type getServiceCategoryBySlugRequest struct {
 	CategorySlug string `uri:"slug" binding:"required"`

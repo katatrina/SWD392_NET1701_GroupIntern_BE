@@ -49,30 +49,27 @@ func (server *Server) setupRouter() {
 	
 	v1 := router.Group("/api/v1")
 	{
-		publicGroup := v1.Group("/users")
+		userGroup := v1.Group("/users")
 		{
-			publicGroup.POST("", server.createPatient)
-			publicGroup.POST("/login", server.loginUser)
+			userGroup.POST("/login", server.loginUser)
 		}
 	}
 	
-	authorized := v1.Group("/")
-	authorized.Use(authMiddleware(server.tokenMaker))
+	patientGroup := v1.Group("/patients")
+	patientGroup.POST("", server.createPatient)
+	patientGroup.Use(authMiddleware(server.tokenMaker))
 	{
-		patientGroup := authorized.Group("/patients")
-		{
-			patientGroup.POST("/appointments/examination", server.createExaminationAppointmentByPatient)
-			patientGroup.GET("/appointments/examination", server.listExaminationAppointmentsByPatient)
-			patientGroup.GET("/profile", server.getPatientProfile)
-			patientGroup.GET("/appointments/examination/:id", server.getExaminationAppointmentByPatient)
-		}
+		patientGroup.POST("/appointments/examination", server.createExaminationAppointmentByPatient)
+		patientGroup.GET("/appointments/examination", server.listExaminationAppointmentsByPatient)
+		patientGroup.GET("/profile", server.getPatientProfile)
+		patientGroup.GET("/appointments/examination/:id", server.getExaminationAppointmentByPatient)
 	}
 	
 	serviceCategoryGroup := v1.Group("/service-categories")
 	{
 		serviceCategoryGroup.POST("", server.createServiceCategory)
 		serviceCategoryGroup.GET("", server.listServiceCategories)
-		serviceCategoryGroup.GET("/:slug/services", server.listServicesByCategory)
+		// serviceCategoryGroup.GET("/:slug/services", server.listServicesByCategory)
 		serviceCategoryGroup.GET("/:slug", server.getServiceCategoryBySlug)
 		serviceCategoryGroup.PATCH("/:id", server.updateServiceCategory)
 		serviceCategoryGroup.DELETE("/:id", server.deleteServiceCategory)

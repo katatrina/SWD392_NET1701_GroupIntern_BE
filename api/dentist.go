@@ -11,16 +11,6 @@ import (
 	"github.com/katatrina/SWD392/internal/util"
 )
 
-type dentistResponse struct {
-	ID          int64           `json:"id"`
-	FullName    string          `json:"full_name"`
-	Email       string          `json:"email"`
-	PhoneNumber string          `json:"phone_number"`
-	DateOfBirth util.CustomDate `json:"date_of_birth"`
-	Gender      string          `json:"gender"`
-	Specialty   string          `json:"specialty"`
-}
-
 // listDentists returns a list of dentists
 //
 //	@Router		/dentists [get]
@@ -72,7 +62,7 @@ type createDentistRequest struct {
 // createDentist creates a new dentist
 //
 //	@Router		/dentists [post]
-//	@Summary	Tạo mới nha sĩ
+//	@Summary	Tạo tài khoản nha sĩ
 //	@Produce	json
 //	@Accept		json
 //	@Param		request	body	createDentistRequest	true	"Create dentist info"
@@ -117,7 +107,7 @@ func (server *Server) createDentist(ctx *gin.Context) {
 // getDentist returns a dentist by ID
 //
 //	@Router		/dentists/{id} [get]
-//	@Summary	Lấy thông tin nha sĩ
+//	@Summary	Lấy thông tin cá nhân nha sĩ
 //	@Produce	json
 //	@Param		id	path	int	true	"Dentist ID"
 //	@Description
@@ -159,7 +149,7 @@ type updateDentistRequest struct {
 // updateDentistProfile updates a dentist's profile
 //
 //	@Router		/dentists/profile [patch]
-//	@Summary	Cập nhật thông tin nha sĩ
+//	@Summary	Cập nhật thông tin cá nhân nha sĩ
 //	@Produce	json
 //	@Accept		json
 //	@Security	accessToken

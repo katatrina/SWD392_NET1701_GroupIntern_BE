@@ -20,13 +20,15 @@ WHERE id = $1;
 DELETE FROM services
 WHERE id = $1;
 
--- name: ListServices :many
+-- name: ListServicesByCategory :many
 SELECT *
 FROM services
-ORDER BY id;
+WHERE category_id = (SELECT id FROM service_categories WHERE slug = $1)
+ORDER BY created_at DESC;
 
--- name: ListServicesByName :many
+-- name: ListServicesByNameAndCategory :many
 SELECT *
 FROM services
 WHERE name ILIKE '%' || sqlc.arg(name)::text || '%'
+AND category_id = (SELECT id FROM service_categories WHERE slug = sqlc.arg(category)::text)
 ORDER BY id;
