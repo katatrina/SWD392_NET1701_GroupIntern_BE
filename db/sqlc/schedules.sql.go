@@ -99,7 +99,44 @@ func (q *Queries) GetExaminationScheduleDetail(ctx context.Context, scheduleID i
 	return i, err
 }
 
-const listExaminationSchedulesByDate = `-- name: ListExaminationSchedulesByDate :many
+const getScheduleOverlap = `-- name: GetScheduleOverlap :many
+SELECT s.id
+FROM schedules s
+WHERE s.room_id = $1
+  AND s.start_time = $2
+  AND s.end_time = $3
+`
+
+type GetScheduleOverlapParams struct {
+	RoomID    int64     `json:"room_id"`
+	StartTime time.Time `json:"start_time"`
+	EndTime   time.Time `json:"end_time"`
+}
+
+func (q *Queries) GetScheduleOverlap(ctx context.Context, arg GetScheduleOverlapParams) ([]int64, error) {
+	rows, err := q.db.QueryContext(ctx, getScheduleOverlap, arg.RoomID, arg.StartTime, arg.EndTime)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []int64{}
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			return nil, err
+		}
+		items = append(items, id)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listAvailableExaminationSchedulesByDate = `-- name: ListAvailableExaminationSchedulesByDate :many
 SELECT s.id as schedule_id, s.type, s.start_time, s.end_time, u.full_name as dentist_name, r.name as room_name
 FROM schedules s
          JOIN users u ON s.dentist_id = u.id
@@ -110,7 +147,7 @@ WHERE s.start_time::date = $1::date
 ORDER BY s.start_time ASC
 `
 
-type ListExaminationSchedulesByDateRow struct {
+type ListAvailableExaminationSchedulesByDateRow struct {
 	ScheduleID  int64     `json:"schedule_id"`
 	Type        string    `json:"type"`
 	StartTime   time.Time `json:"start_time"`
@@ -119,15 +156,63 @@ type ListExaminationSchedulesByDateRow struct {
 	RoomName    string    `json:"room_name"`
 }
 
-func (q *Queries) ListExaminationSchedulesByDate(ctx context.Context, date time.Time) ([]ListExaminationSchedulesByDateRow, error) {
-	rows, err := q.db.QueryContext(ctx, listExaminationSchedulesByDate, date)
+func (q *Queries) ListAvailableExaminationSchedulesByDate(ctx context.Context, date time.Time) ([]ListAvailableExaminationSchedulesByDateRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAvailableExaminationSchedulesByDate, date)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []ListExaminationSchedulesByDateRow{}
+	items := []ListAvailableExaminationSchedulesByDateRow{}
 	for rows.Next() {
-		var i ListExaminationSchedulesByDateRow
+		var i ListAvailableExaminationSchedulesByDateRow
+		if err := rows.Scan(
+			&i.ScheduleID,
+			&i.Type,
+			&i.StartTime,
+			&i.EndTime,
+			&i.DentistName,
+			&i.RoomName,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listExaminationSchedules = `-- name: ListExaminationSchedules :many
+SELECT s.id as schedule_id, s.type, s.start_time, s.end_time, u.full_name as dentist_name, r.name as room_name
+FROM schedules s
+         JOIN users u ON s.dentist_id = u.id
+         JOIN rooms r ON s.room_id = r.id
+         JOIN examination_schedule_detail esd ON s.id = esd.schedule_id
+ORDER BY s.start_time ASC
+`
+
+type ListExaminationSchedulesRow struct {
+	ScheduleID  int64     `json:"schedule_id"`
+	Type        string    `json:"type"`
+	StartTime   time.Time `json:"start_time"`
+	EndTime     time.Time `json:"end_time"`
+	DentistName string    `json:"dentist_name"`
+	RoomName    string    `json:"room_name"`
+}
+
+func (q *Queries) ListExaminationSchedules(ctx context.Context) ([]ListExaminationSchedulesRow, error) {
+	rows, err := q.db.QueryContext(ctx, listExaminationSchedules)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListExaminationSchedulesRow{}
+	for rows.Next() {
+		var i ListExaminationSchedulesRow
 		if err := rows.Scan(
 			&i.ScheduleID,
 			&i.Type,

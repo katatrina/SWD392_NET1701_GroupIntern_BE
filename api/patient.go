@@ -168,7 +168,7 @@ func (server *Server) createExaminationAppointmentByPatient(ctx *gin.Context) {
 	
 	err = server.store.BookExaminationAppointmentByPatientTx(ctx, arg)
 	if err != nil {
-		if errors.Is(err, db.ErrExaminationScheduleFull) {
+		if errors.Is(err, db.ErrScheduleFullSlot) {
 			ctx.JSON(http.StatusForbidden, errorResponse(err))
 			return
 		}

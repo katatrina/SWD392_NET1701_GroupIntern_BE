@@ -99,7 +99,11 @@ func (server *Server) setupRouter() {
 		roomGroup.GET("", server.listRooms)
 	}
 	
-	v1.GET("/schedules/examination", server.listExaminationSchedulesByDate)
+	scheduleGroup := v1.Group("/schedules")
+	{
+		scheduleGroup.POST("/examination", server.createExaminationSchedule)
+		scheduleGroup.GET("/examination", server.listAvailableExaminationSchedulesByDate)
+	}
 	
 	v1.GET("/payment-methods", server.listPaymentMethods)
 	

@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	ErrExaminationScheduleFull = errors.New("examination schedule is full")
+	ErrScheduleFullSlot = errors.New("schedule is full slot")
 )
 
 type BookExaminationAppointmentParams struct {
@@ -29,7 +29,7 @@ func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context
 		
 		// Check if the schedule is full
 		if schedule.SlotsRemaining == 0 {
-			return ErrExaminationScheduleFull
+			return ErrScheduleFullSlot
 		}
 		
 		// Create a new booking
@@ -209,6 +209,48 @@ func (store *SQLStore) UpdateDentistProfileTx(ctx context.Context, arg UpdateDen
 			return err
 		}
 		result.Specialty = specialty.Name
+		
+		return nil
+	})
+	
+	return result, err
+}
+
+type CreateExaminationScheduleTxParams struct {
+	DentistID int64     `json:"dentist_id"`
+	StartTime time.Time `json:"start_time"`
+	EndTime   time.Time `json:"end_time"`
+	RoomID    int64     `json:"room_id"`
+}
+
+type CreateExaminationScheduleTxResult struct {
+	Metadata Schedule                  `json:"metadata"`
+	Details  ExaminationScheduleDetail `json:"details"`
+}
+
+func (store *SQLStore) CreateExaminationScheduleTx(ctx context.Context, arg CreateExaminationScheduleTxParams) (CreateExaminationScheduleTxResult, error) {
+	var result CreateExaminationScheduleTxResult
+	
+	err := store.execTx(ctx, func(q *Queries) error {
+		// Create examination schedule
+		schedule, err := q.CreateSchedule(ctx, CreateScheduleParams{
+			Type:      "Examination",
+			StartTime: arg.StartTime,
+			EndTime:   arg.EndTime,
+			DentistID: arg.DentistID,
+			RoomID:    arg.RoomID,
+		})
+		if err != nil {
+			return err
+		}
+		result.Metadata = schedule
+		
+		// Create examination schedule detail
+		details, err := q.CreateExaminationScheduleDetail(ctx, schedule.ID)
+		if err != nil {
+			return err
+		}
+		result.Details = details
 		
 		return nil
 	})

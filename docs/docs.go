@@ -493,7 +493,7 @@ const docTemplate = `{
                 "tags": [
                     "schedules"
                 ],
-                "summary": "Liệt kê tất cả lịch khám trong một ngày",
+                "summary": "Liệt kê tất cả lịch khám tổng quát còn trống trong một ngày",
                 "parameters": [
                     {
                         "type": "string",
@@ -509,12 +509,52 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/db.ListExaminationSchedulesByDateRow"
+                                "$ref": "#/definitions/db.ListAvailableExaminationSchedulesByDateRow"
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "schedules"
+                ],
+                "summary": "Tạo lịch khám mới",
+                "parameters": [
+                    {
+                        "description": "Examination schedule information",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.createExaminationScheduleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/db.CreateExaminationScheduleTxResult"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Forbidden"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -984,6 +1024,29 @@ const docTemplate = `{
                 }
             }
         },
+        "api.createExaminationScheduleRequest": {
+            "type": "object",
+            "required": [
+                "dentist_id",
+                "end_time",
+                "room_id",
+                "start_time"
+            ],
+            "properties": {
+                "dentist_id": {
+                    "type": "integer"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "room_id": {
+                    "type": "integer"
+                },
+                "start_time": {
+                    "type": "string"
+                }
+            }
+        },
         "api.createPatientRequest": {
             "type": "object",
             "required": [
@@ -1235,6 +1298,34 @@ const docTemplate = `{
                 }
             }
         },
+        "db.CreateExaminationScheduleTxResult": {
+            "type": "object",
+            "properties": {
+                "details": {
+                    "$ref": "#/definitions/db.ExaminationScheduleDetail"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/db.Schedule"
+                }
+            }
+        },
+        "db.ExaminationScheduleDetail": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "schedule_id": {
+                    "type": "integer"
+                },
+                "service_category_id": {
+                    "$ref": "#/definitions/sql.NullInt64"
+                },
+                "slots_remaining": {
+                    "type": "integer"
+                }
+            }
+        },
         "db.GetDentistRow": {
             "type": "object",
             "properties": {
@@ -1302,6 +1393,29 @@ const docTemplate = `{
                 }
             }
         },
+        "db.ListAvailableExaminationSchedulesByDateRow": {
+            "type": "object",
+            "properties": {
+                "dentist_name": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "room_name": {
+                    "type": "string"
+                },
+                "schedule_id": {
+                    "type": "integer"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
         "db.ListDentistsRow": {
             "type": "object",
             "properties": {
@@ -1331,29 +1445,6 @@ const docTemplate = `{
                 }
             }
         },
-        "db.ListExaminationSchedulesByDateRow": {
-            "type": "object",
-            "properties": {
-                "dentist_name": {
-                    "type": "string"
-                },
-                "end_time": {
-                    "type": "string"
-                },
-                "room_name": {
-                    "type": "string"
-                },
-                "schedule_id": {
-                    "type": "integer"
-                },
-                "start_time": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                }
-            }
-        },
         "db.Payment": {
             "type": "object",
             "properties": {
@@ -1378,6 +1469,32 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.Schedule": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "dentist_id": {
+                    "type": "integer"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "room_id": {
+                    "type": "integer"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }
