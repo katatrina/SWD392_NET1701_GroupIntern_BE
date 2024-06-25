@@ -53,7 +53,7 @@ type createDentistRequest struct {
 	FullName    string          `json:"full_name" binding:"required"`
 	Email       string          `json:"email" binding:"required,email"`
 	PhoneNumber string          `json:"phone_number" binding:"required"`
-	DateOfBirth util.CustomDate `json:"date" binding:"required"`
+	DateOfBirth util.CustomDate `json:"date_of_birth" binding:"required"`
 	Gender      string          `json:"gender" binding:"required"`
 	SpecialtyID int64           `json:"specialty_id" binding:"required"`
 	Password    string          `json:"password" binding:"required"`

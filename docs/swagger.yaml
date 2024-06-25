@@ -2,7 +2,7 @@ basePath: /api/v1
 definitions:
   api.createDentistRequest:
     properties:
-      date:
+      date_of_birth:
         type: string
       email:
         type: string
@@ -17,7 +17,7 @@ definitions:
       specialty_id:
         type: integer
     required:
-    - date
+    - date_of_birth
     - email
     - full_name
     - gender

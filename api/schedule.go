@@ -103,3 +103,13 @@ func (server *Server) listAvailableExaminationSchedulesByDate(ctx *gin.Context) 
 	
 	ctx.JSON(http.StatusOK, schedules)
 }
+
+func (server *Server) listExaminationSchedules(ctx *gin.Context) {
+	schedules, err := server.store.ListExaminationSchedules(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	ctx.JSON(http.StatusOK, schedules)
+}

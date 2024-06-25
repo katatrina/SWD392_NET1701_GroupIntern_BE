@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
-	"strconv"
 	
 	"github.com/gin-gonic/gin"
 	db "github.com/katatrina/SWD392/db/sqlc"
@@ -240,7 +239,7 @@ func (server *Server) updateServiceCategory(ctx *gin.Context) {
 //	@Failure	403
 //	@Failure	500
 func (server *Server) deleteServiceCategory(ctx *gin.Context) {
-	categoryID, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	categoryID, err := server.getIDParam(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

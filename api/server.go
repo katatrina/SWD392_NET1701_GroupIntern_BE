@@ -103,6 +103,7 @@ func (server *Server) setupRouter() {
 	{
 		scheduleGroup.POST("/examination", server.createExaminationSchedule)
 		scheduleGroup.GET("/examination", server.listAvailableExaminationSchedulesByDate)
+		scheduleGroup.GET("", server.listExaminationSchedules)
 	}
 	
 	v1.GET("/payment-methods", server.listPaymentMethods)

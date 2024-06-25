@@ -978,7 +978,7 @@ const docTemplate = `{
         "api.createDentistRequest": {
             "type": "object",
             "required": [
-                "date",
+                "date_of_birth",
                 "email",
                 "full_name",
                 "gender",
@@ -987,7 +987,7 @@ const docTemplate = `{
                 "specialty_id"
             ],
             "properties": {
-                "date": {
+                "date_of_birth": {
                     "type": "string"
                 },
                 "email": {
