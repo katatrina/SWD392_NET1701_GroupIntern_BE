@@ -4,9 +4,9 @@ import (
 	"errors"
 	"net/http"
 	"strings"
-
+	
 	"github.com/gin-gonic/gin"
-	"github.com/katatrina/SWD392/internal/token"
+	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/token"
 )
 
 var (
@@ -28,26 +28,26 @@ func authMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(ErrAuthorizationHeaderNotProvided))
 			return
 		}
-
+		
 		fields := strings.Fields(authorizationHeader)
 		if len(fields) != 2 {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(ErrInvalidAuthorizationHeaderFormat))
 			return
 		}
-
+		
 		authorizationType := strings.ToLower(fields[0])
 		if authorizationType != authorizationHeaderType {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(ErrAuthorizationTypeNotSupported))
 			return
 		}
-
+		
 		accessToken := fields[1]
 		claims, err := tokenMaker.VerifyToken(accessToken)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, errorResponse(err))
 			return
 		}
-
+		
 		ctx.Set(authorizationPayloadKey, claims)
 		ctx.Next()
 	}

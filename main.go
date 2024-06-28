@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"log"
 	
-	"github.com/katatrina/SWD392/api"
-	db "github.com/katatrina/SWD392/db/sqlc"
+	"github.com/katatrina/SWD392_NET1701_GroupIntern/api"
+	db "github.com/katatrina/SWD392_NET1701_GroupIntern/db/sqlc"
 	
 	_ "github.com/lib/pq"
 )

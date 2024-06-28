@@ -7,8 +7,8 @@ import (
 	"time"
 	
 	"github.com/gin-gonic/gin"
-	db "github.com/katatrina/SWD392/db/sqlc"
-	"github.com/katatrina/SWD392/internal/util"
+	db "github.com/katatrina/SWD392_NET1701_GroupIntern/db/sqlc"
+	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
 )
 
 // listDentists returns a list of dentists

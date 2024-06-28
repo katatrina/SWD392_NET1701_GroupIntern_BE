@@ -6,7 +6,7 @@ import (
 	"net/http"
 	
 	"github.com/gin-gonic/gin"
-	db "github.com/katatrina/SWD392/db/sqlc"
+	db "github.com/katatrina/SWD392_NET1701_GroupIntern/db/sqlc"
 	"github.com/lib/pq"
 )
 

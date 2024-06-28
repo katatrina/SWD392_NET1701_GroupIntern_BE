@@ -6,10 +6,10 @@ import (
 	
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	db "github.com/katatrina/SWD392/db/sqlc"
-	"github.com/katatrina/SWD392/internal/token"
+	db "github.com/katatrina/SWD392_NET1701_GroupIntern/db/sqlc"
+	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/token"
 	
-	_ "github.com/katatrina/SWD392/docs"
+	_ "github.com/katatrina/SWD392_NET1701_GroupIntern/docs"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )

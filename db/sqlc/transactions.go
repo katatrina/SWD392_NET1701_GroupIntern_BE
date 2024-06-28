@@ -6,7 +6,7 @@ import (
 	"errors"
 	"time"
 	
-	"github.com/katatrina/SWD392/internal/util"
+	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
 )
 
 var (

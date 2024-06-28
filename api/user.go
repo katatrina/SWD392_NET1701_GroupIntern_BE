@@ -8,7 +8,7 @@ import (
 	"time"
 	
 	"github.com/gin-gonic/gin"
-	"github.com/katatrina/SWD392/internal/util"
+	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
 )
 
 var (
