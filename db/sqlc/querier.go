@@ -44,6 +44,7 @@ type Querier interface {
 	ListServiceCategoriesByName(ctx context.Context, name string) ([]ServiceCategory, error)
 	ListServicesByCategory(ctx context.Context, slug string) ([]Service, error)
 	ListServicesByNameAndCategory(ctx context.Context, arg ListServicesByNameAndCategoryParams) ([]Service, error)
+	ListSpecialties(ctx context.Context) ([]Specialty, error)
 	UpdateDentistDetail(ctx context.Context, arg UpdateDentistDetailParams) (DentistDetail, error)
 	UpdateExaminationScheduleSlotsRemaining(ctx context.Context, scheduleID int64) error
 	UpdateService(ctx context.Context, arg UpdateServiceParams) error

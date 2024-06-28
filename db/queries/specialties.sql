@@ -6,3 +6,7 @@ VALUES ($1) RETURNING *;
 SELECT *
 FROM specialties
 WHERE id = $1;
+
+-- name: ListSpecialties :many
+SELECT *
+FROM specialties;

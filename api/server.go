@@ -105,6 +105,8 @@ func (server *Server) setupRouter() {
 		scheduleGroup.GET("/examination", server.listAvailableExaminationSchedulesByDate)
 		scheduleGroup.GET("", server.listExaminationSchedules)
 	}
+
+	v1.GET("specialties", server.listSpecialties)
 	
 	v1.GET("/payment-methods", server.listPaymentMethods)
 	
