@@ -89,6 +89,7 @@ func (server *Server) setupRouter() {
 		dentistGroup.POST("", server.createDentist)
 		dentistGroup.GET("", server.listDentists)
 		dentistGroup.GET("/:id", server.getDentist)
+		dentistGroup.PATCH("/:id", server.updateDentist)
 		dentistGroup.Use(authMiddleware(server.tokenMaker)).GET("/profile", server.getDentistProfile)
 		dentistGroup.Use(authMiddleware(server.tokenMaker)).PATCH("/profile", server.updateDentistProfile)
 	}

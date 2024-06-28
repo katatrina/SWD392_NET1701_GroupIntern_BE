@@ -496,6 +496,37 @@ paths:
       summary: Lấy thông tin cá nhân nha sĩ
       tags:
       - dentists
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Examination Appointment ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update dentist info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.updateDentistRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.UpdateDentistProfileResult'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Cho phép admin cập nhật thông tin của một nha sĩ
+      tags:
+      - dentists
   /dentists/profile:
     get:
       produces:
@@ -541,7 +572,7 @@ paths:
           description: Internal Server Error
       security:
       - accessToken: []
-      summary: Cập nhật thông tin cá nhân nha sĩ
+      summary: Cho phép nha sĩ cập nhật thông tin của mình
       tags:
       - dentists
   /patients:

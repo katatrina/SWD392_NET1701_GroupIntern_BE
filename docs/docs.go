@@ -138,7 +138,7 @@ const docTemplate = `{
                 "tags": [
                     "dentists"
                 ],
-                "summary": "Cập nhật thông tin cá nhân nha sĩ",
+                "summary": "Cho phép nha sĩ cập nhật thông tin của mình",
                 "parameters": [
                     {
                         "description": "Update dentist info",
@@ -192,6 +192,53 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/db.GetDentistRow"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "patch": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dentists"
+                ],
+                "summary": "Cho phép admin cập nhật thông tin của một nha sĩ",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Examination Appointment ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update dentist info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.updateDentistRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/db.UpdateDentistProfileResult"
                         }
                     },
                     "400": {
