@@ -270,12 +270,14 @@ func (server *Server) getDentistProfile(ctx *gin.Context) {
 //	@Failure	404
 //	@Failure	500
 func (server *Server) updateDentist(ctx *gin.Context) {
+	// Get the dentist ID from the URL path
 	dentistID, err := server.getIDParam(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 
+	// Get the dentist from the database
 	dentist, err := server.store.GetDentist(ctx, dentistID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -287,6 +289,7 @@ func (server *Server) updateDentist(ctx *gin.Context) {
 		return
 	}
 
+	// Parse the JSON request body
 	var req updateDentistRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -322,11 +325,13 @@ func (server *Server) updateDentist(ctx *gin.Context) {
 		SpecialtyID: dentist.SpecialtyID,
 	}
 
+	// Update dentist profile
 	result, err := server.store.UpdateDentistProfileTx(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 
+	// Write the updated profile as JSON response body to client
 	ctx.JSON(http.StatusOK, result)
 }
