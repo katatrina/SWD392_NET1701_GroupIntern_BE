@@ -801,6 +801,11 @@ paths:
         name: date
         required: true
         type: string
+      - description: Patient ID
+        in: query
+        name: patient_id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -814,8 +819,6 @@ paths:
           description: Bad Request
         "500":
           description: Internal Server Error
-      security:
-      - accessToken: []
       summary: Liệt kê tất cả lịch khám tổng quát còn trống trong một ngày cho bệnh
         nhân đặt lịch
       tags:

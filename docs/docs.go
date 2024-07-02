@@ -599,11 +599,6 @@ const docTemplate = `{
         },
         "/schedules/examination/available": {
             "get": {
-                "security": [
-                    {
-                        "accessToken": []
-                    }
-                ],
                 "produces": [
                     "application/json"
                 ],
@@ -616,6 +611,13 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Date in the format YYYY-MM-DD",
                         "name": "date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Patient ID",
+                        "name": "patient_id",
                         "in": "query",
                         "required": true
                     }
