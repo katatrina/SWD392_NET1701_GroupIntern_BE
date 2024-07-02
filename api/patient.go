@@ -86,7 +86,7 @@ func (server *Server) createPatient(ctx *gin.Context) {
 
 // getPatientProfile returns the information of a patient
 //
-//	@Router		/patients/profile [get]
+//	@Router		/patients [get]
 //	@Summary	Lấy thông tin bệnh nhân
 //	@Description
 //	@Tags		patients
@@ -159,6 +159,8 @@ func (server *Server) createExaminationAppointmentByPatient(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+	
+	// TODO: Authorize the patient more strictly
 	
 	arg := db.BookExaminationScheduleParams{
 		PatientID:             patientID,

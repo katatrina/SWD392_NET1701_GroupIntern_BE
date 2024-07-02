@@ -169,7 +169,7 @@ func TestInitDB(t *testing.T) {
 		},
 	}
 	for _, dentist := range dentists {
-		hashedPassword, err := util.GenerateHashedPassword("123456")
+		hashedPassword, err := util.GenerateHashedPassword("12345")
 		require.NoError(t, err)
 		
 		arg := CreateUserParams{
@@ -281,7 +281,7 @@ func TestInitDB(t *testing.T) {
 	}
 	
 	// Create sample patient account
-	hashedPassword, err := util.GenerateHashedPassword("123456")
+	hashedPassword, err := util.GenerateHashedPassword("12345")
 	require.NoError(t, err)
 	arg := CreateUserParams{
 		FullName:       "Nguyễn Thị Anh Thư",

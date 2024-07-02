@@ -165,7 +165,7 @@ type updateServiceCategoryRequest struct {
 
 // updateServiceCategory updates information of a service category
 //
-//	@Router		/service-categories/{id} [patch]
+//	@Router		/service-categories/{id} [put]
 //	@Summary	Cập nhật thông tin của một loại hình dịch vụ
 //	@Produce	json
 //	@Accept		json

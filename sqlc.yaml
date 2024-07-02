@@ -19,3 +19,9 @@ sql:
               package: "util"
               type: "JSONNullInt64"
             nullable: true
+          - column: "service_categories.name"
+            go_type:
+              import: "github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
+              package: "util"
+              type: "JSONNullString"
+            nullable: false

@@ -7,11 +7,13 @@ package db
 
 import (
 	"context"
+	"time"
 )
 
 const createServiceCategory = `-- name: CreateServiceCategory :one
 INSERT INTO service_categories (name, icon_url, banner_url, slug, description)
-VALUES ($1, $2, $3, $4, $5) RETURNING id, name, icon_url, banner_url, description, slug, created_at
+VALUES ($1::text, $2, $3, $4,
+        $5) RETURNING id, name, icon_url, banner_url, description, slug, created_at
 `
 
 type CreateServiceCategoryParams struct {
@@ -55,14 +57,30 @@ func (q *Queries) DeleteServiceCategory(ctx context.Context, id int64) error {
 }
 
 const getServiceCategoryByID = `-- name: GetServiceCategoryByID :one
-SELECT id, name, icon_url, banner_url, description, slug, created_at
+SELECT id,
+       name::text,
+       icon_url,
+       banner_url,
+       description,
+       slug,
+       created_at
 FROM service_categories
 WHERE id = $1
 `
 
-func (q *Queries) GetServiceCategoryByID(ctx context.Context, id int64) (ServiceCategory, error) {
+type GetServiceCategoryByIDRow struct {
+	ID          int64     `json:"id"`
+	Name        string    `json:"name"`
+	IconUrl     string    `json:"icon_url"`
+	BannerUrl   string    `json:"banner_url"`
+	Description string    `json:"description"`
+	Slug        string    `json:"slug"`
+	CreatedAt   time.Time `json:"created_at"`
+}
+
+func (q *Queries) GetServiceCategoryByID(ctx context.Context, id int64) (GetServiceCategoryByIDRow, error) {
 	row := q.db.QueryRowContext(ctx, getServiceCategoryByID, id)
-	var i ServiceCategory
+	var i GetServiceCategoryByIDRow
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
@@ -173,7 +191,7 @@ func (q *Queries) ListServiceCategoriesByName(ctx context.Context, name string) 
 
 const updateServiceCategory = `-- name: UpdateServiceCategory :exec
 UPDATE service_categories
-SET name        = $2,
+SET name        = $2::text,
     icon_url    = $3,
     banner_url  = $4,
     slug        = $5,

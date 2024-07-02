@@ -61,7 +61,7 @@ func (server *Server) setupRouter() {
 	{
 		patientGroup.POST("/appointments/examination", server.createExaminationAppointmentByPatient)
 		patientGroup.GET("/appointments/examination", server.listExaminationAppointmentsByPatient)
-		patientGroup.GET("/profile", server.getPatientProfile)
+		patientGroup.GET("/", server.getPatientProfile)
 		patientGroup.GET("/appointments/examination/:id", server.getExaminationAppointmentByPatient)
 	}
 	
@@ -69,9 +69,8 @@ func (server *Server) setupRouter() {
 	{
 		serviceCategoryGroup.POST("", server.createServiceCategory)
 		serviceCategoryGroup.GET("", server.listServiceCategories)
-		// serviceCategoryGroup.GET("/:slug/services", server.listServicesByCategory)
 		serviceCategoryGroup.GET("/:slug", server.getServiceCategoryBySlug)
-		serviceCategoryGroup.PATCH("/:id", server.updateServiceCategory)
+		serviceCategoryGroup.PUT("/:id", server.updateServiceCategory)
 		serviceCategoryGroup.DELETE("/:id", server.deleteServiceCategory)
 	}
 	
@@ -80,7 +79,7 @@ func (server *Server) setupRouter() {
 		serviceGroup.GET("", server.listServices)
 		serviceGroup.POST("", server.createService)
 		serviceGroup.GET("/:id", server.getService)
-		serviceGroup.PATCH("/:id", server.updateService)
+		serviceGroup.PUT("/:id", server.updateService)
 		serviceGroup.DELETE("/:id", server.deleteService)
 	}
 	
@@ -89,9 +88,7 @@ func (server *Server) setupRouter() {
 		dentistGroup.POST("", server.createDentist)
 		dentistGroup.GET("", server.listDentists)
 		dentistGroup.GET("/:id", server.getDentist)
-		dentistGroup.PATCH("/:id", server.updateDentist)
-		dentistGroup.Use(authMiddleware(server.tokenMaker)).GET("/profile", server.getDentistProfile)
-		dentistGroup.Use(authMiddleware(server.tokenMaker)).PATCH("/profile", server.updateDentistProfile)
+		dentistGroup.PUT("/:id", server.updateDentist)
 	}
 	
 	roomGroup := v1.Group("/rooms")
@@ -101,7 +98,6 @@ func (server *Server) setupRouter() {
 	}
 	
 	scheduleGroup := v1.Group("/schedules")
-	
 	{
 		scheduleGroup.POST("/examination", server.createExaminationSchedule)
 		scheduleGroup.GET("/examination", server.listExaminationSchedules)

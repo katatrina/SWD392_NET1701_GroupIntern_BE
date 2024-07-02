@@ -79,13 +79,13 @@ type Service struct {
 }
 
 type ServiceCategory struct {
-	ID          int64     `json:"id"`
-	Name        string    `json:"name"`
-	IconUrl     string    `json:"icon_url"`
-	BannerUrl   string    `json:"banner_url"`
-	Description string    `json:"description"`
-	Slug        string    `json:"slug"`
-	CreatedAt   time.Time `json:"created_at"`
+	ID          int64               `json:"id"`
+	Name        util.JSONNullString `json:"name"`
+	IconUrl     string              `json:"icon_url"`
+	BannerUrl   string              `json:"banner_url"`
+	Description string              `json:"description"`
+	Slug        string              `json:"slug"`
+	CreatedAt   time.Time           `json:"created_at"`
 }
 
 type Specialty struct {

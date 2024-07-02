@@ -255,7 +255,7 @@ definitions:
       room_name:
         type: string
       service_category:
-        type: string
+        $ref: '#/definitions/util.JSONNullString'
       start_time:
         type: string
       total_cost:
@@ -379,7 +379,7 @@ definitions:
       id:
         type: integer
       name:
-        type: string
+        $ref: '#/definitions/util.JSONNullString'
       slug:
         type: string
     type: object
@@ -415,6 +415,14 @@ definitions:
         type: integer
       valid:
         description: Valid is true if Int64 is not NULL
+        type: boolean
+    type: object
+  util.JSONNullString:
+    properties:
+      string:
+        type: string
+      valid:
+        description: Valid is true if String is not NULL
         type: boolean
     type: object
 host: localhost:8080
@@ -497,11 +505,11 @@ paths:
       summary: Lấy thông tin cá nhân nha sĩ
       tags:
       - dentists
-    patch:
+    put:
       consumes:
       - application/json
       parameters:
-      - description: Examination Appointment ID
+      - description: Dentist ID
         in: path
         name: id
         required: true
@@ -525,10 +533,10 @@ paths:
           description: Not Found
         "500":
           description: Internal Server Error
-      summary: Cho phép admin cập nhật thông tin của một nha sĩ
+      summary: Cập nhật thông tin cá nhân nha sĩ
       tags:
       - dentists
-  /dentists/profile:
+  /patients:
     get:
       produces:
       - application/json
@@ -536,47 +544,20 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/db.GetDentistRow'
+            $ref: '#/definitions/api.userInfo'
         "400":
           description: Bad Request
+        "403":
+          description: Forbidden
         "404":
           description: Not Found
         "500":
           description: Internal Server Error
       security:
       - accessToken: []
-      summary: Xem thông tin cá nhân nha sĩ
+      summary: Lấy thông tin bệnh nhân
       tags:
-      - dentists
-    patch:
-      consumes:
-      - application/json
-      parameters:
-      - description: Update dentist info
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/api.updateDentistRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/db.UpdateDentistProfileResult'
-        "400":
-          description: Bad Request
-        "404":
-          description: Not Found
-        "500":
-          description: Internal Server Error
-      security:
-      - accessToken: []
-      summary: Cho phép nha sĩ cập nhật thông tin của mình
-      tags:
-      - dentists
-  /patients:
+      - patients
     post:
       consumes:
       - application/json
@@ -671,28 +652,6 @@ paths:
       security:
       - accessToken: []
       summary: Lấy thông tin chi tiết của một lịch khám
-      tags:
-      - patients
-  /patients/profile:
-    get:
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/api.userInfo'
-        "400":
-          description: Bad Request
-        "403":
-          description: Forbidden
-        "404":
-          description: Not Found
-        "500":
-          description: Internal Server Error
-      security:
-      - accessToken: []
-      summary: Lấy thông tin bệnh nhân
       tags:
       - patients
   /payment-methods:
@@ -890,7 +849,7 @@ paths:
       summary: Xóa một loại hình dịch vụ
       tags:
       - service categories
-    patch:
+    put:
       consumes:
       - application/json
       parameters:
@@ -1034,7 +993,7 @@ paths:
       summary: Lấy thông tin của một dịch vụ
       tags:
       - services
-    patch:
+    put:
       consumes:
       - application/json
       parameters:

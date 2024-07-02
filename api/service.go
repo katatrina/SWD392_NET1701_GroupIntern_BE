@@ -66,7 +66,7 @@ type updateServiceRequest struct {
 
 // updateService updates a service
 //
-//	@Router		/services/{id} [patch]
+//	@Router		/services/{id} [put]
 //	@Summary	Cập nhật thông tin của một dịch vụ
 //	@Description
 //	@Tags		services

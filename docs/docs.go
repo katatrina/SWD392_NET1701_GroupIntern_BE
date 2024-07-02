@@ -91,84 +91,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/dentists/profile": {
-            "get": {
-                "security": [
-                    {
-                        "accessToken": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "dentists"
-                ],
-                "summary": "Xem thông tin cá nhân nha sĩ",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/db.GetDentistRow"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            },
-            "patch": {
-                "security": [
-                    {
-                        "accessToken": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "dentists"
-                ],
-                "summary": "Cho phép nha sĩ cập nhật thông tin của mình",
-                "parameters": [
-                    {
-                        "description": "Update dentist info",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/api.updateDentistRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/db.UpdateDentistProfileResult"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
         "/dentists/{id}": {
             "get": {
                 "produces": [
@@ -205,7 +127,7 @@ const docTemplate = `{
                     }
                 }
             },
-            "patch": {
+            "put": {
                 "consumes": [
                     "application/json"
                 ],
@@ -215,11 +137,11 @@ const docTemplate = `{
                 "tags": [
                     "dentists"
                 ],
-                "summary": "Cho phép admin cập nhật thông tin của một nha sĩ",
+                "summary": "Cập nhật thông tin cá nhân nha sĩ",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Examination Appointment ID",
+                        "description": "Dentist ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -254,6 +176,40 @@ const docTemplate = `{
             }
         },
         "/patients": {
+            "get": {
+                "security": [
+                    {
+                        "accessToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patients"
+                ],
+                "summary": "Lấy thông tin bệnh nhân",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/api.userInfo"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "post": {
                 "consumes": [
                     "application/json"
@@ -402,42 +358,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/patients/profile": {
-            "get": {
-                "security": [
-                    {
-                        "accessToken": []
-                    }
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "patients"
-                ],
-                "summary": "Lấy thông tin bệnh nhân",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/api.userInfo"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "Not Found"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -715,36 +635,7 @@ const docTemplate = `{
             }
         },
         "/service-categories/{id}": {
-            "delete": {
-                "tags": [
-                    "service categories"
-                ],
-                "summary": "Xóa một loại hình dịch vụ",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Service Category ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            },
-            "patch": {
+            "put": {
                 "consumes": [
                     "application/json"
                 ],
@@ -779,6 +670,35 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "service categories"
+                ],
+                "summary": "Xóa một loại hình dịch vụ",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Service Category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Forbidden"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -936,36 +856,7 @@ const docTemplate = `{
                     }
                 }
             },
-            "delete": {
-                "tags": [
-                    "services"
-                ],
-                "summary": "Xóa một dịch vụ",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Service ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            },
-            "patch": {
+            "put": {
                 "consumes": [
                     "application/json"
                 ],
@@ -1000,6 +891,35 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "services"
+                ],
+                "summary": "Xóa một dịch vụ",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Service ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Forbidden"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -1462,7 +1382,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "service_category": {
-                    "type": "string"
+                    "$ref": "#/definitions/util.JSONNullString"
                 },
                 "start_time": {
                     "type": "string"
@@ -1652,7 +1572,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "name": {
-                    "type": "string"
+                    "$ref": "#/definitions/util.JSONNullString"
                 },
                 "slug": {
                     "type": "string"
@@ -1707,6 +1627,18 @@ const docTemplate = `{
                 },
                 "valid": {
                     "description": "Valid is true if Int64 is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "util.JSONNullString": {
+            "type": "object",
+            "properties": {
+                "string": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if String is not NULL",
                     "type": "boolean"
                 }
             }

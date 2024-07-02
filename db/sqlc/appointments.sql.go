@@ -94,12 +94,12 @@ SELECT b.id             as booking_id,
 FROM bookings b
          JOIN appointments a ON b.id = a.booking_id
          JOIN schedules s ON a.schedule_id = s.id
-         JOIN examination_appointment_detail ad ON a.id = ad.schedule_id
+         JOIN examination_appointment_detail ead ON a.id = ead.appointment_id
          JOIN users u ON s.dentist_id = u.id
          JOIN dentist_detail dd ON u.id = dd.dentist_id
          JOIN specialties ON dd.specialty_id = specialties.id
          JOIN rooms r ON s.room_id = r.id
-         JOIN service_categories sc ON ad.service_category_id = sc.id
+         LEFT JOIN service_categories sc ON ead.service_category_id = sc.id
 WHERE b.id = $1
   AND b.patient_id = $2
 `
@@ -110,16 +110,16 @@ type GetExaminationAppointmentDetailsParams struct {
 }
 
 type GetExaminationAppointmentDetailsRow struct {
-	BookingID        int64     `json:"booking_id"`
-	BookingStatus    string    `json:"booking_status"`
-	PaymentStatus    string    `json:"payment_status"`
-	ServiceCategory  string    `json:"service_category"`
-	StartTime        time.Time `json:"start_time"`
-	EndTime          time.Time `json:"end_time"`
-	DentistName      string    `json:"dentist_name"`
-	DentistSpecialty string    `json:"dentist_specialty"`
-	RoomName         string    `json:"room_name"`
-	TotalCost        int64     `json:"total_cost"`
+	BookingID        int64               `json:"booking_id"`
+	BookingStatus    string              `json:"booking_status"`
+	PaymentStatus    string              `json:"payment_status"`
+	ServiceCategory  util.JSONNullString `json:"service_category"`
+	StartTime        time.Time           `json:"start_time"`
+	EndTime          time.Time           `json:"end_time"`
+	DentistName      string              `json:"dentist_name"`
+	DentistSpecialty string              `json:"dentist_specialty"`
+	RoomName         string              `json:"room_name"`
+	TotalCost        int64               `json:"total_cost"`
 }
 
 func (q *Queries) GetExaminationAppointmentDetails(ctx context.Context, arg GetExaminationAppointmentDetailsParams) (GetExaminationAppointmentDetailsRow, error) {

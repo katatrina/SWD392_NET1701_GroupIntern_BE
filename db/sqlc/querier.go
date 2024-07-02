@@ -29,7 +29,7 @@ type Querier interface {
 	GetSchedule(ctx context.Context, arg GetScheduleParams) (GetScheduleRow, error)
 	GetScheduleOverlap(ctx context.Context, arg GetScheduleOverlapParams) ([]int64, error)
 	GetService(ctx context.Context, id int64) (Service, error)
-	GetServiceCategoryByID(ctx context.Context, id int64) (ServiceCategory, error)
+	GetServiceCategoryByID(ctx context.Context, id int64) (GetServiceCategoryByIDRow, error)
 	GetServiceCategoryBySlug(ctx context.Context, slug string) (ServiceCategory, error)
 	GetSpecialty(ctx context.Context, id int64) (Specialty, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)

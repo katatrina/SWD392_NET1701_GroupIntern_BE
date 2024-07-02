@@ -16,12 +16,12 @@ SELECT b.id             as booking_id,
 FROM bookings b
          JOIN appointments a ON b.id = a.booking_id
          JOIN schedules s ON a.schedule_id = s.id
-         JOIN examination_appointment_detail ad ON a.id = ad.schedule_id
+         JOIN examination_appointment_detail ead ON a.id = ead.appointment_id
          JOIN users u ON s.dentist_id = u.id
          JOIN dentist_detail dd ON u.id = dd.dentist_id
          JOIN specialties ON dd.specialty_id = specialties.id
          JOIN rooms r ON s.room_id = r.id
-         JOIN service_categories sc ON ad.service_category_id = sc.id
+         LEFT JOIN service_categories sc ON ead.service_category_id = sc.id
 WHERE b.id = sqlc.arg(booking_id)
   AND b.patient_id = sqlc.arg(patient_id);
 
