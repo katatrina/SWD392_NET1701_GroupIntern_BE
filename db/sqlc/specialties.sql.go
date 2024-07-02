@@ -33,3 +33,31 @@ func (q *Queries) GetSpecialty(ctx context.Context, id int64) (Specialty, error)
 	err := row.Scan(&i.ID, &i.Name, &i.CreatedAt)
 	return i, err
 }
+
+const listSpecialties = `-- name: ListSpecialties :many
+SELECT id, name, created_at
+FROM specialties
+`
+
+func (q *Queries) ListSpecialties(ctx context.Context) ([]Specialty, error) {
+	rows, err := q.db.QueryContext(ctx, listSpecialties)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Specialty{}
+	for rows.Next() {
+		var i Specialty
+		if err := rows.Scan(&i.ID, &i.Name, &i.CreatedAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}

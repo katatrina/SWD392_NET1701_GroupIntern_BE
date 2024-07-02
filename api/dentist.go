@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 	"time"
-	
+
 	"github.com/gin-gonic/gin"
 	db "github.com/katatrina/SWD392_NET1701_GroupIntern/db/sqlc"
 	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
@@ -34,10 +34,10 @@ func (server *Server) listDentists(ctx *gin.Context) {
 		default:
 			ctx.JSON(http.StatusOK, services)
 		}
-		
+
 		return
 	}
-	
+
 	services, err := server.store.ListDentistsByName(ctx, searchQuery)
 	switch {
 	case err != nil:
@@ -73,18 +73,18 @@ type createDentistRequest struct {
 //	@Failure	500
 func (server *Server) createDentist(ctx *gin.Context) {
 	var req createDentistRequest
-	
+
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	
+
 	hashedPassword, err := util.GenerateHashedPassword(req.Password)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	
+
 	arg := db.CreateDentistAccountParams{
 		FullName:       req.FullName,
 		Email:          req.Email,
@@ -94,13 +94,13 @@ func (server *Server) createDentist(ctx *gin.Context) {
 		SpecialtyID:    req.SpecialtyID,
 		HashedPassword: hashedPassword,
 	}
-	
+
 	result, err := server.store.CreateDentistAccountTx(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	
+
 	ctx.JSON(http.StatusCreated, result)
 }
 
@@ -122,18 +122,18 @@ func (server *Server) getDentist(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	
+
 	dentist, err := server.store.GetDentist(ctx, dentistID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
 			return
 		}
-		
+
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	
+
 	ctx.JSON(http.StatusOK, dentist)
 }
 
@@ -149,7 +149,7 @@ type updateDentistRequest struct {
 // updateDentistProfile updates a dentist's profile
 //
 //	@Router		/dentists/profile [patch]
-//	@Summary	Cập nhật thông tin cá nhân nha sĩ
+//	@Summary	Cho phép nha sĩ cập nhật thông tin của mình
 //	@Produce	json
 //	@Accept		json
 //	@Security	accessToken
@@ -166,24 +166,24 @@ func (server *Server) updateDentistProfile(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	
+
 	dentist, err := server.store.GetDentist(ctx, dentistID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
 			return
 		}
-		
+
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	
+
 	var req updateDentistRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	
+
 	if req.FullName != nil {
 		dentist.FullName = *req.FullName
 	}
@@ -202,7 +202,7 @@ func (server *Server) updateDentistProfile(ctx *gin.Context) {
 	if req.SpecialtyID != nil {
 		dentist.SpecialtyID = *req.SpecialtyID
 	}
-	
+
 	arg := db.UpdateDentistProfileParams{
 		DentistID:   dentist.ID,
 		FullName:    dentist.FullName,
@@ -212,13 +212,13 @@ func (server *Server) updateDentistProfile(ctx *gin.Context) {
 		Gender:      dentist.Gender,
 		SpecialtyID: dentist.SpecialtyID,
 	}
-	
+
 	result, err := server.store.UpdateDentistProfileTx(ctx, arg)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	
+
 	ctx.JSON(http.StatusOK, result)
 }
 
@@ -240,17 +240,98 @@ func (server *Server) getDentistProfile(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	
+
 	dentist, err := server.store.GetDentist(ctx, dentistID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
 			return
 		}
-		
+
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-	
+
 	ctx.JSON(http.StatusOK, dentist)
+}
+
+// updateDentist updates the profile of a dentist
+//
+//	@Router		/dentists/{id} [patch]
+//	@Summary	Cho phép admin cập nhật thông tin của một nha sĩ
+//	@Produce	json
+//	@Accept		json
+//	@Param		id		path	int						true	"Examination Appointment ID"
+//	@Param		request	body	updateDentistRequest	true	"Update dentist info"
+//	@Description
+//	@Tags		dentists
+//	@Success	200	{object}	db.UpdateDentistProfileResult
+//	@Failure	400
+//	@Failure	404
+//	@Failure	500
+func (server *Server) updateDentist(ctx *gin.Context) {
+	// Get the dentist ID from the URL path
+	dentistID, err := server.getIDParam(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	// Get the dentist from the database
+	dentist, err := server.store.GetDentist(ctx, dentistID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+			return
+		}
+
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	// Parse the JSON request body
+	var req updateDentistRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+
+	if req.FullName != nil {
+		dentist.FullName = *req.FullName
+	}
+	if req.Email != nil {
+		dentist.Email = *req.Email
+	}
+	if req.PhoneNumber != nil {
+		dentist.PhoneNumber = *req.PhoneNumber
+	}
+	if req.DateOfBirth != nil {
+		dentist.DateOfBirth = time.Time(*req.DateOfBirth)
+	}
+	if req.Gender != nil {
+		dentist.Gender = *req.Gender
+	}
+	if req.SpecialtyID != nil {
+		dentist.SpecialtyID = *req.SpecialtyID
+	}
+
+	arg := db.UpdateDentistProfileParams{
+		DentistID:   dentist.ID,
+		FullName:    dentist.FullName,
+		Email:       dentist.Email,
+		PhoneNumber: dentist.PhoneNumber,
+		DateOfBirth: dentist.DateOfBirth,
+		Gender:      dentist.Gender,
+		SpecialtyID: dentist.SpecialtyID,
+	}
+
+	// Update dentist profile
+	result, err := server.store.UpdateDentistProfileTx(ctx, arg)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+
+	// Write the updated profile as JSON response body to client
+	ctx.JSON(http.StatusOK, result)
 }
