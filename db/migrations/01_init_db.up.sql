@@ -55,30 +55,14 @@ CREATE TABLE "services"
 
 CREATE TABLE "schedules"
 (
-    "id"         bigserial PRIMARY KEY,
-    "type"       text        NOT NULL,
-    "start_time" timestamptz NOT NULL,
-    "end_time"   timestamptz NOT NULL,
-    "dentist_id" bigint      NOT NULL,
-    "room_id"    bigint      NOT NULL,
-    "created_at" timestamptz NOT NULL DEFAULT (now())
-);
-
-CREATE TABLE "examination_schedule_detail"
-(
-    "schedule_id"         bigint PRIMARY KEY,
-    "service_category_id" bigint,
-    "slots_remaining"     bigint      NOT NULL DEFAULT 3,
-    "created_at"          timestamptz NOT NULL DEFAULT (now())
-);
-
-CREATE TABLE "treatment_schedule_detail"
-(
-    "schedule_id"      bigint PRIMARY KEY,
-    "service_id"       bigint      NOT NULL,
-    "service_quantity" bigint      NOT NULL,
-    "slot_remains"     bigint      NOT NULL DEFAULT 1,
-    "created_at"       timestamptz NOT NULL DEFAULT (now())
+    "id"              bigserial PRIMARY KEY,
+    "type"            text        NOT NULL,
+    "start_time"      timestamptz NOT NULL,
+    "end_time"        timestamptz NOT NULL,
+    "dentist_id"      bigint      NOT NULL,
+    "room_id"         bigint      NOT NULL,
+    "slots_remaining" bigint      NOT NULL,
+    "created_at"      timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "appointments"
@@ -89,6 +73,21 @@ CREATE TABLE "appointments"
     "patient_id"  bigint      NOT NULL,
     "status"      text        NOT NULL DEFAULT 'Đang chờ',
     "created_at"  timestamptz NOT NULL DEFAULT (now())
+);
+
+CREATE TABLE "examination_appointment_detail"
+(
+    "appointment_id"      bigint PRIMARY KEY,
+    "service_category_id" bigint,
+    "created_at"          timestamptz NOT NULL DEFAULT (now())
+);
+
+CREATE TABLE "treatment_appointment_detail"
+(
+    "appointment_id"   bigint PRIMARY KEY,
+    "service_id"       bigint      NOT NULL,
+    "service_quantity" bigint      NOT NULL,
+    "created_at"       timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "bookings"
@@ -126,18 +125,6 @@ ALTER TABLE "schedules"
 ALTER TABLE "schedules"
     ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("id");
 
-ALTER TABLE "examination_schedule_detail"
-    ADD FOREIGN KEY ("service_category_id") REFERENCES "service_categories" ("id");
-
-ALTER TABLE "examination_schedule_detail"
-    ADD FOREIGN KEY ("schedule_id") REFERENCES "schedules" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
-ALTER TABLE "treatment_schedule_detail"
-    ADD FOREIGN KEY ("service_id") REFERENCES "services" ("id");
-
-ALTER TABLE "treatment_schedule_detail"
-    ADD FOREIGN KEY ("schedule_id") REFERENCES "schedules" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
 ALTER TABLE "appointments"
     ADD FOREIGN KEY ("booking_id") REFERENCES "bookings" ("id");
 
@@ -146,6 +133,18 @@ ALTER TABLE "appointments"
 
 ALTER TABLE "appointments"
     ADD FOREIGN KEY ("patient_id") REFERENCES "users" ("id");
+
+ALTER TABLE "examination_appointment_detail"
+    ADD FOREIGN KEY ("service_category_id") REFERENCES "service_categories" ("id");
+
+ALTER TABLE "examination_appointment_detail"
+    ADD FOREIGN KEY ("appointment_id") REFERENCES "appointments" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "treatment_appointment_detail"
+    ADD FOREIGN KEY ("service_id") REFERENCES "services" ("id");
+
+ALTER TABLE "treatment_appointment_detail"
+    ADD FOREIGN KEY ("appointment_id") REFERENCES "appointments" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "bookings"
     ADD FOREIGN KEY ("patient_id") REFERENCES "users" ("id");

@@ -160,7 +160,7 @@ func (server *Server) createExaminationAppointmentByPatient(ctx *gin.Context) {
 		return
 	}
 	
-	arg := db.BookExaminationAppointmentParams{
+	arg := db.BookExaminationScheduleParams{
 		PatientID:             patientID,
 		ExaminationScheduleID: req.ExaminationScheduleID,
 		ServiceCategoryID:     req.ServiceCategoryID,
@@ -168,7 +168,11 @@ func (server *Server) createExaminationAppointmentByPatient(ctx *gin.Context) {
 	
 	err = server.store.BookExaminationAppointmentByPatientTx(ctx, arg)
 	if err != nil {
-		if errors.Is(err, db.ErrScheduleFullSlot) {
+		switch {
+		case errors.Is(err, db.ErrScheduleBookedByPatientBefore):
+			ctx.JSON(http.StatusForbidden, errorResponse(err))
+			return
+		case errors.Is(err, db.ErrScheduleFullSlot):
 			ctx.JSON(http.StatusForbidden, errorResponse(err))
 			return
 		}

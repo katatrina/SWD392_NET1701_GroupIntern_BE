@@ -6,14 +6,13 @@ package db
 
 import (
 	"context"
-	"time"
 )
 
 type Querier interface {
-	CreateAppointment(ctx context.Context, arg CreateAppointmentParams) error
+	CreateAppointment(ctx context.Context, arg CreateAppointmentParams) (Appointment, error)
 	CreateBooking(ctx context.Context, arg CreateBookingParams) (Booking, error)
 	CreateDentistDetail(ctx context.Context, arg CreateDentistDetailParams) (DentistDetail, error)
-	CreateExaminationScheduleDetail(ctx context.Context, scheduleID int64) (ExaminationScheduleDetail, error)
+	CreateExaminationAppointmentDetail(ctx context.Context, arg CreateExaminationAppointmentDetailParams) (ExaminationAppointmentDetail, error)
 	CreatePayment(ctx context.Context, name string) (Payment, error)
 	CreateRoom(ctx context.Context, name string) (Room, error)
 	CreateSchedule(ctx context.Context, arg CreateScheduleParams) (Schedule, error)
@@ -23,17 +22,18 @@ type Querier interface {
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteService(ctx context.Context, id int64) error
 	DeleteServiceCategory(ctx context.Context, id int64) error
+	GetAppointmentByScheduleIDAndPatientID(ctx context.Context, arg GetAppointmentByScheduleIDAndPatientIDParams) (Appointment, error)
 	GetDentist(ctx context.Context, id int64) (GetDentistRow, error)
 	GetExaminationAppointmentDetails(ctx context.Context, arg GetExaminationAppointmentDetailsParams) (GetExaminationAppointmentDetailsRow, error)
-	GetExaminationScheduleDetail(ctx context.Context, scheduleID int64) (GetExaminationScheduleDetailRow, error)
 	GetPatient(ctx context.Context, id int64) (User, error)
+	GetSchedule(ctx context.Context, arg GetScheduleParams) (GetScheduleRow, error)
 	GetScheduleOverlap(ctx context.Context, arg GetScheduleOverlapParams) ([]int64, error)
 	GetService(ctx context.Context, id int64) (Service, error)
 	GetServiceCategoryByID(ctx context.Context, id int64) (ServiceCategory, error)
 	GetServiceCategoryBySlug(ctx context.Context, slug string) (ServiceCategory, error)
 	GetSpecialty(ctx context.Context, id int64) (Specialty, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
-	ListAvailableExaminationSchedulesByDate(ctx context.Context, date time.Time) ([]ListAvailableExaminationSchedulesByDateRow, error)
+	ListAvailableExaminationSchedulesByDateForPatient(ctx context.Context, arg ListAvailableExaminationSchedulesByDateForPatientParams) ([]ListAvailableExaminationSchedulesByDateForPatientRow, error)
 	ListBookings(ctx context.Context, arg ListBookingsParams) ([]Booking, error)
 	ListDentists(ctx context.Context) ([]ListDentistsRow, error)
 	ListDentistsByName(ctx context.Context, name string) ([]ListDentistsByNameRow, error)
@@ -45,10 +45,9 @@ type Querier interface {
 	ListServicesByCategory(ctx context.Context, slug string) ([]Service, error)
 	ListServicesByNameAndCategory(ctx context.Context, arg ListServicesByNameAndCategoryParams) ([]Service, error)
 	UpdateDentistDetail(ctx context.Context, arg UpdateDentistDetailParams) (DentistDetail, error)
-	UpdateExaminationScheduleSlotsRemaining(ctx context.Context, scheduleID int64) error
+	UpdateScheduleSlotsRemaining(ctx context.Context, id int64) error
 	UpdateService(ctx context.Context, arg UpdateServiceParams) error
 	UpdateServiceCategory(ctx context.Context, arg UpdateServiceCategoryParams) error
-	UpdateServiceCategoryOfExaminationSchedule(ctx context.Context, arg UpdateServiceCategoryOfExaminationScheduleParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 }
 

@@ -100,10 +100,11 @@ func (server *Server) setupRouter() {
 	}
 	
 	scheduleGroup := v1.Group("/schedules")
+	
 	{
 		scheduleGroup.POST("/examination", server.createExaminationSchedule)
 		scheduleGroup.GET("/examination", server.listExaminationSchedules)
-		scheduleGroup.GET("/examination/available", server.listAvailableExaminationSchedulesByDate)
+		scheduleGroup.Use(authMiddleware(server.tokenMaker)).GET("/examination/available", server.listAvailableExaminationSchedulesByDate)
 	}
 	
 	v1.GET("/payment-methods", server.listPaymentMethods)

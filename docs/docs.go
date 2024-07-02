@@ -535,7 +535,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/db.CreateExaminationScheduleTxResult"
+                            "$ref": "#/definitions/db.Schedule"
                         }
                     },
                     "400": {
@@ -552,13 +552,18 @@ const docTemplate = `{
         },
         "/schedules/examination/available": {
             "get": {
+                "security": [
+                    {
+                        "accessToken": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "schedules"
                 ],
-                "summary": "Liệt kê tất cả lịch khám tổng quát còn trống trong một ngày",
+                "summary": "Liệt kê tất cả lịch khám tổng quát còn trống trong một ngày cho bệnh nhân đặt lịch",
                 "parameters": [
                     {
                         "type": "string",
@@ -574,7 +579,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/db.ListAvailableExaminationSchedulesByDateRow"
+                                "$ref": "#/definitions/db.ListAvailableExaminationSchedulesByDateForPatientRow"
                             }
                         }
                     },
@@ -1323,34 +1328,6 @@ const docTemplate = `{
                 }
             }
         },
-        "db.CreateExaminationScheduleTxResult": {
-            "type": "object",
-            "properties": {
-                "details": {
-                    "$ref": "#/definitions/db.ExaminationScheduleDetail"
-                },
-                "metadata": {
-                    "$ref": "#/definitions/db.Schedule"
-                }
-            }
-        },
-        "db.ExaminationScheduleDetail": {
-            "type": "object",
-            "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "schedule_id": {
-                    "type": "integer"
-                },
-                "service_category_id": {
-                    "$ref": "#/definitions/sql.NullInt64"
-                },
-                "slots_remaining": {
-                    "type": "integer"
-                }
-            }
-        },
         "db.GetDentistRow": {
             "type": "object",
             "properties": {
@@ -1418,7 +1395,7 @@ const docTemplate = `{
                 }
             }
         },
-        "db.ListAvailableExaminationSchedulesByDateRow": {
+        "db.ListAvailableExaminationSchedulesByDateForPatientRow": {
             "type": "object",
             "properties": {
                 "dentist_name": {
@@ -1540,6 +1517,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "room_id": {
+                    "type": "integer"
+                },
+                "slots_remaining": {
                     "type": "integer"
                 },
                 "start_time": {

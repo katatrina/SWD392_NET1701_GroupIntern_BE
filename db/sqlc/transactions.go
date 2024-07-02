@@ -10,21 +10,31 @@ import (
 )
 
 var (
-	ErrScheduleFullSlot = errors.New("schedule is full slot")
+	ErrScheduleFullSlot              = errors.New("schedule is full slot")
+	ErrScheduleBookedByPatientBefore = errors.New("schedule is booked by the patient before")
 )
 
-type BookExaminationAppointmentParams struct {
+type BookExaminationScheduleParams struct {
 	PatientID             int64
 	ExaminationScheduleID int64
 	ServiceCategoryID     int64
 }
 
-func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context, arg BookExaminationAppointmentParams) error {
+func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context, arg BookExaminationScheduleParams) error {
 	err := store.execTx(ctx, func(q *Queries) error {
-		// Get examination schedule detail
-		schedule, err := q.GetExaminationScheduleDetail(ctx, arg.ExaminationScheduleID)
-		if err != nil {
-			return err
+		// Get schedule
+		schedule, err := q.GetSchedule(ctx, GetScheduleParams{
+			ScheduleID: arg.ExaminationScheduleID,
+			Type:       "Examination",
+		})
+		
+		// Check if the schedule is booked by the patient before
+		_, err = q.GetAppointmentByScheduleIDAndPatientID(ctx, GetAppointmentByScheduleIDAndPatientIDParams{
+			ScheduleID: arg.ExaminationScheduleID,
+			PatientID:  arg.PatientID,
+		})
+		if !errors.Is(err, sql.ErrNoRows) {
+			return ErrScheduleBookedByPatientBefore
 		}
 		
 		// Check if the schedule is full
@@ -49,23 +59,36 @@ func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context
 		}
 		
 		// Create a new examination appointment
-		err = q.CreateAppointment(ctx, CreateAppointmentParams{
+		appointment, err := q.CreateAppointment(ctx, CreateAppointmentParams{
 			BookingID:  booking.ID,
-			ScheduleID: schedule.ID,
+			ScheduleID: schedule.ScheduleID,
 			PatientID:  arg.PatientID,
 		})
 		if err != nil {
 			return err
 		}
 		
-		// Update service category ID
+		// Update service category ID of the examination appointment
 		if arg.ServiceCategoryID > 0 {
-			err = q.UpdateServiceCategoryOfExaminationSchedule(ctx, UpdateServiceCategoryOfExaminationScheduleParams{
-				ScheduleID: schedule.ID,
-				ServiceCategoryID: sql.NullInt64{
-					Int64: arg.ServiceCategoryID,
-					Valid: true,
-				},
+			_, err := q.CreateExaminationAppointmentDetail(ctx, CreateExaminationAppointmentDetailParams{
+				AppointmentID: appointment.ID,
+				ServiceCategoryID: util.JSONNullInt64{
+					NullInt64: sql.NullInt64{
+						Int64: arg.ServiceCategoryID,
+						Valid: true,
+					}},
+			})
+			if err != nil {
+				return err
+			}
+		} else {
+			_, err := q.CreateExaminationAppointmentDetail(ctx, CreateExaminationAppointmentDetailParams{
+				AppointmentID: appointment.ID,
+				ServiceCategoryID: util.JSONNullInt64{
+					NullInt64: sql.NullInt64{
+						Int64: 0,
+						Valid: false,
+					}},
 			})
 			if err != nil {
 				return err
@@ -73,7 +96,7 @@ func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context
 		}
 		
 		// Update slots remaining
-		err = q.UpdateExaminationScheduleSlotsRemaining(ctx, schedule.ID)
+		err = q.UpdateScheduleSlotsRemaining(ctx, schedule.ScheduleID)
 		if err != nil {
 			return err
 		}
@@ -209,48 +232,6 @@ func (store *SQLStore) UpdateDentistProfileTx(ctx context.Context, arg UpdateDen
 			return err
 		}
 		result.Specialty = specialty.Name
-		
-		return nil
-	})
-	
-	return result, err
-}
-
-type CreateExaminationScheduleTxParams struct {
-	DentistID int64     `json:"dentist_id"`
-	StartTime time.Time `json:"start_time"`
-	EndTime   time.Time `json:"end_time"`
-	RoomID    int64     `json:"room_id"`
-}
-
-type CreateExaminationScheduleTxResult struct {
-	Metadata Schedule                  `json:"metadata"`
-	Details  ExaminationScheduleDetail `json:"details"`
-}
-
-func (store *SQLStore) CreateExaminationScheduleTx(ctx context.Context, arg CreateExaminationScheduleTxParams) (CreateExaminationScheduleTxResult, error) {
-	var result CreateExaminationScheduleTxResult
-	
-	err := store.execTx(ctx, func(q *Queries) error {
-		// Create examination schedule
-		schedule, err := q.CreateSchedule(ctx, CreateScheduleParams{
-			Type:      "Examination",
-			StartTime: arg.StartTime,
-			EndTime:   arg.EndTime,
-			DentistID: arg.DentistID,
-			RoomID:    arg.RoomID,
-		})
-		if err != nil {
-			return err
-		}
-		result.Metadata = schedule
-		
-		// Create examination schedule detail
-		details, err := q.CreateExaminationScheduleDetail(ctx, schedule.ID)
-		if err != nil {
-			return err
-		}
-		result.Details = details
 		
 		return nil
 	})

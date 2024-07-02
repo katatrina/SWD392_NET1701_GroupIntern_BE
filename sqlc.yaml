@@ -12,6 +12,10 @@ sql:
         emit_exact_table_names: false
         emit_empty_slices: true
         emit_json_tags: true
-#        overrides:
-#          - db_type: ""
-#            go_type: ""
+        overrides:
+          - column: "examination_appointment_detail.service_category_id"
+            go_type:
+              import: "github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
+              package: "util"
+              type: "JSONNullInt64"
+            nullable: true

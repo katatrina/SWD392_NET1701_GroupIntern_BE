@@ -3,8 +3,6 @@ SELECT *
 FROM service_categories
 ORDER BY created_at DESC;
 
-
-
 -- name: CreateServiceCategory :one
 INSERT INTO service_categories (name, icon_url, banner_url, slug, description)
 VALUES ($1, $2, $3, $4, $5) RETURNING *;

@@ -8,11 +8,13 @@ package db
 import (
 	"context"
 	"time"
+
+	util "github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
 )
 
-const createAppointment = `-- name: CreateAppointment :exec
+const createAppointment = `-- name: CreateAppointment :one
 INSERT INTO appointments (booking_id, schedule_id, patient_id)
-VALUES ($1, $2, $3)
+VALUES ($1, $2, $3) RETURNING id, booking_id, schedule_id, patient_id, status, created_at
 `
 
 type CreateAppointmentParams struct {
@@ -21,23 +23,85 @@ type CreateAppointmentParams struct {
 	PatientID  int64 `json:"patient_id"`
 }
 
-func (q *Queries) CreateAppointment(ctx context.Context, arg CreateAppointmentParams) error {
-	_, err := q.db.ExecContext(ctx, createAppointment, arg.BookingID, arg.ScheduleID, arg.PatientID)
-	return err
+func (q *Queries) CreateAppointment(ctx context.Context, arg CreateAppointmentParams) (Appointment, error) {
+	row := q.db.QueryRowContext(ctx, createAppointment, arg.BookingID, arg.ScheduleID, arg.PatientID)
+	var i Appointment
+	err := row.Scan(
+		&i.ID,
+		&i.BookingID,
+		&i.ScheduleID,
+		&i.PatientID,
+		&i.Status,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const createExaminationAppointmentDetail = `-- name: CreateExaminationAppointmentDetail :one
+INSERT INTO examination_appointment_detail (appointment_id, service_category_id)
+VALUES ($1, $2) RETURNING appointment_id, service_category_id, created_at
+`
+
+type CreateExaminationAppointmentDetailParams struct {
+	AppointmentID     int64              `json:"appointment_id"`
+	ServiceCategoryID util.JSONNullInt64 `json:"service_category_id"`
+}
+
+func (q *Queries) CreateExaminationAppointmentDetail(ctx context.Context, arg CreateExaminationAppointmentDetailParams) (ExaminationAppointmentDetail, error) {
+	row := q.db.QueryRowContext(ctx, createExaminationAppointmentDetail, arg.AppointmentID, arg.ServiceCategoryID)
+	var i ExaminationAppointmentDetail
+	err := row.Scan(&i.AppointmentID, &i.ServiceCategoryID, &i.CreatedAt)
+	return i, err
+}
+
+const getAppointmentByScheduleIDAndPatientID = `-- name: GetAppointmentByScheduleIDAndPatientID :one
+SELECT id, booking_id, schedule_id, patient_id, status, created_at
+FROM appointments
+WHERE schedule_id = $1
+  AND patient_id = $2
+`
+
+type GetAppointmentByScheduleIDAndPatientIDParams struct {
+	ScheduleID int64 `json:"schedule_id"`
+	PatientID  int64 `json:"patient_id"`
+}
+
+func (q *Queries) GetAppointmentByScheduleIDAndPatientID(ctx context.Context, arg GetAppointmentByScheduleIDAndPatientIDParams) (Appointment, error) {
+	row := q.db.QueryRowContext(ctx, getAppointmentByScheduleIDAndPatientID, arg.ScheduleID, arg.PatientID)
+	var i Appointment
+	err := row.Scan(
+		&i.ID,
+		&i.BookingID,
+		&i.ScheduleID,
+		&i.PatientID,
+		&i.Status,
+		&i.CreatedAt,
+	)
+	return i, err
 }
 
 const getExaminationAppointmentDetails = `-- name: GetExaminationAppointmentDetails :one
-SELECT b.id as booking_id, b.status as booking_status, b.payment_status, sc.name as service_category, s.start_time, s.end_time, u.full_name as dentist_name, specialties.name as dentist_specialty, r.name as room_name, b.total_cost
+SELECT b.id             as booking_id,
+       b.status         as booking_status,
+       b.payment_status,
+       sc.name          as service_category,
+       s.start_time,
+       s.end_time,
+       u.full_name      as dentist_name,
+       specialties.name as dentist_specialty,
+       r.name           as room_name,
+       b.total_cost
 FROM bookings b
          JOIN appointments a ON b.id = a.booking_id
          JOIN schedules s ON a.schedule_id = s.id
-         JOIN examination_schedule_detail sd ON s.id = sd.schedule_id
+         JOIN examination_appointment_detail ad ON a.id = ad.schedule_id
          JOIN users u ON s.dentist_id = u.id
          JOIN dentist_detail dd ON u.id = dd.dentist_id
          JOIN specialties ON dd.specialty_id = specialties.id
          JOIN rooms r ON s.room_id = r.id
-         JOIN service_categories sc ON sd.service_category_id = sc.id
-WHERE b.id = $1 AND b.patient_id = $2
+         JOIN service_categories sc ON ad.service_category_id = sc.id
+WHERE b.id = $1
+  AND b.patient_id = $2
 `
 
 type GetExaminationAppointmentDetailsParams struct {

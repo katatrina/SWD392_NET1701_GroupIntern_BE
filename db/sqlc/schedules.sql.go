@@ -7,38 +7,21 @@ package db
 
 import (
 	"context"
-	"database/sql"
 	"time"
 )
 
-const createExaminationScheduleDetail = `-- name: CreateExaminationScheduleDetail :one
-INSERT INTO examination_schedule_detail (schedule_id)
-VALUES ($1) RETURNING schedule_id, service_category_id, slots_remaining, created_at
-`
-
-func (q *Queries) CreateExaminationScheduleDetail(ctx context.Context, scheduleID int64) (ExaminationScheduleDetail, error) {
-	row := q.db.QueryRowContext(ctx, createExaminationScheduleDetail, scheduleID)
-	var i ExaminationScheduleDetail
-	err := row.Scan(
-		&i.ScheduleID,
-		&i.ServiceCategoryID,
-		&i.SlotsRemaining,
-		&i.CreatedAt,
-	)
-	return i, err
-}
-
 const createSchedule = `-- name: CreateSchedule :one
-INSERT INTO schedules (type, start_time, end_time, dentist_id, room_id)
-VALUES ($1, $2, $3, $4, $5) RETURNING id, type, start_time, end_time, dentist_id, room_id, created_at
+INSERT INTO schedules (type, start_time, end_time, dentist_id, room_id, slots_remaining)
+VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, type, start_time, end_time, dentist_id, room_id, slots_remaining, created_at
 `
 
 type CreateScheduleParams struct {
-	Type      string    `json:"type"`
-	StartTime time.Time `json:"start_time"`
-	EndTime   time.Time `json:"end_time"`
-	DentistID int64     `json:"dentist_id"`
-	RoomID    int64     `json:"room_id"`
+	Type           string    `json:"type"`
+	StartTime      time.Time `json:"start_time"`
+	EndTime        time.Time `json:"end_time"`
+	DentistID      int64     `json:"dentist_id"`
+	RoomID         int64     `json:"room_id"`
+	SlotsRemaining int64     `json:"slots_remaining"`
 }
 
 func (q *Queries) CreateSchedule(ctx context.Context, arg CreateScheduleParams) (Schedule, error) {
@@ -48,6 +31,7 @@ func (q *Queries) CreateSchedule(ctx context.Context, arg CreateScheduleParams) 
 		arg.EndTime,
 		arg.DentistID,
 		arg.RoomID,
+		arg.SlotsRemaining,
 	)
 	var i Schedule
 	err := row.Scan(
@@ -57,44 +41,56 @@ func (q *Queries) CreateSchedule(ctx context.Context, arg CreateScheduleParams) 
 		&i.EndTime,
 		&i.DentistID,
 		&i.RoomID,
+		&i.SlotsRemaining,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
-const getExaminationScheduleDetail = `-- name: GetExaminationScheduleDetail :one
-SELECT s.id,
+const getSchedule = `-- name: GetSchedule :one
+SELECT s.id as schedule_id,
+       s.type,
        s.start_time,
        s.end_time,
        u.full_name as dentist_name,
        r.name      as room_name,
-       esd.slots_remaining
+       s.slots_remaining,
+       s.created_at
 FROM schedules s
-         JOIN examination_schedule_detail esd ON s.id = esd.schedule_id
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id
 WHERE s.id = $1
+  AND s.type = $2
 `
 
-type GetExaminationScheduleDetailRow struct {
-	ID             int64     `json:"id"`
+type GetScheduleParams struct {
+	ScheduleID int64  `json:"schedule_id"`
+	Type       string `json:"type"`
+}
+
+type GetScheduleRow struct {
+	ScheduleID     int64     `json:"schedule_id"`
+	Type           string    `json:"type"`
 	StartTime      time.Time `json:"start_time"`
 	EndTime        time.Time `json:"end_time"`
 	DentistName    string    `json:"dentist_name"`
 	RoomName       string    `json:"room_name"`
 	SlotsRemaining int64     `json:"slots_remaining"`
+	CreatedAt      time.Time `json:"created_at"`
 }
 
-func (q *Queries) GetExaminationScheduleDetail(ctx context.Context, scheduleID int64) (GetExaminationScheduleDetailRow, error) {
-	row := q.db.QueryRowContext(ctx, getExaminationScheduleDetail, scheduleID)
-	var i GetExaminationScheduleDetailRow
+func (q *Queries) GetSchedule(ctx context.Context, arg GetScheduleParams) (GetScheduleRow, error) {
+	row := q.db.QueryRowContext(ctx, getSchedule, arg.ScheduleID, arg.Type)
+	var i GetScheduleRow
 	err := row.Scan(
-		&i.ID,
+		&i.ScheduleID,
+		&i.Type,
 		&i.StartTime,
 		&i.EndTime,
 		&i.DentistName,
 		&i.RoomName,
 		&i.SlotsRemaining,
+		&i.CreatedAt,
 	)
 	return i, err
 }
@@ -136,18 +132,24 @@ func (q *Queries) GetScheduleOverlap(ctx context.Context, arg GetScheduleOverlap
 	return items, nil
 }
 
-const listAvailableExaminationSchedulesByDate = `-- name: ListAvailableExaminationSchedulesByDate :many
+const listAvailableExaminationSchedulesByDateForPatient = `-- name: ListAvailableExaminationSchedulesByDateForPatient :many
 SELECT s.id as schedule_id, s.type, s.start_time, s.end_time, u.full_name as dentist_name, r.name as room_name
 FROM schedules s
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id
-         JOIN examination_schedule_detail esd ON s.id = esd.schedule_id
-WHERE s.start_time::date = $1::date
-    AND esd.slots_remaining > 0
+         LEFT JOIN appointments a ON s.id = a.schedule_id AND a.patient_id = $1
+WHERE s.start_time::date = $2::date
+    AND s.slots_remaining > 0
+    AND a.id IS NULL
 ORDER BY s.start_time ASC
 `
 
-type ListAvailableExaminationSchedulesByDateRow struct {
+type ListAvailableExaminationSchedulesByDateForPatientParams struct {
+	PatientID int64     `json:"patient_id"`
+	Date      time.Time `json:"date"`
+}
+
+type ListAvailableExaminationSchedulesByDateForPatientRow struct {
 	ScheduleID  int64     `json:"schedule_id"`
 	Type        string    `json:"type"`
 	StartTime   time.Time `json:"start_time"`
@@ -156,15 +158,15 @@ type ListAvailableExaminationSchedulesByDateRow struct {
 	RoomName    string    `json:"room_name"`
 }
 
-func (q *Queries) ListAvailableExaminationSchedulesByDate(ctx context.Context, date time.Time) ([]ListAvailableExaminationSchedulesByDateRow, error) {
-	rows, err := q.db.QueryContext(ctx, listAvailableExaminationSchedulesByDate, date)
+func (q *Queries) ListAvailableExaminationSchedulesByDateForPatient(ctx context.Context, arg ListAvailableExaminationSchedulesByDateForPatientParams) ([]ListAvailableExaminationSchedulesByDateForPatientRow, error) {
+	rows, err := q.db.QueryContext(ctx, listAvailableExaminationSchedulesByDateForPatient, arg.PatientID, arg.Date)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []ListAvailableExaminationSchedulesByDateRow{}
+	items := []ListAvailableExaminationSchedulesByDateForPatientRow{}
 	for rows.Next() {
-		var i ListAvailableExaminationSchedulesByDateRow
+		var i ListAvailableExaminationSchedulesByDateForPatientRow
 		if err := rows.Scan(
 			&i.ScheduleID,
 			&i.Type,
@@ -197,7 +199,6 @@ SELECT s.id        as schedule_id,
 FROM schedules s
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id
-         JOIN examination_schedule_detail esd ON s.id = esd.schedule_id
          LEFT JOIN appointments a ON s.id = a.schedule_id
 GROUP BY s.id, u.full_name, r.name
 ORDER BY s.created_at ASC
@@ -244,29 +245,13 @@ func (q *Queries) ListExaminationSchedules(ctx context.Context) ([]ListExaminati
 	return items, nil
 }
 
-const updateExaminationScheduleSlotsRemaining = `-- name: UpdateExaminationScheduleSlotsRemaining :exec
-UPDATE examination_schedule_detail
+const updateScheduleSlotsRemaining = `-- name: UpdateScheduleSlotsRemaining :exec
+UPDATE schedules
 SET slots_remaining = slots_remaining - 1
-WHERE schedule_id = $1
+WHERE id = $1
 `
 
-func (q *Queries) UpdateExaminationScheduleSlotsRemaining(ctx context.Context, scheduleID int64) error {
-	_, err := q.db.ExecContext(ctx, updateExaminationScheduleSlotsRemaining, scheduleID)
-	return err
-}
-
-const updateServiceCategoryOfExaminationSchedule = `-- name: UpdateServiceCategoryOfExaminationSchedule :exec
-UPDATE examination_schedule_detail
-SET service_category_id = $2
-WHERE schedule_id = $1
-`
-
-type UpdateServiceCategoryOfExaminationScheduleParams struct {
-	ScheduleID        int64         `json:"schedule_id"`
-	ServiceCategoryID sql.NullInt64 `json:"service_category_id"`
-}
-
-func (q *Queries) UpdateServiceCategoryOfExaminationSchedule(ctx context.Context, arg UpdateServiceCategoryOfExaminationScheduleParams) error {
-	_, err := q.db.ExecContext(ctx, updateServiceCategoryOfExaminationSchedule, arg.ScheduleID, arg.ServiceCategoryID)
+func (q *Queries) UpdateScheduleSlotsRemaining(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, updateScheduleSlotsRemaining, id)
 	return err
 }

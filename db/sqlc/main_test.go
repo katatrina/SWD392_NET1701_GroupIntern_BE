@@ -195,90 +195,88 @@ func TestInitDB(t *testing.T) {
 	// Insert examination schedules
 	examinationSchedules := []map[string]interface{}{
 		{
-			"start_time": time.Date(2024, 6, 18, 7, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
-			"end_time":   time.Date(2024, 6, 18, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"start_time": time.Date(2024, 7, 15, 7, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 15, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"dentist_id": int64(1),
 			"room_id":    int64(1),
 		},
 		{
-			"start_time": time.Date(2024, 6, 18, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
-			"end_time":   time.Date(2024, 6, 18, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"start_time": time.Date(2024, 7, 15, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 15, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"dentist_id": int64(2),
 			"room_id":    int64(2),
 		},
 		{
-			"start_time": time.Date(2024, 6, 18, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
-			"end_time":   time.Date(2024, 6, 18, 10, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"start_time": time.Date(2024, 7, 15, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 15, 10, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"dentist_id": int64(3),
 			"room_id":    int64(3),
 		},
 		{
-			"start_time": time.Date(2024, 6, 18, 10, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
-			"end_time":   time.Date(2024, 6, 18, 11, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"start_time": time.Date(2024, 7, 15, 10, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 15, 11, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"dentist_id": int64(4),
 			"room_id":    int64(4),
 		},
 		{
-			"start_time": time.Date(2024, 6, 18, 11, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
-			"end_time":   time.Date(2024, 6, 18, 12, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"start_time": time.Date(2024, 7, 15, 11, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 15, 12, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"dentist_id": int64(5),
 			"room_id":    int64(5),
 		},
 		{
-			"start_time": time.Date(2024, 6, 19, 13, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
-			"end_time":   time.Date(2024, 6, 19, 14, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"start_time": time.Date(2024, 7, 16, 13, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 16, 14, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"dentist_id": int64(6),
 			"room_id":    int64(6),
 		},
 		{
-			"start_time": time.Date(2024, 6, 19, 14, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
-			"end_time":   time.Date(2024, 6, 19, 15, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"start_time": time.Date(2024, 7, 16, 14, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 16, 15, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"dentist_id": int64(7),
 			"room_id":    int64(7),
 		},
 		{
-			"start_time": time.Date(2024, 6, 19, 15, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
-			"end_time":   time.Date(2024, 6, 19, 16, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"start_time": time.Date(2024, 7, 16, 15, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 16, 16, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"dentist_id": int64(8),
 			"room_id":    int64(8),
 		},
 		{
-			"start_time": time.Date(2024, 6, 19, 16, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
-			"end_time":   time.Date(2024, 6, 19, 17, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"start_time": time.Date(2024, 7, 16, 16, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 16, 17, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"dentist_id": int64(4),
 			"room_id":    int64(9),
 		},
 		{
-			"start_time": time.Date(2024, 6, 20, 7, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
-			"end_time":   time.Date(2024, 6, 20, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"start_time": time.Date(2024, 7, 17, 7, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 17, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"dentist_id": int64(3),
 			"room_id":    int64(10),
 		},
 		{
-			"start_time": time.Date(2024, 6, 20, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
-			"end_time":   time.Date(2024, 6, 20, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"start_time": time.Date(2024, 7, 17, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 17, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"dentist_id": int64(5),
 			"room_id":    int64(1),
 		},
 		{
-			"start_time": time.Date(2024, 6, 20, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
-			"end_time":   time.Date(2024, 6, 20, 10, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"start_time": time.Date(2024, 7, 17, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 17, 10, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"dentist_id": int64(7),
 			"room_id":    int64(2),
 		},
 	}
 	for _, examinationSchedule := range examinationSchedules {
 		arg := CreateScheduleParams{
-			Type:      "Examination",
-			StartTime: examinationSchedule["start_time"].(time.Time),
-			EndTime:   examinationSchedule["end_time"].(time.Time),
-			DentistID: examinationSchedule["dentist_id"].(int64),
-			RoomID:    examinationSchedule["room_id"].(int64),
+			Type:           "Examination",
+			StartTime:      examinationSchedule["start_time"].(time.Time),
+			EndTime:        examinationSchedule["end_time"].(time.Time),
+			DentistID:      examinationSchedule["dentist_id"].(int64),
+			RoomID:         examinationSchedule["room_id"].(int64),
+			SlotsRemaining: 3,
 		}
-		schedule, err := testQueries.CreateSchedule(context.Background(), arg)
-		require.NoError(t, err)
-		
-		_, err = testQueries.CreateExaminationScheduleDetail(context.Background(), schedule.ID)
+		_, err := testQueries.CreateSchedule(context.Background(), arg)
 		require.NoError(t, err)
 	}
 	

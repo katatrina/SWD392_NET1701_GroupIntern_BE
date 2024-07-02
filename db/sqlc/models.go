@@ -7,6 +7,8 @@ package db
 import (
 	"database/sql"
 	"time"
+
+	util "github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
 )
 
 type Appointment struct {
@@ -37,11 +39,10 @@ type DentistDetail struct {
 	SpecialtyID int64     `json:"specialty_id"`
 }
 
-type ExaminationScheduleDetail struct {
-	ScheduleID        int64         `json:"schedule_id"`
-	ServiceCategoryID sql.NullInt64 `json:"service_category_id"`
-	SlotsRemaining    int64         `json:"slots_remaining"`
-	CreatedAt         time.Time     `json:"created_at"`
+type ExaminationAppointmentDetail struct {
+	AppointmentID     int64              `json:"appointment_id"`
+	ServiceCategoryID util.JSONNullInt64 `json:"service_category_id"`
+	CreatedAt         time.Time          `json:"created_at"`
 }
 
 type Payment struct {
@@ -57,13 +58,14 @@ type Room struct {
 }
 
 type Schedule struct {
-	ID        int64     `json:"id"`
-	Type      string    `json:"type"`
-	StartTime time.Time `json:"start_time"`
-	EndTime   time.Time `json:"end_time"`
-	DentistID int64     `json:"dentist_id"`
-	RoomID    int64     `json:"room_id"`
-	CreatedAt time.Time `json:"created_at"`
+	ID             int64     `json:"id"`
+	Type           string    `json:"type"`
+	StartTime      time.Time `json:"start_time"`
+	EndTime        time.Time `json:"end_time"`
+	DentistID      int64     `json:"dentist_id"`
+	RoomID         int64     `json:"room_id"`
+	SlotsRemaining int64     `json:"slots_remaining"`
+	CreatedAt      time.Time `json:"created_at"`
 }
 
 type Service struct {
@@ -92,11 +94,10 @@ type Specialty struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-type TreatmentScheduleDetail struct {
-	ScheduleID      int64     `json:"schedule_id"`
+type TreatmentAppointmentDetail struct {
+	AppointmentID   int64     `json:"appointment_id"`
 	ServiceID       int64     `json:"service_id"`
 	ServiceQuantity int64     `json:"service_quantity"`
-	SlotRemains     int64     `json:"slot_remains"`
 	CreatedAt       time.Time `json:"created_at"`
 }
 
