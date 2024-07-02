@@ -105,9 +105,9 @@ func (server *Server) setupRouter() {
 	{
 		scheduleGroup.POST("/examination", server.createExaminationSchedule)
 		scheduleGroup.GET("/examination", server.listExaminationSchedules)
-		scheduleGroup.Use(authMiddleware(server.tokenMaker)).GET("/examination/available", server.listAvailableExaminationSchedulesByDate)
+		scheduleGroup.GET("/examination/available", server.listAvailableExaminationSchedulesByDateForPatient)
 	}
-
+	
 	v1.GET("specialties", server.listSpecialties)
 	
 	v1.GET("/payment-methods", server.listPaymentMethods)

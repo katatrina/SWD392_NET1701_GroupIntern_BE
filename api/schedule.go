@@ -79,7 +79,7 @@ type listAvailableExaminationSchedulesByDateRequest struct {
 	Date      time.Time `form:"date" time_format:"2006-01-02" binding:"required"`
 }
 
-// listAvailableExaminationSchedulesByDate lists available examination schedules by date for a patient to book
+// listAvailableExaminationSchedulesByDateForPatient lists available examination schedules by date for a patient to book
 //
 //	@Router		/schedules/examination/available [get]
 //	@Summary	Liệt kê tất cả lịch khám tổng quát còn trống trong một ngày cho bệnh nhân đặt lịch
@@ -91,7 +91,7 @@ type listAvailableExaminationSchedulesByDateRequest struct {
 //	@Success	200			{array}	db.ListAvailableExaminationSchedulesByDateForPatientRow
 //	@Failure	400
 //	@Failure	500
-func (server *Server) listAvailableExaminationSchedulesByDate(ctx *gin.Context) {
+func (server *Server) listAvailableExaminationSchedulesByDateForPatient(ctx *gin.Context) {
 	var req listAvailableExaminationSchedulesByDateRequest
 	
 	if err := ctx.ShouldBindQuery(&req); err != nil {
