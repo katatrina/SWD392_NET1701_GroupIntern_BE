@@ -23,7 +23,7 @@ type createExaminationScheduleRequest struct {
 // createExaminationSchedule creates a new examination schedule
 //
 //	@Router		/schedules/examination [post]
-//	@Summary	Tạo lịch khám mới
+//	@Summary	Thêm lịch khám tổng quát
 //	@Description
 //	@Tags		schedules
 //	@Accept		json
@@ -78,7 +78,7 @@ type listAvailableExaminationSchedulesByDateRequest struct {
 
 // listAvailableExaminationSchedulesByDate lists available examination schedules by date
 //
-//	@Router		/schedules/examination [get]
+//	@Router		/schedules/examination/available [get]
 //	@Summary	Liệt kê tất cả lịch khám tổng quát còn trống trong một ngày
 //	@Description
 //	@Tags		schedules
@@ -104,6 +104,15 @@ func (server *Server) listAvailableExaminationSchedulesByDate(ctx *gin.Context) 
 	ctx.JSON(http.StatusOK, schedules)
 }
 
+// listExaminationSchedules lists all examination schedules
+//
+//	@Router		/schedules/examination [get]
+//	@Summary	Liệt kê tất cả lịch khám tổng quát
+//	@Description
+//	@Tags		schedules
+//	@Produce	json
+//	@Success	200	{array}	db.ListExaminationSchedulesRow
+//	@Failure	500
 func (server *Server) listExaminationSchedules(ctx *gin.Context) {
 	schedules, err := server.store.ListExaminationSchedules(ctx)
 	if err != nil {

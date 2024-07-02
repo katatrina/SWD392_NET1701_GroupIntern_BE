@@ -187,21 +187,30 @@ func (q *Queries) ListAvailableExaminationSchedulesByDate(ctx context.Context, d
 }
 
 const listExaminationSchedules = `-- name: ListExaminationSchedules :many
-SELECT s.id as schedule_id, s.type, s.start_time, s.end_time, u.full_name as dentist_name, r.name as room_name
+SELECT s.id        as schedule_id,
+       s.type,
+       s.start_time,
+       s.end_time,
+       u.full_name as dentist_name,
+       r.name      as room_name,
+       COUNT(a.id) AS appointment_count
 FROM schedules s
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id
          JOIN examination_schedule_detail esd ON s.id = esd.schedule_id
-ORDER BY s.start_time ASC
+         LEFT JOIN appointments a ON s.id = a.schedule_id
+GROUP BY s.id, u.full_name, r.name
+ORDER BY s.created_at ASC
 `
 
 type ListExaminationSchedulesRow struct {
-	ScheduleID  int64     `json:"schedule_id"`
-	Type        string    `json:"type"`
-	StartTime   time.Time `json:"start_time"`
-	EndTime     time.Time `json:"end_time"`
-	DentistName string    `json:"dentist_name"`
-	RoomName    string    `json:"room_name"`
+	ScheduleID       int64     `json:"schedule_id"`
+	Type             string    `json:"type"`
+	StartTime        time.Time `json:"start_time"`
+	EndTime          time.Time `json:"end_time"`
+	DentistName      string    `json:"dentist_name"`
+	RoomName         string    `json:"room_name"`
+	AppointmentCount int64     `json:"appointment_count"`
 }
 
 func (q *Queries) ListExaminationSchedules(ctx context.Context) ([]ListExaminationSchedulesRow, error) {
@@ -220,6 +229,7 @@ func (q *Queries) ListExaminationSchedules(ctx context.Context) ([]ListExaminati
 			&i.EndTime,
 			&i.DentistName,
 			&i.RoomName,
+			&i.AppointmentCount,
 		); err != nil {
 			return nil, err
 		}

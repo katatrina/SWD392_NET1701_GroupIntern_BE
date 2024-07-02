@@ -493,28 +493,16 @@ const docTemplate = `{
                 "tags": [
                     "schedules"
                 ],
-                "summary": "Liệt kê tất cả lịch khám tổng quát còn trống trong một ngày",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Date in the format YYYY-MM-DD",
-                        "name": "date",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
+                "summary": "Liệt kê tất cả lịch khám tổng quát",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/db.ListAvailableExaminationSchedulesByDateRow"
+                                "$ref": "#/definitions/db.ListExaminationSchedulesRow"
                             }
                         }
-                    },
-                    "400": {
-                        "description": "Bad Request"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -531,7 +519,7 @@ const docTemplate = `{
                 "tags": [
                     "schedules"
                 ],
-                "summary": "Tạo lịch khám mới",
+                "summary": "Thêm lịch khám tổng quát",
                 "parameters": [
                     {
                         "description": "Examination schedule information",
@@ -555,6 +543,43 @@ const docTemplate = `{
                     },
                     "403": {
                         "description": "Forbidden"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/schedules/examination/available": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "schedules"
+                ],
+                "summary": "Liệt kê tất cả lịch khám tổng quát còn trống trong một ngày",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Date in the format YYYY-MM-DD",
+                        "name": "date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.ListAvailableExaminationSchedulesByDateRow"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -1441,6 +1466,32 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "specialty": {
+                    "type": "string"
+                }
+            }
+        },
+        "db.ListExaminationSchedulesRow": {
+            "type": "object",
+            "properties": {
+                "appointment_count": {
+                    "type": "integer"
+                },
+                "dentist_name": {
+                    "type": "string"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "room_name": {
+                    "type": "string"
+                },
+                "schedule_id": {
+                    "type": "integer"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }
