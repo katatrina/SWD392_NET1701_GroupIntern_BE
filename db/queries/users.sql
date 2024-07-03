@@ -2,10 +2,11 @@
 INSERT INTO users (full_name, hashed_password, email, phone_number, role)
 VALUES ($1, $2, $3, $4, $5) RETURNING *;
 
--- name: GetUserByEmail :one
+-- name: GetUserByEmailForLogin :one
 SELECT *
 FROM users
-WHERE email = $1;
+WHERE email = $1
+  AND deleted_at IS NULL;
 
 -- name: GetPatient :one
 SELECT *

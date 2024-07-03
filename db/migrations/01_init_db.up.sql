@@ -6,6 +6,7 @@ CREATE TABLE "users"
     "email"           text UNIQUE NOT NULL,
     "phone_number"    text UNIQUE NOT NULL,
     "role"            text        NOT NULL,
+    "deleted_at"      timestamptz,
     "created_at"      timestamptz NOT NULL DEFAULT (now())
 );
 

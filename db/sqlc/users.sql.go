@@ -11,7 +11,7 @@ import (
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (full_name, hashed_password, email, phone_number, role)
-VALUES ($1, $2, $3, $4, $5) RETURNING id, full_name, hashed_password, email, phone_number, role, created_at
+VALUES ($1, $2, $3, $4, $5) RETURNING id, full_name, hashed_password, email, phone_number, role, deleted_at, created_at
 `
 
 type CreateUserParams struct {
@@ -38,13 +38,14 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Email,
 		&i.PhoneNumber,
 		&i.Role,
+		&i.DeletedAt,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
 const getPatient = `-- name: GetPatient :one
-SELECT id, full_name, hashed_password, email, phone_number, role, created_at
+SELECT id, full_name, hashed_password, email, phone_number, role, deleted_at, created_at
 FROM users
 WHERE id = $1
   AND role = 'Patient'
@@ -60,19 +61,21 @@ func (q *Queries) GetPatient(ctx context.Context, id int64) (User, error) {
 		&i.Email,
 		&i.PhoneNumber,
 		&i.Role,
+		&i.DeletedAt,
 		&i.CreatedAt,
 	)
 	return i, err
 }
 
-const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, full_name, hashed_password, email, phone_number, role, created_at
+const getUserByEmailForLogin = `-- name: GetUserByEmailForLogin :one
+SELECT id, full_name, hashed_password, email, phone_number, role, deleted_at, created_at
 FROM users
 WHERE email = $1
+  AND deleted_at IS NULL
 `
 
-func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByEmail, email)
+func (q *Queries) GetUserByEmailForLogin(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByEmailForLogin, email)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -81,6 +84,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.Email,
 		&i.PhoneNumber,
 		&i.Role,
+		&i.DeletedAt,
 		&i.CreatedAt,
 	)
 	return i, err
@@ -92,7 +96,7 @@ SET full_name = $3,
     email = $4,
     phone_number = $5
 WHERE id = $1 AND role = $2
-RETURNING id, full_name, hashed_password, email, phone_number, role, created_at
+RETURNING id, full_name, hashed_password, email, phone_number, role, deleted_at, created_at
 `
 
 type UpdateUserParams struct {
@@ -119,6 +123,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.Email,
 		&i.PhoneNumber,
 		&i.Role,
+		&i.DeletedAt,
 		&i.CreatedAt,
 	)
 	return i, err

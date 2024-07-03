@@ -55,3 +55,9 @@ SET date_of_birth = $2,
     gender        = $3,
     specialty_id  = $4
 WHERE dentist_id = $1 RETURNING *;
+
+-- name: DeleteDentist :exec
+UPDATE users
+SET deleted_at = now()
+WHERE id = $1
+  AND role = 'Dentist';

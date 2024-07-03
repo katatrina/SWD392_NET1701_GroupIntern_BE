@@ -89,6 +89,7 @@ func (server *Server) setupRouter() {
 		dentistGroup.GET("", server.listDentists)
 		dentistGroup.GET("/:id", server.getDentist)
 		dentistGroup.PUT("/:id", server.updateDentist)
+		dentistGroup.DELETE("/:id", server.deleteDentist)
 	}
 	
 	roomGroup := v1.Group("/rooms")

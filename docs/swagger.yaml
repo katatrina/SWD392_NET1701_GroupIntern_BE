@@ -482,6 +482,27 @@ paths:
       tags:
       - dentists
   /dentists/{id}:
+    delete:
+      parameters:
+      - description: Dentist ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Xóa tài khoản nha sĩ
+      tags:
+      - dentists
     get:
       parameters:
       - description: Dentist ID

@@ -20,6 +20,7 @@ type Querier interface {
 	CreateServiceCategory(ctx context.Context, arg CreateServiceCategoryParams) (ServiceCategory, error)
 	CreateSpecialty(ctx context.Context, name string) (Specialty, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	DeleteDentist(ctx context.Context, id int64) error
 	DeleteService(ctx context.Context, id int64) error
 	DeleteServiceCategory(ctx context.Context, id int64) error
 	GetAppointmentByScheduleIDAndPatientID(ctx context.Context, arg GetAppointmentByScheduleIDAndPatientIDParams) (Appointment, error)
@@ -32,7 +33,7 @@ type Querier interface {
 	GetServiceCategoryByID(ctx context.Context, id int64) (GetServiceCategoryByIDRow, error)
 	GetServiceCategoryBySlug(ctx context.Context, slug string) (ServiceCategory, error)
 	GetSpecialty(ctx context.Context, id int64) (Specialty, error)
-	GetUserByEmail(ctx context.Context, email string) (User, error)
+	GetUserByEmailForLogin(ctx context.Context, email string) (User, error)
 	ListAvailableExaminationSchedulesByDateForPatient(ctx context.Context, arg ListAvailableExaminationSchedulesByDateForPatientParams) ([]ListAvailableExaminationSchedulesByDateForPatientRow, error)
 	ListBookings(ctx context.Context, arg ListBookingsParams) ([]Booking, error)
 	ListDentists(ctx context.Context) ([]ListDentistsRow, error)

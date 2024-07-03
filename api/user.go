@@ -59,7 +59,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 	}
 	
 	// Get the user by email
-	user, err := server.store.GetUserByEmail(ctx, req.Email)
+	user, err := server.store.GetUserByEmailForLogin(ctx, req.Email)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			ctx.JSON(http.StatusNotFound, errorResponse(ErrEmailNotFound))

@@ -39,6 +39,18 @@ func (q *Queries) CreateDentistDetail(ctx context.Context, arg CreateDentistDeta
 	return i, err
 }
 
+const deleteDentist = `-- name: DeleteDentist :exec
+UPDATE users
+SET deleted_at = now()
+WHERE id = $1
+  AND role = 'Dentist'
+`
+
+func (q *Queries) DeleteDentist(ctx context.Context, id int64) error {
+	_, err := q.db.ExecContext(ctx, deleteDentist, id)
+	return err
+}
+
 const getDentist = `-- name: GetDentist :one
 SELECT users.id,
        users.full_name,

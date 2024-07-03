@@ -242,3 +242,45 @@ func (server *Server) updateDentist(ctx *gin.Context) {
 	// Write the updated profile as JSON response body to client
 	ctx.JSON(http.StatusOK, result)
 }
+
+// deleteDentist deletes a dentist account
+//
+//	@Router		/dentists/{id} [delete]
+//	@Summary	Xóa tài khoản nha sĩ
+//	@Produce	json
+//	@Param		id	path	int	true	"Dentist ID"
+//	@Description
+//	@Tags		dentists
+//	@Success	204
+//	@Failure	400
+//	@Failure	404
+//	@Failure	500
+func (server *Server) deleteDentist(ctx *gin.Context) {
+	// Get the dentist ID from the URL path
+	dentistID, err := server.getIDParam(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	// Get the dentist from the database
+	_, err = server.store.GetDentist(ctx, dentistID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+			return
+		}
+		
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	// Soft delete the dentist account from the database
+	err = server.store.DeleteDentist(ctx, dentistID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	ctx.JSON(http.StatusNoContent, nil)
+}
