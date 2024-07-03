@@ -295,7 +295,7 @@ func (server *Server) getExaminationAppointmentByPatient(ctx *gin.Context) {
 
 // cancelExaminationAppointmentByPatient cancels an examination appointment by a patient
 //
-//	@Router		/patients/appointments/examination/{id} [patch]
+//	@Router		/patients/appointments/examination/{id}/cancel [patch]
 //	@Summary	Hủy lịch khám tổng khám
 //	@Description
 //	@Tags		patients
