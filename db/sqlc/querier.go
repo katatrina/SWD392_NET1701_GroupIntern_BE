@@ -24,6 +24,7 @@ type Querier interface {
 	DeleteDentist(ctx context.Context, id int64) error
 	DeleteService(ctx context.Context, id int64) error
 	DeleteServiceCategory(ctx context.Context, id int64) error
+	GetAppointmentByBookingID(ctx context.Context, bookingID int64) (Appointment, error)
 	GetAppointmentByScheduleIDAndPatientID(ctx context.Context, arg GetAppointmentByScheduleIDAndPatientIDParams) (Appointment, error)
 	GetDentist(ctx context.Context, id int64) (GetDentistRow, error)
 	GetExaminationAppointmentDetails(ctx context.Context, arg GetExaminationAppointmentDetailsParams) (GetExaminationAppointmentDetailsRow, error)
@@ -47,8 +48,10 @@ type Querier interface {
 	ListServicesByCategory(ctx context.Context, slug string) ([]Service, error)
 	ListServicesByNameAndCategory(ctx context.Context, arg ListServicesByNameAndCategoryParams) ([]Service, error)
 	ListSpecialties(ctx context.Context) ([]Specialty, error)
+	UpdateAppointmentStatus(ctx context.Context, arg UpdateAppointmentStatusParams) error
+	UpdateBookingStatus(ctx context.Context, arg UpdateBookingStatusParams) (Booking, error)
 	UpdateDentistDetail(ctx context.Context, arg UpdateDentistDetailParams) (DentistDetail, error)
-	UpdateScheduleSlotsRemaining(ctx context.Context, id int64) error
+	UpdateScheduleSlotsRemaining(ctx context.Context, arg UpdateScheduleSlotsRemainingParams) error
 	UpdateService(ctx context.Context, arg UpdateServiceParams) error
 	UpdateServiceCategory(ctx context.Context, arg UpdateServiceCategoryParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)

@@ -84,23 +84,21 @@ func (server *Server) createPatient(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, nil)
 }
 
-// getPatientProfile returns the information of a patient
+// getPatient returns the information of a patient
 //
-//	@Router		/patients [get]
+//	@Router		/patients/{id} [get]
 //	@Summary	Lấy thông tin bệnh nhân
 //	@Description
 //	@Tags		patients
 //	@Produce	json
-//	@Security	accessToken
 //	@Success	200	{object}	userInfo
 //	@Failure	400
-//	@Failure	403
 //	@Failure	404
 //	@Failure	500
-func (server *Server) getPatientProfile(ctx *gin.Context) {
-	patientID, err := server.getAuthorizedUserID(ctx)
+func (server *Server) getPatient(ctx *gin.Context) {
+	patientID, err := server.getIDParam(ctx)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 	
@@ -292,4 +290,42 @@ func (server *Server) getExaminationAppointmentByPatient(ctx *gin.Context) {
 	}
 	
 	ctx.JSON(http.StatusOK, details)
+}
+
+// cancelExaminationAppointmentByPatient cancels an examination appointment by a patient
+//
+//	@Router		/patients/appointments/examination/{id} [patch]
+//	@Summary	Hủy lịch khám tổng khám
+//	@Description
+//	@Tags		patients
+//	@Security	accessToken
+//	@Param		id	path	int	true	"Examination Booking ID"
+//	@Success	204
+//	@Failure	400
+//	@Failure	500
+func (server *Server) cancelExaminationAppointmentByPatient(ctx *gin.Context) {
+	bookingID, err := server.getIDParam(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	patientID, err := server.getAuthorizedUserID(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	arg := db.CancelExaminationAppointmentByPatientParams{
+		PatientID: patientID,
+		BookingID: bookingID,
+	}
+	
+	err = server.store.CancelExaminationAppointmentByPatientTx(ctx, arg)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	ctx.JSON(http.StatusNoContent, nil)
 }

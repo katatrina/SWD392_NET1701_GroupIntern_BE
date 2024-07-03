@@ -247,11 +247,16 @@ func (q *Queries) ListExaminationSchedules(ctx context.Context) ([]ListExaminati
 
 const updateScheduleSlotsRemaining = `-- name: UpdateScheduleSlotsRemaining :exec
 UPDATE schedules
-SET slots_remaining = slots_remaining - 1
+SET slots_remaining = slots_remaining + $2
 WHERE id = $1
 `
 
-func (q *Queries) UpdateScheduleSlotsRemaining(ctx context.Context, id int64) error {
-	_, err := q.db.ExecContext(ctx, updateScheduleSlotsRemaining, id)
+type UpdateScheduleSlotsRemainingParams struct {
+	ID             int64 `json:"id"`
+	SlotsRemaining int64 `json:"slots_remaining"`
+}
+
+func (q *Queries) UpdateScheduleSlotsRemaining(ctx context.Context, arg UpdateScheduleSlotsRemainingParams) error {
+	_, err := q.db.ExecContext(ctx, updateScheduleSlotsRemaining, arg.ID, arg.SlotsRemaining)
 	return err
 }

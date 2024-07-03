@@ -77,6 +77,26 @@ func (q *Queries) CreateTreatmentAppointmentDetail(ctx context.Context, arg Crea
 	return i, err
 }
 
+const getAppointmentByBookingID = `-- name: GetAppointmentByBookingID :one
+SELECT id, booking_id, schedule_id, patient_id, status, created_at
+FROM appointments
+WHERE booking_id = $1
+`
+
+func (q *Queries) GetAppointmentByBookingID(ctx context.Context, bookingID int64) (Appointment, error) {
+	row := q.db.QueryRowContext(ctx, getAppointmentByBookingID, bookingID)
+	var i Appointment
+	err := row.Scan(
+		&i.ID,
+		&i.BookingID,
+		&i.ScheduleID,
+		&i.PatientID,
+		&i.Status,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getAppointmentByScheduleIDAndPatientID = `-- name: GetAppointmentByScheduleIDAndPatientID :one
 SELECT id, booking_id, schedule_id, patient_id, status, created_at
 FROM appointments
@@ -161,4 +181,20 @@ func (q *Queries) GetExaminationAppointmentDetails(ctx context.Context, arg GetE
 		&i.TotalCost,
 	)
 	return i, err
+}
+
+const updateAppointmentStatus = `-- name: UpdateAppointmentStatus :exec
+UPDATE appointments
+SET status = $2
+WHERE id = $1
+`
+
+type UpdateAppointmentStatusParams struct {
+	ID     int64  `json:"id"`
+	Status string `json:"status"`
+}
+
+func (q *Queries) UpdateAppointmentStatus(ctx context.Context, arg UpdateAppointmentStatusParams) error {
+	_, err := q.db.ExecContext(ctx, updateAppointmentStatus, arg.ID, arg.Status)
+	return err
 }

@@ -38,3 +38,13 @@ SELECT *
 FROM appointments
 WHERE schedule_id = $1
   AND patient_id = $2;
+
+-- name: UpdateAppointmentStatus :exec
+UPDATE appointments
+SET status = $2
+WHERE id = $1;
+
+-- name: GetAppointmentByBookingID :one
+SELECT *
+FROM appointments
+WHERE booking_id = $1;

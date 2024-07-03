@@ -8,3 +8,9 @@ FROM bookings
 WHERE patient_id = $1
   AND type = $2
 ORDER BY appointment_date DESC;
+
+-- name: UpdateBookingStatus :one
+UPDATE bookings
+SET status = $2
+WHERE id = $1
+RETURNING *;

@@ -12,6 +12,7 @@ type Store interface {
 	CreateDentistAccountTx(ctx context.Context, arg CreateDentistAccountParams) (CreateDentistAccountResult, error)
 	UpdateDentistProfileTx(ctx context.Context, arg UpdateDentistProfileParams) (UpdateDentistProfileResult, error)
 	BookTreatmentAppointmentByDentistTx(ctx context.Context, arg BookTreatmentAppointmentByDentistTxParams) error
+	CancelExaminationAppointmentByPatientTx(ctx context.Context, arg CancelExaminationAppointmentByPatientParams) error
 }
 
 type SQLStore struct {

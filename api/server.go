@@ -65,11 +65,12 @@ func (server *Server) setupRouter() {
 	
 	patientGroup := v1.Group("/patients")
 	patientGroup.POST("", server.createPatient)
+	patientGroup.GET("/:id", server.getPatient)
 	patientGroup.Use(authMiddleware(server.tokenMaker))
 	{
 		patientGroup.POST("/appointments/examination", server.createExaminationAppointmentByPatient)
 		patientGroup.GET("/appointments/examination", server.listExaminationAppointmentsByPatient)
-		patientGroup.GET("/", server.getPatientProfile)
+		patientGroup.PATCH("/appointments/examination/:id/cancel", server.cancelExaminationAppointmentByPatient)
 		patientGroup.GET("/appointments/examination/:id", server.getExaminationAppointmentByPatient)
 	}
 	

@@ -45,7 +45,7 @@ VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
 
 -- name: UpdateScheduleSlotsRemaining :exec
 UPDATE schedules
-SET slots_remaining = slots_remaining - 1
+SET slots_remaining = slots_remaining + $2
 WHERE id = $1;
 
 -- name: GetScheduleOverlap :many

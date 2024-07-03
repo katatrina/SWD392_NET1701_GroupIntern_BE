@@ -76,7 +76,10 @@ func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context
 		}
 		
 		// Update slots remaining
-		err = q.UpdateScheduleSlotsRemaining(ctx, arg.Schedule.ID)
+		err = q.UpdateScheduleSlotsRemaining(ctx, UpdateScheduleSlotsRemainingParams{
+			ID:             arg.Schedule.ID,
+			SlotsRemaining: -1,
+		})
 		if err != nil {
 			return err
 		}
@@ -287,6 +290,48 @@ func (store *SQLStore) BookTreatmentAppointmentByDentistTx(ctx context.Context, 
 			return err
 		}
 		
+		return nil
+	})
+	
+	return err
+}
+
+type CancelExaminationAppointmentByPatientParams struct {
+	PatientID int64 `json:"patient_id"`
+	BookingID int64 `json:"booking_id"`
+}
+
+func (store *SQLStore) CancelExaminationAppointmentByPatientTx(ctx context.Context, arg CancelExaminationAppointmentByPatientParams) error {
+	err := store.execTx(ctx, func(q *Queries) error {
+		// Update booking status
+		booking, err := q.UpdateBookingStatus(ctx, UpdateBookingStatusParams{
+			ID:     arg.BookingID,
+			Status: "Đã hủy",
+		})
+		if err != nil {
+			return err
+		}
+		
+		// Get appointment
+		appointment, err := q.GetAppointmentByBookingID(ctx, booking.ID)
+		if err != nil {
+			return err
+		}
+		
+		// Update appointment status
+		err = q.UpdateAppointmentStatus(ctx, UpdateAppointmentStatusParams{
+			ID:     appointment.ID,
+			Status: "Đã hủy",
+		})
+		
+		// Update slots remaining
+		err = q.UpdateScheduleSlotsRemaining(ctx, UpdateScheduleSlotsRemainingParams{
+			ID:             appointment.ScheduleID,
+			SlotsRemaining: +1,
+		})
+		if err != nil {
+			return err
+		}
 		return nil
 	})
 	
