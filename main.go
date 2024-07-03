@@ -6,12 +6,9 @@ import (
 	
 	"github.com/katatrina/SWD392_NET1701_GroupIntern/api"
 	db "github.com/katatrina/SWD392_NET1701_GroupIntern/db/sqlc"
+	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
 	
 	_ "github.com/lib/pq"
-)
-
-const (
-	dbSource = "postgres://root:secret@localhost/dental_clinic?sslmode=disable"
 )
 
 //	@title			Dental Clinic API
@@ -29,8 +26,13 @@ const (
 // @name						Authorization
 // @description				JWT Authorization header using the Bearer scheme.
 func main() {
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatal("cannot load config:", err)
+	}
+	
 	// Initialize database connection pool
-	dbConn, err := sql.Open("postgres", dbSource)
+	dbConn, err := sql.Open("postgres", config.DBSource)
 	if err != nil {
 		log.Fatal("cannot connect to database:", err)
 	}
@@ -43,7 +45,7 @@ func main() {
 	store := db.NewStore(dbConn)
 	
 	// Initialize our HTTP server
-	server := api.NewServer(store)
+	server := api.NewServer(store, config)
 	
 	// Start our HTTP server
 	err = server.Start()

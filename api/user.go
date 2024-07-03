@@ -80,7 +80,7 @@ func (server *Server) loginUser(ctx *gin.Context) {
 	userID := strconv.FormatInt(user.ID, 10)
 	
 	// Create a new, unique access token
-	accessToken, err := server.tokenMaker.CreateToken(userID, user.Role, time.Minute*60)
+	accessToken, err := server.tokenMaker.CreateToken(userID, user.Role, server.config.AccessTokenDuration)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

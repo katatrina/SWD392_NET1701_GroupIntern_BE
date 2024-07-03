@@ -9,6 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	db "github.com/katatrina/SWD392_NET1701_GroupIntern/db/sqlc"
 	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/token"
+	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
 	
 	_ "github.com/katatrina/SWD392_NET1701_GroupIntern/docs"
 	swaggerFiles "github.com/swaggo/files"
@@ -18,6 +19,7 @@ import (
 type Server struct {
 	router     *gin.Engine
 	store      db.Store
+	config     util.Config
 	tokenMaker token.Maker
 }
 
@@ -25,12 +27,13 @@ var (
 	ErrMisMatchedUserID = errors.New("the provided user ID does not match the authorized user ID")
 )
 
-func NewServer(store db.Store) *Server {
-	tokenMaker := token.NewJWTMaker("a3d1b2c3e4f5678910a1b2c3d4e5f67890abcdef1234567890abcdef12345678")
+func NewServer(store db.Store, config util.Config) *Server {
+	tokenMaker := token.NewJWTMaker(config.TokenSymmetricKey)
 	
 	server := &Server{
 		store:      store,
 		tokenMaker: tokenMaker,
+		config:     config,
 	}
 	
 	server.setupRouter()
@@ -122,7 +125,7 @@ func (server *Server) setupRouter() {
 }
 
 func (server *Server) Start() error {
-	return server.router.Run(":8080")
+	return server.router.Run(server.config.HTTPServerAddress)
 }
 
 func errorResponse(err error) gin.H {
