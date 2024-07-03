@@ -90,6 +90,7 @@ func (server *Server) createPatient(ctx *gin.Context) {
 //	@Summary	Lấy thông tin bệnh nhân
 //	@Description
 //	@Tags		patients
+//	@Param		id	path	int	true	"Patient ID"
 //	@Produce	json
 //	@Success	200	{object}	userInfo
 //	@Failure	400

@@ -612,6 +612,12 @@ paths:
       - patients
   /patients/{id}:
     get:
+      parameters:
+      - description: Patient ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:

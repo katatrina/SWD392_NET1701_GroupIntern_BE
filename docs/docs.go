@@ -403,6 +403,15 @@ const docTemplate = `{
                     "patients"
                 ],
                 "summary": "Lấy thông tin bệnh nhân",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Patient ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
