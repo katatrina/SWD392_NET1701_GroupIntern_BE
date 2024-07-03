@@ -23,7 +23,7 @@ type createExaminationScheduleRequest struct {
 // createExaminationSchedule creates a new examination schedule
 //
 //	@Router		/schedules/examination [post]
-//	@Summary	Thêm lịch khám tổng quát
+//	@Summary	Tạo lịch khám tổng quát bởi Admin
 //	@Description
 //	@Tags		schedules
 //	@Accept		json
@@ -128,4 +128,84 @@ func (server *Server) listExaminationSchedules(ctx *gin.Context) {
 	}
 	
 	ctx.JSON(http.StatusOK, schedules)
+}
+
+type createTreatmentScheduleRequest struct {
+	DentistID       int64     `json:"dentist_id" binding:"required"`
+	PatientID       int64     `json:"patient_id" binding:"required"`
+	StartTime       time.Time `json:"start_time" binding:"required"`
+	EndTime         time.Time `json:"end_time" binding:"required"`
+	RoomID          int64     `json:"room_id" binding:"required"`
+	ServiceID       int64     `json:"service_id" binding:"required"`
+	ServiceQuantity int64     `json:"service_quantity" binding:"required"`
+	PaymentID       int64     `json:"payment_id" binding:"required"`
+}
+
+// createTreatmentSchedule creates a new treatment schedule
+//
+//	@Router		/schedules/treatment [post]
+//	@Summary	Tạo lịch điều trị bởi nha sĩ
+//	@Description
+//	@Tags		schedules
+//	@Security	accessToken
+//	@Accept		json
+//	@Produce	json
+//	@Param		request	body	createTreatmentScheduleRequest	true	"Treatment schedule information"
+//	@Success	201
+//	@Failure	400
+//	@Failure	401
+//	@Failure	403
+//	@Failure	500
+func (server *Server) createTreatmentSchedule(ctx *gin.Context) {
+	dentistID, err := server.getAuthorizedUserID(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
+	
+	var req createTreatmentScheduleRequest
+	
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	// Check if the dentist is the same as the dentist in the request
+	if dentistID != req.DentistID {
+		ctx.JSON(http.StatusForbidden, errorResponse(ErrMisMatchedUserID))
+		return
+	}
+	
+	// Check if the schedule overlaps with other schedules
+	schedules, err := server.store.GetScheduleOverlap(ctx, db.GetScheduleOverlapParams{
+		RoomID:    req.RoomID,
+		StartTime: req.StartTime,
+		EndTime:   req.EndTime,
+	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	if len(schedules) > 0 {
+		ctx.JSON(http.StatusForbidden, errorResponse(ErrScheduleOverlap))
+		return
+	}
+	
+	err = server.store.BookTreatmentAppointmentByDentistTx(ctx, db.BookTreatmentAppointmentByDentistTxParams{
+		DentistID:       req.DentistID,
+		PatientID:       req.PatientID,
+		StartTime:       req.StartTime,
+		EndTime:         req.EndTime,
+		RoomID:          req.RoomID,
+		ServiceID:       req.ServiceID,
+		ServiceQuantity: req.ServiceQuantity,
+		PaymentID:       req.PaymentID,
+	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	ctx.JSON(http.StatusCreated, nil)
 }

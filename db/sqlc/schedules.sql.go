@@ -48,7 +48,7 @@ func (q *Queries) CreateSchedule(ctx context.Context, arg CreateScheduleParams) 
 }
 
 const getSchedule = `-- name: GetSchedule :one
-SELECT s.id as schedule_id,
+SELECT s.id,
        s.type,
        s.start_time,
        s.end_time,
@@ -69,7 +69,7 @@ type GetScheduleParams struct {
 }
 
 type GetScheduleRow struct {
-	ScheduleID     int64     `json:"schedule_id"`
+	ID             int64     `json:"id"`
 	Type           string    `json:"type"`
 	StartTime      time.Time `json:"start_time"`
 	EndTime        time.Time `json:"end_time"`
@@ -83,7 +83,7 @@ func (q *Queries) GetSchedule(ctx context.Context, arg GetScheduleParams) (GetSc
 	row := q.db.QueryRowContext(ctx, getSchedule, arg.ScheduleID, arg.Type)
 	var i GetScheduleRow
 	err := row.Scan(
-		&i.ScheduleID,
+		&i.ID,
 		&i.Type,
 		&i.StartTime,
 		&i.EndTime,

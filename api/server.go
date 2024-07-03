@@ -1,6 +1,7 @@
 package api
 
 import (
+	"errors"
 	"strconv"
 	"time"
 	
@@ -19,6 +20,10 @@ type Server struct {
 	store      db.Store
 	tokenMaker token.Maker
 }
+
+var (
+	ErrMisMatchedUserID = errors.New("the provided user ID does not match the authorized user ID")
+)
 
 func NewServer(store db.Store) *Server {
 	tokenMaker := token.NewJWTMaker("a3d1b2c3e4f5678910a1b2c3d4e5f67890abcdef1234567890abcdef12345678")
@@ -102,6 +107,10 @@ func (server *Server) setupRouter() {
 	{
 		scheduleGroup.POST("/examination", server.createExaminationSchedule)
 		scheduleGroup.GET("/examination", server.listExaminationSchedules)
+		// scheduleGroup.GET("/examination/:id", server.getExaminationSchedule)
+		
+		scheduleGroup.Use(authMiddleware(server.tokenMaker)).POST("/treatment", server.createTreatmentSchedule)
+		
 		scheduleGroup.GET("/examination/available", server.listAvailableExaminationSchedulesByDateForPatient)
 	}
 	

@@ -108,6 +108,34 @@ definitions:
     - unit
     - warranty_duration
     type: object
+  api.createTreatmentScheduleRequest:
+    properties:
+      dentist_id:
+        type: integer
+      end_time:
+        type: string
+      patient_id:
+        type: integer
+      payment_id:
+        type: integer
+      room_id:
+        type: integer
+      service_id:
+        type: integer
+      service_quantity:
+        type: integer
+      start_time:
+        type: string
+    required:
+    - dentist_id
+    - end_time
+    - patient_id
+    - payment_id
+    - room_id
+    - service_id
+    - service_quantity
+    - start_time
+    type: object
   api.loginUserRequest:
     properties:
       email:
@@ -770,7 +798,7 @@ paths:
           description: Forbidden
         "500":
           description: Internal Server Error
-      summary: Thêm lịch khám tổng quát
+      summary: Tạo lịch khám tổng quát bởi Admin
       tags:
       - schedules
   /schedules/examination/available:
@@ -801,6 +829,35 @@ paths:
           description: Internal Server Error
       summary: Liệt kê tất cả lịch khám tổng quát còn trống trong một ngày cho bệnh
         nhân đặt lịch
+      tags:
+      - schedules
+  /schedules/treatment:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Treatment schedule information
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.createTreatmentScheduleRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal Server Error
+      security:
+      - accessToken: []
+      summary: Tạo lịch điều trị bởi nha sĩ
       tags:
       - schedules
   /service-categories:

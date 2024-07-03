@@ -162,10 +162,36 @@ func (server *Server) createExaminationAppointmentByPatient(ctx *gin.Context) {
 	
 	// TODO: Authorize the patient more strictly
 	
+	// Get schedule
+	schedule, err := server.store.GetSchedule(ctx, db.GetScheduleParams{
+		ScheduleID: req.ExaminationScheduleID,
+		Type:       "Examination",
+	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	// Check if the schedule is booked by the patient before
+	_, err = server.store.GetAppointmentByScheduleIDAndPatientID(ctx, db.GetAppointmentByScheduleIDAndPatientIDParams{
+		ScheduleID: req.ExaminationScheduleID,
+		PatientID:  patientID,
+	})
+	if !errors.Is(err, sql.ErrNoRows) {
+		ctx.JSON(http.StatusForbidden, errorResponse(db.ErrScheduleBookedByPatientBefore))
+		return
+	}
+	
+	// Check if the schedule is full
+	if schedule.SlotsRemaining == 0 {
+		ctx.JSON(http.StatusForbidden, errorResponse(db.ErrScheduleFullSlot))
+		return
+	}
+	
 	arg := db.BookExaminationScheduleParams{
-		PatientID:             patientID,
-		ExaminationScheduleID: req.ExaminationScheduleID,
-		ServiceCategoryID:     req.ServiceCategoryID,
+		PatientID:         patientID,
+		Schedule:          schedule,
+		ServiceCategoryID: req.ServiceCategoryID,
 	}
 	
 	err = server.store.BookExaminationAppointmentByPatientTx(ctx, arg)

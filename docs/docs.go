@@ -518,7 +518,7 @@ const docTemplate = `{
                 "tags": [
                     "schedules"
                 ],
-                "summary": "Thêm lịch khám tổng quát",
+                "summary": "Tạo lịch khám tổng quát bởi Admin",
                 "parameters": [
                     {
                         "description": "Examination schedule information",
@@ -586,6 +586,53 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/schedules/treatment": {
+            "post": {
+                "security": [
+                    {
+                        "accessToken": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "schedules"
+                ],
+                "summary": "Tạo lịch điều trị bởi nha sĩ",
+                "parameters": [
+                    {
+                        "description": "Treatment schedule information",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.createTreatmentScheduleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -1186,6 +1233,45 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "warranty_duration": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.createTreatmentScheduleRequest": {
+            "type": "object",
+            "required": [
+                "dentist_id",
+                "end_time",
+                "patient_id",
+                "payment_id",
+                "room_id",
+                "service_id",
+                "service_quantity",
+                "start_time"
+            ],
+            "properties": {
+                "dentist_id": {
+                    "type": "integer"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "patient_id": {
+                    "type": "integer"
+                },
+                "payment_id": {
+                    "type": "integer"
+                },
+                "room_id": {
+                    "type": "integer"
+                },
+                "service_id": {
+                    "type": "integer"
+                },
+                "service_quantity": {
+                    "type": "integer"
+                },
+                "start_time": {
                     "type": "string"
                 }
             }

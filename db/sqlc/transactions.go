@@ -15,33 +15,13 @@ var (
 )
 
 type BookExaminationScheduleParams struct {
-	PatientID             int64
-	ExaminationScheduleID int64
-	ServiceCategoryID     int64
+	PatientID         int64
+	Schedule          GetScheduleRow
+	ServiceCategoryID int64
 }
 
 func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context, arg BookExaminationScheduleParams) error {
 	err := store.execTx(ctx, func(q *Queries) error {
-		// Get schedule
-		schedule, err := q.GetSchedule(ctx, GetScheduleParams{
-			ScheduleID: arg.ExaminationScheduleID,
-			Type:       "Examination",
-		})
-		
-		// Check if the schedule is booked by the patient before
-		_, err = q.GetAppointmentByScheduleIDAndPatientID(ctx, GetAppointmentByScheduleIDAndPatientIDParams{
-			ScheduleID: arg.ExaminationScheduleID,
-			PatientID:  arg.PatientID,
-		})
-		if !errors.Is(err, sql.ErrNoRows) {
-			return ErrScheduleBookedByPatientBefore
-		}
-		
-		// Check if the schedule is full
-		if schedule.SlotsRemaining == 0 {
-			return ErrScheduleFullSlot
-		}
-		
 		// Create a new booking
 		booking, err := q.CreateBooking(ctx, CreateBookingParams{
 			PatientID:     arg.PatientID,
@@ -52,7 +32,7 @@ func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context
 				Valid: false,
 			},
 			TotalCost:       0,
-			AppointmentDate: schedule.StartTime,
+			AppointmentDate: arg.Schedule.StartTime,
 		})
 		if err != nil {
 			return err
@@ -61,7 +41,7 @@ func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context
 		// Create a new examination appointment
 		appointment, err := q.CreateAppointment(ctx, CreateAppointmentParams{
 			BookingID:  booking.ID,
-			ScheduleID: schedule.ScheduleID,
+			ScheduleID: arg.Schedule.ID,
 			PatientID:  arg.PatientID,
 		})
 		if err != nil {
@@ -96,7 +76,7 @@ func (store *SQLStore) BookExaminationAppointmentByPatientTx(ctx context.Context
 		}
 		
 		// Update slots remaining
-		err = q.UpdateScheduleSlotsRemaining(ctx, schedule.ScheduleID)
+		err = q.UpdateScheduleSlotsRemaining(ctx, arg.Schedule.ID)
 		if err != nil {
 			return err
 		}
@@ -237,4 +217,78 @@ func (store *SQLStore) UpdateDentistProfileTx(ctx context.Context, arg UpdateDen
 	})
 	
 	return result, err
+}
+
+type BookTreatmentAppointmentByDentistTxParams struct {
+	DentistID       int64     `json:"dentist_id"`
+	PatientID       int64     `json:"patient_id"`
+	StartTime       time.Time `json:"start_time"`
+	EndTime         time.Time `json:"end_time"`
+	RoomID          int64     `json:"room_id"`
+	ServiceID       int64     `json:"service_id"`
+	ServiceQuantity int64     `json:"service_quantity"`
+	PaymentID       int64     `json:"payment_id"`
+}
+
+func (store *SQLStore) BookTreatmentAppointmentByDentistTx(ctx context.Context, arg BookTreatmentAppointmentByDentistTxParams) error {
+	err := store.execTx(ctx, func(q *Queries) error {
+		// Create a new treatment schedule
+		schedule, err := q.CreateSchedule(ctx, CreateScheduleParams{
+			Type:           "Treatment",
+			StartTime:      arg.StartTime,
+			EndTime:        arg.EndTime,
+			DentistID:      arg.DentistID,
+			RoomID:         arg.RoomID,
+			SlotsRemaining: 1,
+		})
+		if err != nil {
+			return err
+		}
+		
+		// Get service
+		service, err := q.GetService(ctx, arg.ServiceID)
+		if err != nil {
+			return err
+		}
+		
+		// Create a new booking
+		booking, err := q.CreateBooking(ctx, CreateBookingParams{
+			PatientID:     arg.PatientID,
+			Type:          "Treatment",
+			PaymentStatus: "Chưa thanh toán",
+			PaymentID: sql.NullInt64{
+				Int64: arg.PaymentID,
+				Valid: true,
+			},
+			TotalCost:       service.Cost * arg.ServiceQuantity,
+			AppointmentDate: arg.StartTime,
+		})
+		if err != nil {
+			return err
+		}
+		
+		// Create a new treatment appointment
+		appointment, err := q.CreateAppointment(ctx, CreateAppointmentParams{
+			BookingID:  booking.ID,
+			ScheduleID: schedule.ID,
+			PatientID:  arg.PatientID,
+		})
+		if err != nil {
+			return err
+		}
+		
+		// Create a new treatment appointment detail
+		_, err = q.CreateTreatmentAppointmentDetail(ctx, CreateTreatmentAppointmentDetailParams{
+			AppointmentID:   appointment.ID,
+			ServiceID:       arg.ServiceID,
+			ServiceQuantity: arg.ServiceQuantity,
+		})
+		if err != nil {
+			return err
+		}
+		
+		return nil
+	})
+	
+	return err
 }

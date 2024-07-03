@@ -25,7 +25,7 @@ GROUP BY s.id, u.full_name, r.name
 ORDER BY s.created_at ASC;
 
 -- name: GetSchedule :one
-SELECT s.id as schedule_id,
+SELECT s.id,
        s.type,
        s.start_time,
        s.end_time,

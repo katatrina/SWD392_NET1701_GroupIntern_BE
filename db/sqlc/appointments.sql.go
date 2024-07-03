@@ -54,6 +54,29 @@ func (q *Queries) CreateExaminationAppointmentDetail(ctx context.Context, arg Cr
 	return i, err
 }
 
+const createTreatmentAppointmentDetail = `-- name: CreateTreatmentAppointmentDetail :one
+INSERT INTO treatment_appointment_detail (appointment_id, service_id, service_quantity)
+VALUES ($1, $2, $3) RETURNING appointment_id, service_id, service_quantity, created_at
+`
+
+type CreateTreatmentAppointmentDetailParams struct {
+	AppointmentID   int64 `json:"appointment_id"`
+	ServiceID       int64 `json:"service_id"`
+	ServiceQuantity int64 `json:"service_quantity"`
+}
+
+func (q *Queries) CreateTreatmentAppointmentDetail(ctx context.Context, arg CreateTreatmentAppointmentDetailParams) (TreatmentAppointmentDetail, error) {
+	row := q.db.QueryRowContext(ctx, createTreatmentAppointmentDetail, arg.AppointmentID, arg.ServiceID, arg.ServiceQuantity)
+	var i TreatmentAppointmentDetail
+	err := row.Scan(
+		&i.AppointmentID,
+		&i.ServiceID,
+		&i.ServiceQuantity,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getAppointmentByScheduleIDAndPatientID = `-- name: GetAppointmentByScheduleIDAndPatientID :one
 SELECT id, booking_id, schedule_id, patient_id, status, created_at
 FROM appointments

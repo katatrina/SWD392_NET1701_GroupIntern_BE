@@ -29,6 +29,10 @@ WHERE b.id = sqlc.arg(booking_id)
 INSERT INTO examination_appointment_detail (appointment_id, service_category_id)
 VALUES ($1, $2) RETURNING *;
 
+-- name: CreateTreatmentAppointmentDetail :one
+INSERT INTO treatment_appointment_detail (appointment_id, service_id, service_quantity)
+VALUES ($1, $2, $3) RETURNING *;
+
 -- name: GetAppointmentByScheduleIDAndPatientID :one
 SELECT *
 FROM appointments
