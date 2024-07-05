@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 	
 	"github.com/gin-gonic/gin"
 	db "github.com/katatrina/SWD392_NET1701_GroupIntern/db/sqlc"
@@ -17,10 +18,12 @@ var (
 )
 
 type createPatientRequest struct {
-	Password    string `json:"password" binding:"required"`
-	FullName    string `json:"full_name" binding:"required"`
-	Email       string `json:"email" binding:"required"`
-	PhoneNumber string `json:"phone_number" binding:"required"`
+	Password    string          `json:"password" binding:"required"`
+	FullName    string          `json:"full_name" binding:"required"`
+	Email       string          `json:"email" binding:"required"`
+	PhoneNumber string          `json:"phone_number" binding:"required"`
+	DateOfBirth util.CustomDate `json:"date_of_birth" binding:"required"`
+	Gender      string          `json:"gender" binding:"required"`
 }
 
 // createPatient creates a new patient account
@@ -58,6 +61,8 @@ func (server *Server) createPatient(ctx *gin.Context) {
 		Email:          req.Email,
 		PhoneNumber:    req.PhoneNumber,
 		Role:           "Patient",
+		DateOfBirth:    time.Time(req.DateOfBirth),
+		Gender:         req.Gender,
 	}
 	
 	// Create a new customer
@@ -214,7 +219,7 @@ func (server *Server) createExaminationAppointmentByPatient(ctx *gin.Context) {
 // listExaminationAppointmentsByPatient returns all examination bookings of a patient
 //
 //	@Router		/patients/appointments/examination [get]
-//	@Summary	Lấy tất cả danh sách lịch khám của bệnh nhân
+//	@Summary	Cho phép bệnh nhân xem lịch sử tất cả lịch khám tổng quát của mình
 //	@Produce	json
 //	@Description
 //	@Security	accessToken
@@ -256,7 +261,7 @@ type getExaminationAppointmentDetailsRequest struct {
 // getExaminationAppointmentByPatient returns the details of an examination appointment
 //
 //	@Router		/patients/appointments/examination/{id} [get]
-//	@Summary	Lấy thông tin chi tiết của một lịch khám
+//	@Summary	Cho phép bệnh nhân xem chi tiết một lịch khám tổng quát của mình
 //	@Description
 //	@Tags		patients
 //	@Produce	json
@@ -296,7 +301,7 @@ func (server *Server) getExaminationAppointmentByPatient(ctx *gin.Context) {
 // cancelExaminationAppointmentByPatient cancels an examination appointment by a patient
 //
 //	@Router		/patients/appointments/examination/{id}/cancel [patch]
-//	@Summary	Hủy lịch khám tổng khám
+//	@Summary	Cho phép bệnh nhân hủy lịch khám
 //	@Description
 //	@Tags		patients
 //	@Security	accessToken

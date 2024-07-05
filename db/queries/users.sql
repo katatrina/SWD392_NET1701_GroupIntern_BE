@@ -1,6 +1,6 @@
 -- name: CreateUser :one
-INSERT INTO users (full_name, hashed_password, email, phone_number, role)
-VALUES ($1, $2, $3, $4, $5) RETURNING *;
+INSERT INTO users (full_name, hashed_password, email, phone_number, role, date_of_birth, gender)
+VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;
 
 -- name: GetUserByEmailForLogin :one
 SELECT *
@@ -16,8 +16,9 @@ WHERE id = $1
 
 -- name: UpdateUser :one
 UPDATE users
-SET full_name = $3,
-    email = $4,
-    phone_number = $5
-WHERE id = $1 AND role = $2
-RETURNING *;
+SET full_name     = $2,
+    email         = $3,
+    phone_number  = $4,
+    date_of_birth = $5,
+    gender        = $6
+WHERE id = $1 RETURNING *;

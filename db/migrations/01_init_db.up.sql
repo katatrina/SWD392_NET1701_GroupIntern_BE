@@ -5,6 +5,8 @@ CREATE TABLE "users"
     "hashed_password" text        NOT NULL,
     "email"           text UNIQUE NOT NULL,
     "phone_number"    text UNIQUE NOT NULL,
+    "date_of_birth"   DATE        NOT NULL,
+    "gender"          text        NOT NULL,
     "role"            text        NOT NULL,
     "deleted_at"      timestamptz,
     "created_at"      timestamptz NOT NULL DEFAULT (now())
@@ -12,10 +14,8 @@ CREATE TABLE "users"
 
 CREATE TABLE "dentist_detail"
 (
-    "dentist_id"    bigint PRIMARY KEY,
-    "date_of_birth" DATE   NOT NULL,
-    "gender"        text   NOT NULL,
-    "specialty_id"  bigint NOT NULL
+    "dentist_id"   bigint PRIMARY KEY,
+    "specialty_id" bigint NOT NULL
 );
 
 CREATE TABLE "specialties"

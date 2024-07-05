@@ -52,17 +52,23 @@ definitions:
     type: object
   api.createPatientRequest:
     properties:
+      date_of_birth:
+        type: string
       email:
         type: string
       full_name:
+        type: string
+      gender:
         type: string
       password:
         type: string
       phone_number:
         type: string
     required:
+    - date_of_birth
     - email
     - full_name
+    - gender
     - password
     - phone_number
     type: object
@@ -653,7 +659,7 @@ paths:
           description: Internal Server Error
       security:
       - accessToken: []
-      summary: Lấy tất cả danh sách lịch khám của bệnh nhân
+      summary: Cho phép bệnh nhân xem lịch sử tất cả lịch khám tổng quát của mình
       tags:
       - patients
     post:
@@ -703,9 +709,10 @@ paths:
           description: Internal Server Error
       security:
       - accessToken: []
-      summary: Lấy thông tin chi tiết của một lịch khám
+      summary: Cho phép bệnh nhân xem chi tiết một lịch khám tổng quát của mình
       tags:
       - patients
+  /patients/appointments/examination/{id}/cancel:
     patch:
       parameters:
       - description: Examination Booking ID
@@ -722,7 +729,7 @@ paths:
           description: Internal Server Error
       security:
       - accessToken: []
-      summary: Hủy lịch khám tổng khám
+      summary: Cho phép bệnh nhân hủy lịch khám
       tags:
       - patients
   /payment-methods:

@@ -11,31 +11,19 @@ import (
 )
 
 const createDentistDetail = `-- name: CreateDentistDetail :one
-INSERT INTO dentist_detail (dentist_id, date_of_birth, gender, specialty_id)
-VALUES ($1, $2, $3, $4) RETURNING dentist_id, date_of_birth, gender, specialty_id
+INSERT INTO dentist_detail (dentist_id, specialty_id)
+VALUES ($1, $2) RETURNING dentist_id, specialty_id
 `
 
 type CreateDentistDetailParams struct {
-	DentistID   int64     `json:"dentist_id"`
-	DateOfBirth time.Time `json:"date_of_birth"`
-	Gender      string    `json:"gender"`
-	SpecialtyID int64     `json:"specialty_id"`
+	DentistID   int64 `json:"dentist_id"`
+	SpecialtyID int64 `json:"specialty_id"`
 }
 
 func (q *Queries) CreateDentistDetail(ctx context.Context, arg CreateDentistDetailParams) (DentistDetail, error) {
-	row := q.db.QueryRowContext(ctx, createDentistDetail,
-		arg.DentistID,
-		arg.DateOfBirth,
-		arg.Gender,
-		arg.SpecialtyID,
-	)
+	row := q.db.QueryRowContext(ctx, createDentistDetail, arg.DentistID, arg.SpecialtyID)
 	var i DentistDetail
-	err := row.Scan(
-		&i.DentistID,
-		&i.DateOfBirth,
-		&i.Gender,
-		&i.SpecialtyID,
-	)
+	err := row.Scan(&i.DentistID, &i.SpecialtyID)
 	return i, err
 }
 
@@ -57,8 +45,8 @@ SELECT users.id,
        users.email,
        users.phone_number,
        users.created_at,
-       dentist_detail.date_of_birth,
-       dentist_detail.gender,
+       users.date_of_birth,
+       users.gender,
        specialties.id   AS specialty_id,
        specialties.name AS specialty_name
 FROM users
@@ -103,8 +91,8 @@ SELECT users.id,
        users.email,
        users.phone_number,
        users.created_at,
-       dentist_detail.date_of_birth,
-       dentist_detail.gender,
+       users.date_of_birth,
+       users.gender,
        specialties.name AS specialty
 FROM users
          JOIN dentist_detail ON users.id = dentist_detail.dentist_id
@@ -163,14 +151,14 @@ SELECT users.id,
        users.email,
        users.phone_number,
        users.created_at,
-       dentist_detail.date_of_birth,
-       dentist_detail.gender,
+       users.date_of_birth,
+       users.gender,
        specialties.name AS specialty
 FROM users
          JOIN dentist_detail ON users.id = dentist_detail.dentist_id
          JOIN specialties ON dentist_detail.specialty_id = specialties.id
 WHERE users.role = 'Dentist'
-    AND users.deleted_at IS NULL
+  AND users.deleted_at IS NULL
   AND users.full_name ILIKE '%' || $1::text || '%'
 ORDER BY users.created_at DESC
 `
@@ -220,32 +208,18 @@ func (q *Queries) ListDentistsByName(ctx context.Context, name string) ([]ListDe
 
 const updateDentistDetail = `-- name: UpdateDentistDetail :one
 UPDATE dentist_detail
-SET date_of_birth = $2,
-    gender        = $3,
-    specialty_id  = $4
-WHERE dentist_id = $1 RETURNING dentist_id, date_of_birth, gender, specialty_id
+SET specialty_id = $2
+WHERE dentist_id = $1 RETURNING dentist_id, specialty_id
 `
 
 type UpdateDentistDetailParams struct {
-	DentistID   int64     `json:"dentist_id"`
-	DateOfBirth time.Time `json:"date_of_birth"`
-	Gender      string    `json:"gender"`
-	SpecialtyID int64     `json:"specialty_id"`
+	DentistID   int64 `json:"dentist_id"`
+	SpecialtyID int64 `json:"specialty_id"`
 }
 
 func (q *Queries) UpdateDentistDetail(ctx context.Context, arg UpdateDentistDetailParams) (DentistDetail, error) {
-	row := q.db.QueryRowContext(ctx, updateDentistDetail,
-		arg.DentistID,
-		arg.DateOfBirth,
-		arg.Gender,
-		arg.SpecialtyID,
-	)
+	row := q.db.QueryRowContext(ctx, updateDentistDetail, arg.DentistID, arg.SpecialtyID)
 	var i DentistDetail
-	err := row.Scan(
-		&i.DentistID,
-		&i.DateOfBirth,
-		&i.Gender,
-		&i.SpecialtyID,
-	)
+	err := row.Scan(&i.DentistID, &i.SpecialtyID)
 	return i, err
 }

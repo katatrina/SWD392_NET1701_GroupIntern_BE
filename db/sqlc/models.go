@@ -33,10 +33,8 @@ type Booking struct {
 }
 
 type DentistDetail struct {
-	DentistID   int64     `json:"dentist_id"`
-	DateOfBirth time.Time `json:"date_of_birth"`
-	Gender      string    `json:"gender"`
-	SpecialtyID int64     `json:"specialty_id"`
+	DentistID   int64 `json:"dentist_id"`
+	SpecialtyID int64 `json:"specialty_id"`
 }
 
 type ExaminationAppointmentDetail struct {
@@ -107,6 +105,8 @@ type User struct {
 	HashedPassword string       `json:"hashed_password"`
 	Email          string       `json:"email"`
 	PhoneNumber    string       `json:"phone_number"`
+	DateOfBirth    time.Time    `json:"date_of_birth"`
+	Gender         string       `json:"gender"`
 	Role           string       `json:"role"`
 	DeletedAt      sql.NullTime `json:"deleted_at"`
 	CreatedAt      time.Time    `json:"created_at"`

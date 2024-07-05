@@ -7,19 +7,22 @@ package db
 
 import (
 	"context"
+	"time"
 )
 
 const createUser = `-- name: CreateUser :one
-INSERT INTO users (full_name, hashed_password, email, phone_number, role)
-VALUES ($1, $2, $3, $4, $5) RETURNING id, full_name, hashed_password, email, phone_number, role, deleted_at, created_at
+INSERT INTO users (full_name, hashed_password, email, phone_number, role, date_of_birth, gender)
+VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, full_name, hashed_password, email, phone_number, date_of_birth, gender, role, deleted_at, created_at
 `
 
 type CreateUserParams struct {
-	FullName       string `json:"full_name"`
-	HashedPassword string `json:"hashed_password"`
-	Email          string `json:"email"`
-	PhoneNumber    string `json:"phone_number"`
-	Role           string `json:"role"`
+	FullName       string    `json:"full_name"`
+	HashedPassword string    `json:"hashed_password"`
+	Email          string    `json:"email"`
+	PhoneNumber    string    `json:"phone_number"`
+	Role           string    `json:"role"`
+	DateOfBirth    time.Time `json:"date_of_birth"`
+	Gender         string    `json:"gender"`
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -29,6 +32,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.Email,
 		arg.PhoneNumber,
 		arg.Role,
+		arg.DateOfBirth,
+		arg.Gender,
 	)
 	var i User
 	err := row.Scan(
@@ -37,6 +42,8 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.HashedPassword,
 		&i.Email,
 		&i.PhoneNumber,
+		&i.DateOfBirth,
+		&i.Gender,
 		&i.Role,
 		&i.DeletedAt,
 		&i.CreatedAt,
@@ -45,7 +52,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getPatient = `-- name: GetPatient :one
-SELECT id, full_name, hashed_password, email, phone_number, role, deleted_at, created_at
+SELECT id, full_name, hashed_password, email, phone_number, date_of_birth, gender, role, deleted_at, created_at
 FROM users
 WHERE id = $1
   AND role = 'Patient'
@@ -60,6 +67,8 @@ func (q *Queries) GetPatient(ctx context.Context, id int64) (User, error) {
 		&i.HashedPassword,
 		&i.Email,
 		&i.PhoneNumber,
+		&i.DateOfBirth,
+		&i.Gender,
 		&i.Role,
 		&i.DeletedAt,
 		&i.CreatedAt,
@@ -68,7 +77,7 @@ func (q *Queries) GetPatient(ctx context.Context, id int64) (User, error) {
 }
 
 const getUserByEmailForLogin = `-- name: GetUserByEmailForLogin :one
-SELECT id, full_name, hashed_password, email, phone_number, role, deleted_at, created_at
+SELECT id, full_name, hashed_password, email, phone_number, date_of_birth, gender, role, deleted_at, created_at
 FROM users
 WHERE email = $1
   AND deleted_at IS NULL
@@ -83,6 +92,8 @@ func (q *Queries) GetUserByEmailForLogin(ctx context.Context, email string) (Use
 		&i.HashedPassword,
 		&i.Email,
 		&i.PhoneNumber,
+		&i.DateOfBirth,
+		&i.Gender,
 		&i.Role,
 		&i.DeletedAt,
 		&i.CreatedAt,
@@ -92,28 +103,31 @@ func (q *Queries) GetUserByEmailForLogin(ctx context.Context, email string) (Use
 
 const updateUser = `-- name: UpdateUser :one
 UPDATE users
-SET full_name = $3,
-    email = $4,
-    phone_number = $5
-WHERE id = $1 AND role = $2
-RETURNING id, full_name, hashed_password, email, phone_number, role, deleted_at, created_at
+SET full_name     = $2,
+    email         = $3,
+    phone_number  = $4,
+    date_of_birth = $5,
+    gender        = $6
+WHERE id = $1 RETURNING id, full_name, hashed_password, email, phone_number, date_of_birth, gender, role, deleted_at, created_at
 `
 
 type UpdateUserParams struct {
-	ID          int64  `json:"id"`
-	Role        string `json:"role"`
-	FullName    string `json:"full_name"`
-	Email       string `json:"email"`
-	PhoneNumber string `json:"phone_number"`
+	ID          int64     `json:"id"`
+	FullName    string    `json:"full_name"`
+	Email       string    `json:"email"`
+	PhoneNumber string    `json:"phone_number"`
+	DateOfBirth time.Time `json:"date_of_birth"`
+	Gender      string    `json:"gender"`
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
 	row := q.db.QueryRowContext(ctx, updateUser,
 		arg.ID,
-		arg.Role,
 		arg.FullName,
 		arg.Email,
 		arg.PhoneNumber,
+		arg.DateOfBirth,
+		arg.Gender,
 	)
 	var i User
 	err := row.Scan(
@@ -122,6 +136,8 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.HashedPassword,
 		&i.Email,
 		&i.PhoneNumber,
+		&i.DateOfBirth,
+		&i.Gender,
 		&i.Role,
 		&i.DeletedAt,
 		&i.CreatedAt,

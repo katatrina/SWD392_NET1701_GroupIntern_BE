@@ -259,7 +259,7 @@ const docTemplate = `{
                 "tags": [
                     "patients"
                 ],
-                "summary": "Lấy tất cả danh sách lịch khám của bệnh nhân",
+                "summary": "Cho phép bệnh nhân xem lịch sử tất cả lịch khám tổng quát của mình",
                 "responses": {
                     "200": {
                         "description": "List of examination bookings",
@@ -337,7 +337,7 @@ const docTemplate = `{
                 "tags": [
                     "patients"
                 ],
-                "summary": "Lấy thông tin chi tiết của một lịch khám",
+                "summary": "Cho phép bệnh nhân xem chi tiết một lịch khám tổng quát của mình",
                 "parameters": [
                     {
                         "type": "integer",
@@ -361,7 +361,9 @@ const docTemplate = `{
                         "description": "Internal Server Error"
                     }
                 }
-            },
+            }
+        },
+        "/patients/appointments/examination/{id}/cancel": {
             "patch": {
                 "security": [
                     {
@@ -371,7 +373,7 @@ const docTemplate = `{
                 "tags": [
                     "patients"
                 ],
-                "summary": "Hủy lịch khám tổng khám",
+                "summary": "Cho phép bệnh nhân hủy lịch khám",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1221,16 +1223,24 @@ const docTemplate = `{
         "api.createPatientRequest": {
             "type": "object",
             "required": [
+                "date_of_birth",
                 "email",
                 "full_name",
+                "gender",
                 "password",
                 "phone_number"
             ],
             "properties": {
+                "date_of_birth": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
                 "full_name": {
+                    "type": "string"
+                },
+                "gender": {
                     "type": "string"
                 },
                 "password": {

@@ -27,14 +27,14 @@ import (
 func (server *Server) listDentists(ctx *gin.Context) {
 	searchQuery := ctx.Query("q")
 	if searchQuery == "" {
-		services, err := server.store.ListDentists(ctx)
+		dentists, err := server.store.ListDentists(ctx)
 		switch {
 		case err != nil:
 			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		case len(services) == 0:
+		case len(dentists) == 0:
 			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
 		default:
-			ctx.JSON(http.StatusOK, services)
+			ctx.JSON(http.StatusOK, dentists)
 		}
 		
 		return

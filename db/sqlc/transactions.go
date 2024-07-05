@@ -121,6 +121,8 @@ func (store *SQLStore) CreateDentistAccountTx(ctx context.Context, arg CreateDen
 			PhoneNumber:    arg.PhoneNumber,
 			Role:           "Dentist",
 			HashedPassword: arg.HashedPassword,
+			DateOfBirth:    time.Time(arg.DateOfBirth),
+			Gender:         arg.Gender,
 		})
 		if err != nil {
 			return err
@@ -129,19 +131,18 @@ func (store *SQLStore) CreateDentistAccountTx(ctx context.Context, arg CreateDen
 		result.FullName = dentist.FullName
 		result.Email = dentist.Email
 		result.PhoneNumber = dentist.PhoneNumber
+		result.DateOfBirth = util.CustomDate(dentist.DateOfBirth)
+		result.Gender = dentist.Gender
 		
 		// Create dentist detail
-		dentistDetail, err := q.CreateDentistDetail(ctx, CreateDentistDetailParams{
-			DentistID:   dentist.ID,
-			DateOfBirth: time.Time(arg.DateOfBirth),
-			Gender:      arg.Gender,
+		_, err = q.CreateDentistDetail(ctx, CreateDentistDetailParams{
+			DentistID: dentist.ID,
+			
 			SpecialtyID: arg.SpecialtyID,
 		})
 		if err != nil {
 			return err
 		}
-		result.DateOfBirth = util.CustomDate(dentistDetail.DateOfBirth)
-		result.Gender = dentistDetail.Gender
 		
 		// Get specialty name
 		specialty, err := q.GetSpecialty(ctx, arg.SpecialtyID)
@@ -186,7 +187,8 @@ func (store *SQLStore) UpdateDentistProfileTx(ctx context.Context, arg UpdateDen
 			FullName:    arg.FullName,
 			Email:       arg.Email,
 			PhoneNumber: arg.PhoneNumber,
-			Role:        "Dentist",
+			DateOfBirth: arg.DateOfBirth,
+			Gender:      arg.Gender,
 		})
 		if err != nil {
 			return err
@@ -195,19 +197,17 @@ func (store *SQLStore) UpdateDentistProfileTx(ctx context.Context, arg UpdateDen
 		result.FullName = dentist.FullName
 		result.Email = dentist.Email
 		result.PhoneNumber = dentist.PhoneNumber
+		result.DateOfBirth = dentist.DateOfBirth
+		result.Gender = dentist.Gender
 		
 		// Update dentist detail
-		dentistDetail, err := q.UpdateDentistDetail(ctx, UpdateDentistDetailParams{
+		_, err = q.UpdateDentistDetail(ctx, UpdateDentistDetailParams{
 			DentistID:   arg.DentistID,
-			DateOfBirth: arg.DateOfBirth,
-			Gender:      arg.Gender,
 			SpecialtyID: arg.SpecialtyID,
 		})
 		if err != nil {
 			return err
 		}
-		result.DateOfBirth = dentistDetail.DateOfBirth
-		result.Gender = dentistDetail.Gender
 		
 		// Get specialty name
 		specialty, err := q.GetSpecialty(ctx, arg.SpecialtyID)

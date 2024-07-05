@@ -178,14 +178,15 @@ func TestInitDB(t *testing.T) {
 			Email:          dentist["email"].(string),
 			PhoneNumber:    dentist["phone"].(string),
 			Role:           "Dentist",
+			DateOfBirth:    dentist["dateOfBirth"].(time.Time),
+			Gender:         dentist["gender"].(string),
 		}
 		user, err := testQueries.CreateUser(context.Background(), arg)
 		require.NoError(t, err)
 		
 		argDetail := CreateDentistDetailParams{
-			DentistID:   user.ID,
-			DateOfBirth: dentist["dateOfBirth"].(time.Time),
-			Gender:      dentist["gender"].(string),
+			DentistID: user.ID,
+			
 			SpecialtyID: int64(util.RandomIndex(len(specialties))),
 		}
 		_, err = testQueries.CreateDentistDetail(context.Background(), argDetail)
@@ -280,7 +281,7 @@ func TestInitDB(t *testing.T) {
 		require.NoError(t, err)
 	}
 	
-	// Create sample patient account
+	// Create sample patient accounts
 	hashedPassword, err := util.GenerateHashedPassword("12345")
 	require.NoError(t, err)
 	arg := CreateUserParams{
@@ -289,6 +290,50 @@ func TestInitDB(t *testing.T) {
 		Email:          "thunt@gmail.com",
 		PhoneNumber:    "0987654320",
 		Role:           "Patient",
+		DateOfBirth:    time.Date(1990, 1, 1, 0, 0, 0, 0, time.Local),
+		Gender:         "Nữ",
+	}
+	_, err = testQueries.CreateUser(context.Background(), arg)
+	require.NoError(t, err)
+	
+	hashedPassword, err = util.GenerateHashedPassword("12345")
+	require.NoError(t, err)
+	arg = CreateUserParams{
+		FullName:       "Nguyễn Văn Sang",
+		HashedPassword: hashedPassword,
+		Email:          "sangnv@gmail.com",
+		PhoneNumber:    "0989654321",
+		Role:           "Patient",
+		DateOfBirth:    time.Date(1990, 1, 1, 0, 0, 0, 0, time.Local),
+		Gender:         "Nam",
+	}
+	_, err = testQueries.CreateUser(context.Background(), arg)
+	require.NoError(t, err)
+	
+	hashedPassword, err = util.GenerateHashedPassword("12345")
+	require.NoError(t, err)
+	arg = CreateUserParams{
+		FullName:       "Lương Văn Lâm",
+		HashedPassword: hashedPassword,
+		Email:          "lamlv@gmail.com",
+		PhoneNumber:    "0987624320",
+		Role:           "Patient",
+		DateOfBirth:    time.Date(1990, 1, 1, 0, 0, 0, 0, time.Local),
+		Gender:         "Nam",
+	}
+	_, err = testQueries.CreateUser(context.Background(), arg)
+	require.NoError(t, err)
+	
+	hashedPassword, err = util.GenerateHashedPassword("12345")
+	require.NoError(t, err)
+	arg = CreateUserParams{
+		FullName:       "Tố Hữu",
+		HashedPassword: hashedPassword,
+		Email:          "tohuu@gmail.com",
+		PhoneNumber:    "0987657320",
+		Role:           "Patient",
+		DateOfBirth:    time.Date(1990, 1, 1, 0, 0, 0, 0, time.Local),
+		Gender:         "Nam",
 	}
 	_, err = testQueries.CreateUser(context.Background(), arg)
 	require.NoError(t, err)
@@ -302,6 +347,8 @@ func TestInitDB(t *testing.T) {
 		Email:          "admin@gmail.com",
 		PhoneNumber:    "0987834320",
 		Role:           "Admin",
+		DateOfBirth:    time.Date(1990, 1, 1, 0, 0, 0, 0, time.Local),
+		Gender:         "Nam",
 	}
 	_, err = testQueries.CreateUser(context.Background(), arg)
 	require.NoError(t, err)
@@ -351,7 +398,6 @@ func TestInitDB(t *testing.T) {
 			"cost":                int64(12_800_000),
 			"warranty_duration":   "15 năm",
 		},
-		
 		
 		// Service category: Cấy ghép Implant
 		{

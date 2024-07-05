@@ -105,15 +105,15 @@ func (server *Server) setupRouter() {
 	{
 		roomGroup.POST("", server.createRoom)
 		roomGroup.GET("", server.listRooms)
-		roomGroup.PUT(":id", server.updateRoom)
-		
+		roomGroup.PUT("/:id", server.updateRoom)
+		// roomGroup.DELETE("/:id", server.deleteRoom)
 	}
 	
 	scheduleGroup := v1.Group("/schedules")
 	{
 		scheduleGroup.POST("/examination", server.createExaminationSchedule)
 		scheduleGroup.GET("/examination", server.listExaminationSchedules)
-		// scheduleGroup.GET("/examination/:id", server.getExaminationSchedule)
+		// scheduleGroup.GET("/examination/:id/patients", server.listPatientsByExaminationSchedule)
 		
 		scheduleGroup.Use(authMiddleware(server.tokenMaker)).POST("/treatment", server.createTreatmentSchedule)
 		
