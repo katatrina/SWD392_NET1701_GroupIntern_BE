@@ -101,6 +101,31 @@ func (q *Queries) GetUserByEmailForLogin(ctx context.Context, email string) (Use
 	return i, err
 }
 
+const getUserByID = `-- name: GetUserByID :one
+SELECT id, full_name, hashed_password, email, phone_number, date_of_birth, gender, role, deleted_at, created_at
+FROM users
+WHERE id = $1
+  AND deleted_at IS NULL
+`
+
+func (q *Queries) GetUserByID(ctx context.Context, id int64) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByID, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.FullName,
+		&i.HashedPassword,
+		&i.Email,
+		&i.PhoneNumber,
+		&i.DateOfBirth,
+		&i.Gender,
+		&i.Role,
+		&i.DeletedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const updateUser = `-- name: UpdateUser :one
 UPDATE users
 SET full_name     = $2,
@@ -143,4 +168,20 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.CreatedAt,
 	)
 	return i, err
+}
+
+const updateUserPassword = `-- name: UpdateUserPassword :exec
+UPDATE users
+SET hashed_password = $2
+WHERE id = $1
+`
+
+type UpdateUserPasswordParams struct {
+	ID             int64  `json:"id"`
+	HashedPassword string `json:"hashed_password"`
+}
+
+func (q *Queries) UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error {
+	_, err := q.db.ExecContext(ctx, updateUserPassword, arg.ID, arg.HashedPassword)
+	return err
 }

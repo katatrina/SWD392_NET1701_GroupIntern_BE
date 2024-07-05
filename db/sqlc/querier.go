@@ -36,6 +36,7 @@ type Querier interface {
 	GetServiceCategoryBySlug(ctx context.Context, slug string) (ServiceCategory, error)
 	GetSpecialty(ctx context.Context, id int64) (Specialty, error)
 	GetUserByEmailForLogin(ctx context.Context, email string) (User, error)
+	GetUserByID(ctx context.Context, id int64) (User, error)
 	ListAvailableExaminationSchedulesByDateForPatient(ctx context.Context, arg ListAvailableExaminationSchedulesByDateForPatientParams) ([]ListAvailableExaminationSchedulesByDateForPatientRow, error)
 	ListBookingsOfOnePatient(ctx context.Context, arg ListBookingsOfOnePatientParams) ([]Booking, error)
 	ListDentists(ctx context.Context) ([]ListDentistsRow, error)
@@ -56,6 +57,7 @@ type Querier interface {
 	UpdateService(ctx context.Context, arg UpdateServiceParams) error
 	UpdateServiceCategory(ctx context.Context, arg UpdateServiceCategoryParams) error
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
+	UpdateUserPassword(ctx context.Context, arg UpdateUserPasswordParams) error
 }
 
 var _ Querier = (*Queries)(nil)

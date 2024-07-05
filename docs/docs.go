@@ -99,7 +99,7 @@ const docTemplate = `{
                 "tags": [
                     "dentists"
                 ],
-                "summary": "Lấy thông tin cá nhân nha sĩ",
+                "summary": "Lấy thông tin cá nhân của nha sĩ",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1145,9 +1145,71 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/users/password": {
+            "patch": {
+                "security": [
+                    {
+                        "accessToken": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Thay đổi mật khẩu người dùng",
+                "parameters": [
+                    {
+                        "description": "Change password request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.changeUserPasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "api.changeUserPasswordRequest": {
+            "type": "object",
+            "required": [
+                "new_password",
+                "old_password"
+            ],
+            "properties": {
+                "new_password": {
+                    "type": "string"
+                },
+                "old_password": {
+                    "type": "string"
+                }
+            }
+        },
         "api.createDentistRequest": {
             "type": "object",
             "required": [

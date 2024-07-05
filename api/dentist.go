@@ -123,7 +123,7 @@ func (server *Server) createDentist(ctx *gin.Context) {
 // getDentist returns a dentist by ID
 //
 //	@Router		/dentists/{id} [get]
-//	@Summary	Lấy thông tin cá nhân nha sĩ
+//	@Summary	Lấy thông tin cá nhân của nha sĩ
 //	@Produce	json
 //	@Param		id	path	int	true	"Dentist ID"
 //	@Description

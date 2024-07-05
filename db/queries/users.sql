@@ -2,6 +2,12 @@
 INSERT INTO users (full_name, hashed_password, email, phone_number, role, date_of_birth, gender)
 VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;
 
+-- name: GetUserByID :one
+SELECT *
+FROM users
+WHERE id = $1
+  AND deleted_at IS NULL;
+
 -- name: GetUserByEmailForLogin :one
 SELECT *
 FROM users
@@ -22,3 +28,8 @@ SET full_name     = $2,
     date_of_birth = $5,
     gender        = $6
 WHERE id = $1 RETURNING *;
+
+-- name: UpdateUserPassword :exec
+UPDATE users
+SET hashed_password = $2
+WHERE id = $1;

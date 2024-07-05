@@ -8,6 +8,7 @@ import (
 	"time"
 	
 	"github.com/gin-gonic/gin"
+	db "github.com/katatrina/SWD392_NET1701_GroupIntern/db/sqlc"
 	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
 )
 
@@ -101,4 +102,73 @@ func (server *Server) loginUser(ctx *gin.Context) {
 	}
 	
 	ctx.JSON(http.StatusOK, rsp)
+}
+
+type changeUserPasswordRequest struct {
+	OldPassword string `json:"old_password" binding:"required"`
+	NewPassword string `json:"new_password" binding:"required"`
+}
+
+// changeUserPassword changes the password of a user
+//
+//	@Router		/users/password [patch]
+//	@Summary	Thay đổi mật khẩu người dùng
+//	@Description
+//	@Security	accessToken
+//	@Tags		users
+//	@Accept		json
+//	@Produce	json
+//	@Param		request body changeUserPasswordRequest true "Change password request"
+//	@Success	204
+//	@Failure	400
+//	@Failure	401
+//	@Failure	403
+//	@Failure	500
+func (server *Server) changeUserPassword(ctx *gin.Context) {
+	// Get the user ID from the access token
+	userID, err := server.getAuthorizedUserID(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+		return
+	}
+	
+	// Parse the JSON request body
+	var req changeUserPasswordRequest
+	if err = ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	// Get the user from the database
+	user, err := server.store.GetUserByID(ctx, userID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	// Check the password
+	err = util.CheckPassword(user.HashedPassword, req.OldPassword)
+	if err != nil {
+		ctx.JSON(http.StatusForbidden, errorResponse(ErrPasswordIncorrect))
+		return
+	}
+	
+	// Hash the new password
+	hashedPassword, err := util.GenerateHashedPassword(req.NewPassword)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	// Update the user password
+	err = server.store.UpdateUserPassword(ctx, db.UpdateUserPasswordParams{
+		ID:             userID,
+		HashedPassword: hashedPassword,
+	})
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	ctx.JSON(http.StatusNoContent, nil)
 }

@@ -1,5 +1,15 @@
 basePath: /api/v1
 definitions:
+  api.changeUserPasswordRequest:
+    properties:
+      new_password:
+        type: string
+      old_password:
+        type: string
+    required:
+    - new_password
+    - old_password
+    type: object
   api.createDentistRequest:
     properties:
       date_of_birth:
@@ -561,7 +571,7 @@ paths:
           description: Not Found
         "500":
           description: Internal Server Error
-      summary: Lấy thông tin cá nhân nha sĩ
+      summary: Lấy thông tin cá nhân của nha sĩ
       tags:
       - dentists
     put:
@@ -1196,6 +1206,35 @@ paths:
         "500":
           description: Internal Server Error
       summary: Đăng nhập
+      tags:
+      - users
+  /users/password:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Change password request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.changeUserPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal Server Error
+      security:
+      - accessToken: []
+      summary: Thay đổi mật khẩu người dùng
       tags:
       - users
 securityDefinitions:

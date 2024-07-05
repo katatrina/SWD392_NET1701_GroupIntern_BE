@@ -60,6 +60,7 @@ func (server *Server) setupRouter() {
 		userGroup := v1.Group("/users")
 		{
 			userGroup.POST("/login", server.loginUser)
+			userGroup.Use(authMiddleware(server.tokenMaker)).PATCH("/password", server.changeUserPassword)
 		}
 	}
 	
