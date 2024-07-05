@@ -92,7 +92,7 @@ func (server *Server) createPatient(ctx *gin.Context) {
 // getPatient returns the information of a patient
 //
 //	@Router		/patients/{id} [get]
-//	@Summary	Lấy thông tin bệnh nhân
+//	@Summary	Lấy thông tin cá nhân của bệnh nhân
 //	@Description
 //	@Tags		patients
 //	@Param		id	path	int	true	"Patient ID"
@@ -125,6 +125,8 @@ func (server *Server) getPatient(ctx *gin.Context) {
 		Email:       patient.Email,
 		PhoneNumber: patient.PhoneNumber,
 		Role:        patient.Role,
+		DateOfBirth: util.CustomDate(patient.DateOfBirth),
+		Gender:      patient.Gender,
 		CreatedAt:   patient.CreatedAt,
 	}
 	
@@ -235,12 +237,12 @@ func (server *Server) listExaminationAppointmentsByPatient(ctx *gin.Context) {
 		return
 	}
 	
-	arg := db.ListBookingsParams{
+	arg := db.ListBookingsOfOnePatientParams{
 		PatientID: patientID,
 		Type:      "Examination",
 	}
 	
-	bookings, err := server.store.ListBookings(ctx, arg)
+	bookings, err := server.store.ListBookingsOfOnePatient(ctx, arg)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))

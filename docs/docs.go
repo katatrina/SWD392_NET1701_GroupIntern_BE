@@ -404,7 +404,7 @@ const docTemplate = `{
                 "tags": [
                     "patients"
                 ],
-                "summary": "Lấy thông tin bệnh nhân",
+                "summary": "Lấy thông tin cá nhân của bệnh nhân",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1443,10 +1443,16 @@ const docTemplate = `{
                 "created_at": {
                     "type": "string"
                 },
+                "date_of_birth": {
+                    "type": "string"
+                },
                 "email": {
                     "type": "string"
                 },
                 "full_name": {
+                    "type": "string"
+                },
+                "gender": {
                     "type": "string"
                 },
                 "id": {

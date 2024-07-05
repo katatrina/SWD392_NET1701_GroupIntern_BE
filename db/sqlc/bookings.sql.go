@@ -49,21 +49,21 @@ func (q *Queries) CreateBooking(ctx context.Context, arg CreateBookingParams) (B
 	return i, err
 }
 
-const listBookings = `-- name: ListBookings :many
+const listBookingsOfOnePatient = `-- name: ListBookingsOfOnePatient :many
 SELECT id, patient_id, type, payment_status, payment_id, total_cost, appointment_date, status, created_at
 FROM bookings
 WHERE patient_id = $1
   AND type = $2
-ORDER BY appointment_date DESC
+ORDER BY created_at DESC
 `
 
-type ListBookingsParams struct {
+type ListBookingsOfOnePatientParams struct {
 	PatientID int64  `json:"patient_id"`
 	Type      string `json:"type"`
 }
 
-func (q *Queries) ListBookings(ctx context.Context, arg ListBookingsParams) ([]Booking, error) {
-	rows, err := q.db.QueryContext(ctx, listBookings, arg.PatientID, arg.Type)
+func (q *Queries) ListBookingsOfOnePatient(ctx context.Context, arg ListBookingsOfOnePatientParams) ([]Booking, error) {
+	rows, err := q.db.QueryContext(ctx, listBookingsOfOnePatient, arg.PatientID, arg.Type)
 	if err != nil {
 		return nil, err
 	}

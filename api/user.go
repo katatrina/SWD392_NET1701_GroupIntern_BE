@@ -22,12 +22,14 @@ type loginUserRequest struct {
 }
 
 type userInfo struct {
-	ID          int64     `json:"id"`
-	FullName    string    `json:"full_name"`
-	Email       string    `json:"email"`
-	PhoneNumber string    `json:"phone_number"`
-	Role        string    `json:"role"`
-	CreatedAt   time.Time `json:"created_at"`
+	ID          int64           `json:"id"`
+	FullName    string          `json:"full_name"`
+	Email       string          `json:"email"`
+	PhoneNumber string          `json:"phone_number"`
+	Role        string          `json:"role"`
+	DateOfBirth util.CustomDate `json:"date_of_birth"`
+	Gender      string          `json:"gender"`
+	CreatedAt   time.Time       `json:"created_at"`
 }
 
 type loginUserResponse struct {
