@@ -6,3 +6,8 @@ VALUES ($1) RETURNING *;
 SELECT *
 FROM rooms
 ORDER BY created_at DESC;
+
+-- name: UpdateRoom :exec
+UPDATE rooms
+SET name = $2
+WHERE id = $1;

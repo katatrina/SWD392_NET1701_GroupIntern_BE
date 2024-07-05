@@ -49,3 +49,19 @@ func (q *Queries) ListRooms(ctx context.Context) ([]Room, error) {
 	}
 	return items, nil
 }
+
+const updateRoom = `-- name: UpdateRoom :exec
+UPDATE rooms
+SET name = $2
+WHERE id = $1
+`
+
+type UpdateRoomParams struct {
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
+}
+
+func (q *Queries) UpdateRoom(ctx context.Context, arg UpdateRoomParams) error {
+	_, err := q.db.ExecContext(ctx, updateRoom, arg.ID, arg.Name)
+	return err
+}

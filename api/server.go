@@ -105,6 +105,8 @@ func (server *Server) setupRouter() {
 	{
 		roomGroup.POST("", server.createRoom)
 		roomGroup.GET("", server.listRooms)
+		roomGroup.PUT(":id", server.updateRoom)
+		
 	}
 	
 	scheduleGroup := v1.Group("/schedules")
@@ -133,6 +135,7 @@ func errorResponse(err error) gin.H {
 	return gin.H{"error": err.Error()}
 }
 
+// getIDParam returns the ID parameter of the URL for the current request.
 func (server *Server) getIDParam(ctx *gin.Context) (int64, error) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 	if err != nil {

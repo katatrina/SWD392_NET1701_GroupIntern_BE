@@ -51,6 +51,7 @@ type Querier interface {
 	UpdateAppointmentStatus(ctx context.Context, arg UpdateAppointmentStatusParams) error
 	UpdateBookingStatus(ctx context.Context, arg UpdateBookingStatusParams) (Booking, error)
 	UpdateDentistDetail(ctx context.Context, arg UpdateDentistDetailParams) (DentistDetail, error)
+	UpdateRoom(ctx context.Context, arg UpdateRoomParams) error
 	UpdateScheduleSlotsRemaining(ctx context.Context, arg UpdateScheduleSlotsRemainingParams) error
 	UpdateService(ctx context.Context, arg UpdateServiceParams) error
 	UpdateServiceCategory(ctx context.Context, arg UpdateServiceCategoryParams) error
