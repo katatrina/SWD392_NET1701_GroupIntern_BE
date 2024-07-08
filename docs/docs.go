@@ -77,13 +77,19 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created",
+                        "description": "Dentist account info",
                         "schema": {
                             "$ref": "#/definitions/db.CreateDentistAccountResult"
                         }
                     },
                     "400": {
                         "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Unique validation errors",
+                        "schema": {
+                            "$ref": "#/definitions/util.MapErrors"
+                        }
                     },
                     "500": {
                         "description": "Internal Server Error"

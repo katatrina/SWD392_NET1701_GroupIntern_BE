@@ -3,14 +3,12 @@ package api
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"net/http"
 	"time"
 	
 	"github.com/gin-gonic/gin"
 	db "github.com/katatrina/SWD392_NET1701_GroupIntern/db/sqlc"
 	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
-	"github.com/lib/pq"
 )
 
 // listDentists returns a list of dentists
@@ -70,14 +68,43 @@ type createDentistRequest struct {
 //	@Param		request	body	createDentistRequest	true	"Create dentist info"
 //	@Description
 //	@Tags		dentists
-//	@Success	201	{object}	db.CreateDentistAccountResult
+//	@Success	201	{object}	db.CreateDentistAccountResult "Dentist account info"
 //	@Failure	400
+//	@Failure	403	{object}	util.MapErrors "Unique validation errors"
 //	@Failure	500
 func (server *Server) createDentist(ctx *gin.Context) {
 	var req createDentistRequest
 	
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	errs := make(util.MapErrors)
+	
+	// Check if the email is existed
+	emailExisted, err := server.store.IsEmailExists(ctx, req.Email)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	if emailExisted {
+		errs.Add("email_error", ErrEmailAlreadyExist.Error())
+	}
+	
+	// Check if the phone number is existed
+	phoneNumberExisted, err := server.store.IsPhoneNumberExists(ctx, req.PhoneNumber)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	if phoneNumberExisted {
+		errs.Add("phone_number_error", ErrPhoneNumberAlreadyExist.Error())
+	}
+	
+	// Return the error response if there are any validation errors
+	if len(errs) > 0 {
+		ctx.JSON(http.StatusForbidden, errs)
 		return
 	}
 	
@@ -97,27 +124,13 @@ func (server *Server) createDentist(ctx *gin.Context) {
 		HashedPassword: hashedPassword,
 	}
 	
-	result, err := server.store.CreateDentistAccountTx(ctx, arg)
+	dentist, err := server.store.CreateDentistAccountTx(ctx, arg)
 	if err != nil {
-		var pqErr *pq.Error
-		if errors.As(err, &pqErr) {
-			switch {
-			case pqErr.Code.Name() == "unique_violation":
-				err = fmt.Errorf("%s", pqErr.Detail)
-				ctx.JSON(http.StatusForbidden, errorResponse(err))
-				return
-			default:
-				err = fmt.Errorf("unexpected error occured: %s", pqErr.Detail)
-				ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-				return
-			}
-		}
-		
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 	
-	ctx.JSON(http.StatusCreated, result)
+	ctx.JSON(http.StatusCreated, dentist)
 }
 
 // getDentist returns a dentist by ID

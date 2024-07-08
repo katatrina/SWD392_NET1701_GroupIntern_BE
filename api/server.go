@@ -23,8 +23,6 @@ type Server struct {
 	tokenMaker token.Maker
 }
 
-var ()
-
 func NewServer(store db.Store, config util.Config) *Server {
 	tokenMaker := token.NewJWTMaker(config.TokenSymmetricKey)
 	

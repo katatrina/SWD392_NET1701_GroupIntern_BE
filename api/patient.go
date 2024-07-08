@@ -66,6 +66,7 @@ func (server *Server) createPatient(ctx *gin.Context) {
 		errs.Add("phone_number_error", ErrPhoneNumberAlreadyExist.Error())
 	}
 	
+	// Return the error response if there are any validation errors
 	if len(errs) > 0 {
 		ctx.JSON(http.StatusForbidden, errs)
 		return
