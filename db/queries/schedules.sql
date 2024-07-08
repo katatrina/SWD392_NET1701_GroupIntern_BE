@@ -54,3 +54,11 @@ FROM schedules s
 WHERE s.room_id = $1
   AND s.start_time = $2
   AND s.end_time = $3;
+
+-- name: ListPatientsByScheduleID :many
+SELECT u.id, u.full_name, u.email, u.phone_number, u.date_of_birth, u.gender, u.role
+FROM users u
+         JOIN appointments a ON u.id = a.patient_id
+         JOIN schedules s ON a.schedule_id = s.id
+WHERE s.id = sqlc.arg(schedule_id)
+  AND s.type = sqlc.arg(schedule_type);

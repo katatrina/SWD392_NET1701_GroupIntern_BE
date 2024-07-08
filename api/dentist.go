@@ -133,7 +133,7 @@ func (server *Server) createDentist(ctx *gin.Context) {
 //	@Failure	404
 //	@Failure	500
 func (server *Server) getDentist(ctx *gin.Context) {
-	dentistID, err := server.getIDParam(ctx)
+	dentistID, err := server.getLastIDParam(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -178,7 +178,7 @@ type updateDentistRequest struct {
 //	@Failure	500
 func (server *Server) updateDentist(ctx *gin.Context) {
 	// Get the dentist ID from the URL path
-	dentistID, err := server.getIDParam(ctx)
+	dentistID, err := server.getLastIDParam(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -257,7 +257,7 @@ func (server *Server) updateDentist(ctx *gin.Context) {
 //	@Failure	500
 func (server *Server) deleteDentist(ctx *gin.Context) {
 	// Get the dentist ID from the URL path
-	dentistID, err := server.getIDParam(ctx)
+	dentistID, err := server.getLastIDParam(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

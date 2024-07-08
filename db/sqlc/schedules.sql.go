@@ -245,6 +245,61 @@ func (q *Queries) ListExaminationSchedules(ctx context.Context) ([]ListExaminati
 	return items, nil
 }
 
+const listPatientsByScheduleID = `-- name: ListPatientsByScheduleID :many
+SELECT u.id, u.full_name, u.email, u.phone_number, u.date_of_birth, u.gender, u.role
+FROM users u
+         JOIN appointments a ON u.id = a.patient_id
+         JOIN schedules s ON a.schedule_id = s.id
+WHERE s.id = $1
+  AND s.type = $2
+`
+
+type ListPatientsByScheduleIDParams struct {
+	ScheduleID   int64  `json:"schedule_id"`
+	ScheduleType string `json:"schedule_type"`
+}
+
+type ListPatientsByScheduleIDRow struct {
+	ID          int64     `json:"id"`
+	FullName    string    `json:"full_name"`
+	Email       string    `json:"email"`
+	PhoneNumber string    `json:"phone_number"`
+	DateOfBirth time.Time `json:"date_of_birth"`
+	Gender      string    `json:"gender"`
+	Role        string    `json:"role"`
+}
+
+func (q *Queries) ListPatientsByScheduleID(ctx context.Context, arg ListPatientsByScheduleIDParams) ([]ListPatientsByScheduleIDRow, error) {
+	rows, err := q.db.QueryContext(ctx, listPatientsByScheduleID, arg.ScheduleID, arg.ScheduleType)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListPatientsByScheduleIDRow{}
+	for rows.Next() {
+		var i ListPatientsByScheduleIDRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.FullName,
+			&i.Email,
+			&i.PhoneNumber,
+			&i.DateOfBirth,
+			&i.Gender,
+			&i.Role,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateScheduleSlotsRemaining = `-- name: UpdateScheduleSlotsRemaining :exec
 UPDATE schedules
 SET slots_remaining = slots_remaining + $2

@@ -102,7 +102,7 @@ func (server *Server) createPatient(ctx *gin.Context) {
 //	@Failure	404
 //	@Failure	500
 func (server *Server) getPatient(ctx *gin.Context) {
-	patientID, err := server.getIDParam(ctx)
+	patientID, err := server.getLastIDParam(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -312,7 +312,7 @@ func (server *Server) getExaminationAppointmentByPatient(ctx *gin.Context) {
 //	@Failure	400
 //	@Failure	500
 func (server *Server) cancelExaminationAppointmentByPatient(ctx *gin.Context) {
-	bookingID, err := server.getIDParam(ctx)
+	bookingID, err := server.getLastIDParam(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

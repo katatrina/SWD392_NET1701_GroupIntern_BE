@@ -209,3 +209,35 @@ func (server *Server) createTreatmentSchedule(ctx *gin.Context) {
 	
 	ctx.JSON(http.StatusCreated, nil)
 }
+
+// listPatientsByExaminationSchedule lists patients by examination schedule
+//
+//	@Router		/schedules/examination/{id}/patients [get]
+//	@Summary	Liệt kê tất cả bệnh nhân của một lịch khám tổng quát
+//	@Description
+//	@Tags		schedules
+//	@Produce	json
+//	@Param		id	path	int	true	"Examination Schedule ID"
+//	@Success	200	{array}	db.ListPatientsByScheduleIDRow
+//	@Failure	400
+//	@Failure	500
+func (server *Server) listPatientsByExaminationSchedule(ctx *gin.Context) {
+	scheduleID, err := server.getMiddleIDParam(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	arg := db.ListPatientsByScheduleIDParams{
+		ScheduleID:   scheduleID,
+		ScheduleType: "Examination",
+	}
+	
+	patients, err := server.store.ListPatientsByScheduleID(ctx, arg)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	ctx.JSON(http.StatusOK, patients)
+}

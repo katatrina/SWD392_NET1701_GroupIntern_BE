@@ -85,7 +85,7 @@ func (server *Server) updateService(ctx *gin.Context) {
 		return
 	}
 	
-	serviceID, err := server.getIDParam(ctx)
+	serviceID, err := server.getLastIDParam(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -143,7 +143,7 @@ func (server *Server) updateService(ctx *gin.Context) {
 //	@Failure	400
 //	@Failure	500
 func (server *Server) getService(ctx *gin.Context) {
-	serviceID, err := server.getIDParam(ctx)
+	serviceID, err := server.getLastIDParam(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -170,7 +170,7 @@ func (server *Server) getService(ctx *gin.Context) {
 //	@Failure	403
 //	@Failure	500
 func (server *Server) deleteService(ctx *gin.Context) {
-	serviceID, err := server.getIDParam(ctx)
+	serviceID, err := server.getLastIDParam(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return

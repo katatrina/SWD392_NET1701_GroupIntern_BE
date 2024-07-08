@@ -2,7 +2,9 @@ package api
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
+	"strings"
 	"time"
 	
 	"github.com/gin-contrib/cors"
@@ -114,7 +116,7 @@ func (server *Server) setupRouter() {
 	{
 		scheduleGroup.POST("/examination", server.createExaminationSchedule)
 		scheduleGroup.GET("/examination", server.listExaminationSchedules)
-		// scheduleGroup.GET("/examination/:id/patients", server.listPatientsByExaminationSchedule)
+		scheduleGroup.GET("/examination/:id/patients", server.listPatientsByExaminationSchedule)
 		
 		scheduleGroup.Use(authMiddleware(server.tokenMaker)).POST("/treatment", server.createTreatmentSchedule)
 		
@@ -136,9 +138,22 @@ func errorResponse(err error) gin.H {
 	return gin.H{"error": err.Error()}
 }
 
-// getIDParam returns the ID parameter of the URL for the current request.
-func (server *Server) getIDParam(ctx *gin.Context) (int64, error) {
+// getLastIDParam returns the ID parameter of the URL for the current request.
+func (server *Server) getLastIDParam(ctx *gin.Context) (int64, error) {
 	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+	if err != nil {
+		return id, err
+	}
+	
+	return id, nil
+}
+
+// getMiddleIDParam returns the ID parameter of the URL for the current request.
+func (server *Server) getMiddleIDParam(ctx *gin.Context) (int64, error) {
+	idParam := ctx.Param("id")
+	sanitizedID := strings.Trim(idParam, "/")
+	fmt.Println(sanitizedID)
+	id, err := strconv.ParseInt(sanitizedID, 10, 64)
 	if err != nil {
 		return id, err
 	}

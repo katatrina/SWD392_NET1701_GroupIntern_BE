@@ -2,7 +2,7 @@ package api
 
 import (
 	"net/http"
-
+	
 	"github.com/gin-gonic/gin"
 	db "github.com/katatrina/SWD392_NET1701_GroupIntern/db/sqlc"
 )
@@ -25,18 +25,18 @@ type createRoomRequest struct {
 //	@Failure	500
 func (server *Server) createRoom(ctx *gin.Context) {
 	var req createRoomRequest
-
+	
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-
+	
 	room, err := server.store.CreateRoom(ctx, req.Name)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-
+	
 	ctx.JSON(http.StatusCreated, room)
 }
 
@@ -55,7 +55,7 @@ func (server *Server) listRooms(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-
+	
 	ctx.JSON(http.StatusOK, rooms)
 }
 
@@ -77,18 +77,18 @@ type updateRoomRequest struct {
 //	@Failure	500
 func (server *Server) updateRoom(ctx *gin.Context) {
 	var req updateRoomRequest
-
+	
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-
-	roomID, err := server.getIDParam(ctx)
+	
+	roomID, err := server.getLastIDParam(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-
+	
 	err = server.store.UpdateRoom(ctx, db.UpdateRoomParams{
 		ID:   roomID,
 		Name: req.Name,
@@ -97,6 +97,6 @@ func (server *Server) updateRoom(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
-
+	
 	ctx.JSON(http.StatusNoContent, nil)
 }

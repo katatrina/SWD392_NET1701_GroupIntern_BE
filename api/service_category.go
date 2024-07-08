@@ -184,7 +184,7 @@ func (server *Server) updateServiceCategory(ctx *gin.Context) {
 		return
 	}
 	
-	categoryID, err := server.getIDParam(ctx)
+	categoryID, err := server.getLastIDParam(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
@@ -239,7 +239,7 @@ func (server *Server) updateServiceCategory(ctx *gin.Context) {
 //	@Failure	403
 //	@Failure	500
 func (server *Server) deleteServiceCategory(ctx *gin.Context) {
-	categoryID, err := server.getIDParam(ctx)
+	categoryID, err := server.getLastIDParam(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
