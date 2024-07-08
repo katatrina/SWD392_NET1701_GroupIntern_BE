@@ -1,7 +1,6 @@
 package api
 
 import (
-	"errors"
 	"net/http"
 	"time"
 	
@@ -9,9 +8,7 @@ import (
 	db "github.com/katatrina/SWD392_NET1701_GroupIntern/db/sqlc"
 )
 
-var (
-	ErrScheduleOverlap = errors.New("schedule overlaps with other schedules")
-)
+var ()
 
 type createExaminationScheduleRequest struct {
 	DentistID int64     `json:"dentist_id" binding:"required"`

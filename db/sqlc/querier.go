@@ -37,6 +37,8 @@ type Querier interface {
 	GetSpecialty(ctx context.Context, id int64) (Specialty, error)
 	GetUserByEmailForLogin(ctx context.Context, email string) (User, error)
 	GetUserByID(ctx context.Context, id int64) (User, error)
+	IsEmailExists(ctx context.Context, email string) (bool, error)
+	IsPhoneNumberExists(ctx context.Context, phoneNumber string) (bool, error)
 	ListAvailableExaminationSchedulesByDateForPatient(ctx context.Context, arg ListAvailableExaminationSchedulesByDateForPatientParams) ([]ListAvailableExaminationSchedulesByDateForPatientRow, error)
 	ListBookingsOfOnePatient(ctx context.Context, arg ListBookingsOfOnePatientParams) ([]Booking, error)
 	ListDentists(ctx context.Context) ([]ListDentistsRow, error)

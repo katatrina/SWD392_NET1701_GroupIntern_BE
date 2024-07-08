@@ -3,19 +3,15 @@ package api
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"net/http"
 	"time"
 	
 	"github.com/gin-gonic/gin"
 	db "github.com/katatrina/SWD392_NET1701_GroupIntern/db/sqlc"
 	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
-	"github.com/lib/pq"
 )
 
-var (
-	ErrNoRecordFound = errors.New("no record found")
-)
+var ()
 
 type createPatientRequest struct {
 	Password    string          `json:"password" binding:"required"`
@@ -34,10 +30,10 @@ type createPatientRequest struct {
 //	@Tags		patients
 //	@Accept		json
 //	@Produce	json
-//	@Param		request	body	createPatientRequest	true	"Create patient info"
-//	@Success	201
+//	@Param		request	body		createPatientRequest	true	"Create patient info"
+//	@Success	201		{object}	db.User					"Patient account"
 //	@Failure	400
-//	@Failure	403
+//	@Failure	403	{object}	util.MapErrors	"Unique validation errors"
 //	@Failure	500
 func (server *Server) createPatient(ctx *gin.Context) {
 	var req createPatientRequest
@@ -45,6 +41,33 @@ func (server *Server) createPatient(ctx *gin.Context) {
 	// Parse the JSON request body
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	errs := make(util.MapErrors)
+	
+	// Check if the email is existed
+	emailExisted, err := server.store.IsEmailExists(ctx, req.Email)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	if emailExisted {
+		errs.Add("email_error", ErrEmailAlreadyExist.Error())
+	}
+	
+	// Check if the phone number is existed
+	phoneNumberExisted, err := server.store.IsPhoneNumberExists(ctx, req.PhoneNumber)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	if phoneNumberExisted {
+		errs.Add("phone_number_error", ErrPhoneNumberAlreadyExist.Error())
+	}
+	
+	if len(errs) > 0 {
+		ctx.JSON(http.StatusForbidden, errs)
 		return
 	}
 	
@@ -65,28 +88,14 @@ func (server *Server) createPatient(ctx *gin.Context) {
 		Gender:         req.Gender,
 	}
 	
-	// Create a new customer
-	_, err = server.store.CreateUser(ctx, arg)
+	// Create a new patient account
+	patient, err := server.store.CreateUser(ctx, arg)
 	if err != nil {
-		var pqErr *pq.Error
-		if errors.As(err, &pqErr) {
-			switch {
-			case pqErr.Code.Name() == "unique_violation":
-				err = fmt.Errorf("%s", pqErr.Detail)
-				ctx.JSON(http.StatusForbidden, errorResponse(err))
-				return
-			default:
-				err = fmt.Errorf("unexpected error occured: %s", pqErr.Detail)
-				ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-				return
-			}
-		}
-		
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 	
-	ctx.JSON(http.StatusCreated, nil)
+	ctx.JSON(http.StatusCreated, patient)
 }
 
 // getPatient returns the information of a patient

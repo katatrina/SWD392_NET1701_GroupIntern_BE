@@ -33,3 +33,15 @@ WHERE id = $1 RETURNING *;
 UPDATE users
 SET hashed_password = $2
 WHERE id = $1;
+
+-- name: IsEmailExists :one
+SELECT EXISTS(SELECT 1
+              FROM users
+              WHERE email = $1
+                AND deleted_at IS NULL) AS exists;
+
+-- name: IsPhoneNumberExists :one
+SELECT EXISTS(SELECT 1
+              FROM users
+              WHERE phone_number = $1
+                AND deleted_at IS NULL) AS exists;

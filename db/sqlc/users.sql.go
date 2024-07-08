@@ -126,6 +126,34 @@ func (q *Queries) GetUserByID(ctx context.Context, id int64) (User, error) {
 	return i, err
 }
 
+const isEmailExists = `-- name: IsEmailExists :one
+SELECT EXISTS(SELECT 1
+              FROM users
+              WHERE email = $1
+                AND deleted_at IS NULL) AS exists
+`
+
+func (q *Queries) IsEmailExists(ctx context.Context, email string) (bool, error) {
+	row := q.db.QueryRowContext(ctx, isEmailExists, email)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
+const isPhoneNumberExists = `-- name: IsPhoneNumberExists :one
+SELECT EXISTS(SELECT 1
+              FROM users
+              WHERE phone_number = $1
+                AND deleted_at IS NULL) AS exists
+`
+
+func (q *Queries) IsPhoneNumberExists(ctx context.Context, phoneNumber string) (bool, error) {
+	row := q.db.QueryRowContext(ctx, isPhoneNumberExists, phoneNumber)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
+
 const updateUser = `-- name: UpdateUser :one
 UPDATE users
 SET full_name     = $2,

@@ -12,11 +12,6 @@ import (
 	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
 )
 
-var (
-	ErrEmailNotFound     = errors.New("email not found")
-	ErrPasswordIncorrect = errors.New("password is incorrect")
-)
-
 type loginUserRequest struct {
 	Email    string `json:"email" binding:"required,email"`
 	Password string `json:"password" binding:"required"`

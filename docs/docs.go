@@ -232,13 +232,19 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created"
+                        "description": "Patient account",
+                        "schema": {
+                            "$ref": "#/definitions/db.User"
+                        }
                     },
                     "400": {
                         "description": "Bad Request"
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "description": "Unique validation errors",
+                        "schema": {
+                            "$ref": "#/definitions/util.MapErrors"
+                        }
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -2015,6 +2021,41 @@ const docTemplate = `{
                 }
             }
         },
+        "db.User": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "date_of_birth": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/sql.NullTime"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "hashed_password": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                }
+            }
+        },
         "sql.NullInt64": {
             "type": "object",
             "properties": {
@@ -2023,6 +2064,18 @@ const docTemplate = `{
                 },
                 "valid": {
                     "description": "Valid is true if Int64 is not NULL",
+                    "type": "boolean"
+                }
+            }
+        },
+        "sql.NullTime": {
+            "type": "object",
+            "properties": {
+                "time": {
+                    "type": "string"
+                },
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
                     "type": "boolean"
                 }
             }
@@ -2037,6 +2090,12 @@ const docTemplate = `{
                     "description": "Valid is true if String is not NULL",
                     "type": "boolean"
                 }
+            }
+        },
+        "util.MapErrors": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "string"
             }
         }
     },

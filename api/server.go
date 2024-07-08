@@ -1,7 +1,6 @@
 package api
 
 import (
-	"errors"
 	"strconv"
 	"strings"
 	"time"
@@ -24,9 +23,7 @@ type Server struct {
 	tokenMaker token.Maker
 }
 
-var (
-	ErrMisMatchedUserID = errors.New("the provided user ID does not match the authorized user ID")
-)
+var ()
 
 func NewServer(store db.Store, config util.Config) *Server {
 	tokenMaker := token.NewJWTMaker(config.TokenSymmetricKey)
