@@ -31,4 +31,4 @@ SELECT *
 FROM services
 WHERE name ILIKE '%' || sqlc.arg(name)::text || '%'
 AND category_id = (SELECT id FROM service_categories WHERE slug = sqlc.arg(category)::text)
-ORDER BY id;
+ORDER BY created_at DESC;

@@ -117,7 +117,7 @@ SELECT id, name, category_id, unit, cost, warranty_duration, created_at
 FROM services
 WHERE name ILIKE '%' || $1::text || '%'
 AND category_id = (SELECT id FROM service_categories WHERE slug = $2::text)
-ORDER BY id
+ORDER BY created_at DESC
 `
 
 type ListServicesByNameAndCategoryParams struct {
