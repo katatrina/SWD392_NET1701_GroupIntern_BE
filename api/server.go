@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -117,6 +116,7 @@ func (server *Server) setupRouter() {
 		scheduleGroup.POST("/examination", server.createExaminationSchedule)
 		scheduleGroup.GET("/examination", server.listExaminationSchedules)
 		scheduleGroup.GET("/examination/:id/patients", server.listPatientsByExaminationSchedule)
+		scheduleGroup.GET("/treatment/:id/patients", server.listPatientsByTreatmentSchedule)
 		
 		scheduleGroup.Use(authMiddleware(server.tokenMaker)).POST("/treatment", server.createTreatmentSchedule)
 		
@@ -152,7 +152,6 @@ func (server *Server) getLastIDParam(ctx *gin.Context) (int64, error) {
 func (server *Server) getMiddleIDParam(ctx *gin.Context) (int64, error) {
 	idParam := ctx.Param("id")
 	sanitizedID := strings.Trim(idParam, "/")
-	fmt.Println(sanitizedID)
 	id, err := strconv.ParseInt(sanitizedID, 10, 64)
 	if err != nil {
 		return id, err

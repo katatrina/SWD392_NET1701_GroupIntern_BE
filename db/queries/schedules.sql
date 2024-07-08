@@ -55,10 +55,20 @@ WHERE s.room_id = $1
   AND s.start_time = $2
   AND s.end_time = $3;
 
--- name: ListPatientsByScheduleID :many
-SELECT u.id, u.full_name, u.email, u.phone_number, u.date_of_birth, u.gender, u.role
+-- name: ListPatientsByExaminationScheduleID :many
+SELECT u.id, u.full_name, u.email, u.phone_number, u.date_of_birth, u.gender, u.role, sc.name as service_category
 FROM users u
          JOIN appointments a ON u.id = a.patient_id
          JOIN schedules s ON a.schedule_id = s.id
-WHERE s.id = sqlc.arg(schedule_id)
-  AND s.type = sqlc.arg(schedule_type);
+         LEFT JOIN examination_appointment_detail ead ON a.id = ead.appointment_id
+         JOIN service_categories sc ON ead.service_category_id = sc.id
+WHERE s.id = sqlc.arg(schedule_id);
+
+-- name: ListPatientsByTreatmentScheduleID :many
+SELECT u.id, u.full_name, u.email, u.phone_number, u.date_of_birth, u.gender, u.role, services.name as service_name, tad.service_quantity
+FROM users u
+         JOIN appointments a ON u.id = a.patient_id
+         JOIN schedules s ON a.schedule_id = s.id
+         LEFT JOIN treatment_appointment_detail tad ON a.id = tad.appointment_id
+         JOIN services ON tad.service_id = services.id
+WHERE s.id = sqlc.arg(schedule_id);

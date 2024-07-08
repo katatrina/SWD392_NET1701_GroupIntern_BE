@@ -24,4 +24,4 @@ sql:
               import: "github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
               package: "util"
               type: "JSONNullString"
-            nullable: false
+            nullable: true

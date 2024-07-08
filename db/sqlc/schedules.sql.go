@@ -7,7 +7,10 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"time"
+
+	util "github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
 )
 
 const createSchedule = `-- name: CreateSchedule :one
@@ -245,39 +248,36 @@ func (q *Queries) ListExaminationSchedules(ctx context.Context) ([]ListExaminati
 	return items, nil
 }
 
-const listPatientsByScheduleID = `-- name: ListPatientsByScheduleID :many
-SELECT u.id, u.full_name, u.email, u.phone_number, u.date_of_birth, u.gender, u.role
+const listPatientsByExaminationScheduleID = `-- name: ListPatientsByExaminationScheduleID :many
+SELECT u.id, u.full_name, u.email, u.phone_number, u.date_of_birth, u.gender, u.role, sc.name as service_category
 FROM users u
          JOIN appointments a ON u.id = a.patient_id
          JOIN schedules s ON a.schedule_id = s.id
+         LEFT JOIN examination_appointment_detail ead ON a.id = ead.appointment_id
+         JOIN service_categories sc ON ead.service_category_id = sc.id
 WHERE s.id = $1
-  AND s.type = $2
 `
 
-type ListPatientsByScheduleIDParams struct {
-	ScheduleID   int64  `json:"schedule_id"`
-	ScheduleType string `json:"schedule_type"`
+type ListPatientsByExaminationScheduleIDRow struct {
+	ID              int64               `json:"id"`
+	FullName        string              `json:"full_name"`
+	Email           string              `json:"email"`
+	PhoneNumber     string              `json:"phone_number"`
+	DateOfBirth     time.Time           `json:"date_of_birth"`
+	Gender          string              `json:"gender"`
+	Role            string              `json:"role"`
+	ServiceCategory util.JSONNullString `json:"service_category"`
 }
 
-type ListPatientsByScheduleIDRow struct {
-	ID          int64     `json:"id"`
-	FullName    string    `json:"full_name"`
-	Email       string    `json:"email"`
-	PhoneNumber string    `json:"phone_number"`
-	DateOfBirth time.Time `json:"date_of_birth"`
-	Gender      string    `json:"gender"`
-	Role        string    `json:"role"`
-}
-
-func (q *Queries) ListPatientsByScheduleID(ctx context.Context, arg ListPatientsByScheduleIDParams) ([]ListPatientsByScheduleIDRow, error) {
-	rows, err := q.db.QueryContext(ctx, listPatientsByScheduleID, arg.ScheduleID, arg.ScheduleType)
+func (q *Queries) ListPatientsByExaminationScheduleID(ctx context.Context, scheduleID int64) ([]ListPatientsByExaminationScheduleIDRow, error) {
+	rows, err := q.db.QueryContext(ctx, listPatientsByExaminationScheduleID, scheduleID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []ListPatientsByScheduleIDRow{}
+	items := []ListPatientsByExaminationScheduleIDRow{}
 	for rows.Next() {
-		var i ListPatientsByScheduleIDRow
+		var i ListPatientsByExaminationScheduleIDRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.FullName,
@@ -286,6 +286,62 @@ func (q *Queries) ListPatientsByScheduleID(ctx context.Context, arg ListPatients
 			&i.DateOfBirth,
 			&i.Gender,
 			&i.Role,
+			&i.ServiceCategory,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listPatientsByTreatmentScheduleID = `-- name: ListPatientsByTreatmentScheduleID :many
+SELECT u.id, u.full_name, u.email, u.phone_number, u.date_of_birth, u.gender, u.role, services.name as service_name, tad.service_quantity
+FROM users u
+         JOIN appointments a ON u.id = a.patient_id
+         JOIN schedules s ON a.schedule_id = s.id
+         LEFT JOIN treatment_appointment_detail tad ON a.id = tad.appointment_id
+         JOIN services ON tad.service_id = services.id
+WHERE s.id = $1
+`
+
+type ListPatientsByTreatmentScheduleIDRow struct {
+	ID              int64         `json:"id"`
+	FullName        string        `json:"full_name"`
+	Email           string        `json:"email"`
+	PhoneNumber     string        `json:"phone_number"`
+	DateOfBirth     time.Time     `json:"date_of_birth"`
+	Gender          string        `json:"gender"`
+	Role            string        `json:"role"`
+	ServiceName     string        `json:"service_name"`
+	ServiceQuantity sql.NullInt64 `json:"service_quantity"`
+}
+
+func (q *Queries) ListPatientsByTreatmentScheduleID(ctx context.Context, scheduleID int64) ([]ListPatientsByTreatmentScheduleIDRow, error) {
+	rows, err := q.db.QueryContext(ctx, listPatientsByTreatmentScheduleID, scheduleID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListPatientsByTreatmentScheduleIDRow{}
+	for rows.Next() {
+		var i ListPatientsByTreatmentScheduleIDRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.FullName,
+			&i.Email,
+			&i.PhoneNumber,
+			&i.DateOfBirth,
+			&i.Gender,
+			&i.Role,
+			&i.ServiceName,
+			&i.ServiceQuantity,
 		); err != nil {
 			return nil, err
 		}

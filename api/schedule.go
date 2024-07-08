@@ -218,7 +218,7 @@ func (server *Server) createTreatmentSchedule(ctx *gin.Context) {
 //	@Tags		schedules
 //	@Produce	json
 //	@Param		id	path	int	true	"Examination Schedule ID"
-//	@Success	200	{array}	db.ListPatientsByScheduleIDRow
+//	@Success	200	{array}	db.ListPatientsByExaminationScheduleIDRow
 //	@Failure	400
 //	@Failure	500
 func (server *Server) listPatientsByExaminationSchedule(ctx *gin.Context) {
@@ -228,12 +228,34 @@ func (server *Server) listPatientsByExaminationSchedule(ctx *gin.Context) {
 		return
 	}
 	
-	arg := db.ListPatientsByScheduleIDParams{
-		ScheduleID:   scheduleID,
-		ScheduleType: "Examination",
+	patients, err := server.store.ListPatientsByExaminationScheduleID(ctx, scheduleID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
 	}
 	
-	patients, err := server.store.ListPatientsByScheduleID(ctx, arg)
+	ctx.JSON(http.StatusOK, patients)
+}
+
+// listPatientsByExaminationSchedule lists patients by examination schedule
+//
+//	@Router		/schedules/treatment/{id}/patients [get]
+//	@Summary	Liệt kê tất cả bệnh nhân của một lịch điều trị
+//	@Description
+//	@Tags		schedules
+//	@Produce	json
+//	@Param		id	path	int	true	"Treatment Schedule ID"
+//	@Success	200	{array}	db.ListPatientsByTreatmentScheduleIDRow
+//	@Failure	400
+//	@Failure	500
+func (server *Server) listPatientsByTreatmentSchedule(ctx *gin.Context) {
+	scheduleID, err := server.getMiddleIDParam(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	patients, err := server.store.ListPatientsByTreatmentScheduleID(ctx, scheduleID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return

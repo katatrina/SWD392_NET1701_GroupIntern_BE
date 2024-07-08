@@ -684,7 +684,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/db.ListPatientsByScheduleIDRow"
+                                "$ref": "#/definitions/db.ListPatientsByExaminationScheduleIDRow"
                             }
                         }
                     },
@@ -737,6 +737,43 @@ const docTemplate = `{
                     },
                     "403": {
                         "description": "Forbidden"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/schedules/treatment/{id}/patients": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "schedules"
+                ],
+                "summary": "Liệt kê tất cả bệnh nhân của một lịch điều trị",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Treatment Schedule ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.ListPatientsByTreatmentScheduleIDRow"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -1768,7 +1805,7 @@ const docTemplate = `{
                 }
             }
         },
-        "db.ListPatientsByScheduleIDRow": {
+        "db.ListPatientsByExaminationScheduleIDRow": {
             "type": "object",
             "properties": {
                 "date_of_birth": {
@@ -1791,6 +1828,41 @@ const docTemplate = `{
                 },
                 "role": {
                     "type": "string"
+                },
+                "service_category": {
+                    "$ref": "#/definitions/util.JSONNullString"
+                }
+            }
+        },
+        "db.ListPatientsByTreatmentScheduleIDRow": {
+            "type": "object",
+            "properties": {
+                "date_of_birth": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "service_name": {
+                    "type": "string"
+                },
+                "service_quantity": {
+                    "$ref": "#/definitions/sql.NullInt64"
                 }
             }
         },
