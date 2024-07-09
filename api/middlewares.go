@@ -6,7 +6,7 @@ import (
 	"strings"
 	
 	"github.com/gin-gonic/gin"
-	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/token"
+	"github.com/katatrina/SWD392_NET1701_GroupIntern_BE/internal/token"
 )
 
 var (

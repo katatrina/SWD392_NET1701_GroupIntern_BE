@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 	
-	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
+	"github.com/katatrina/SWD392_NET1701_GroupIntern_BE/internal/util"
 	_ "github.com/lib/pq"
 	"github.com/stretchr/testify/require"
 )

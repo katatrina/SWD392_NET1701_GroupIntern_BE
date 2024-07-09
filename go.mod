@@ -1,4 +1,4 @@
-module github.com/katatrina/SWD392_NET1701_GroupIntern
+module github.com/katatrina/SWD392_NET1701_GroupIntern_BE
 
 go 1.22.0
 

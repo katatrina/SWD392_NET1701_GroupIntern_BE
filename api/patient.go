@@ -7,8 +7,8 @@ import (
 	"time"
 	
 	"github.com/gin-gonic/gin"
-	db "github.com/katatrina/SWD392_NET1701_GroupIntern/db/sqlc"
-	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
+	db "github.com/katatrina/SWD392_NET1701_GroupIntern_BE/db/sqlc"
+	"github.com/katatrina/SWD392_NET1701_GroupIntern_BE/internal/util"
 )
 
 var ()

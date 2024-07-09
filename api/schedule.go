@@ -5,7 +5,7 @@ import (
 	"time"
 	
 	"github.com/gin-gonic/gin"
-	db "github.com/katatrina/SWD392_NET1701_GroupIntern/db/sqlc"
+	db "github.com/katatrina/SWD392_NET1701_GroupIntern_BE/db/sqlc"
 )
 
 var ()

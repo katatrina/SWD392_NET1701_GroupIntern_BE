@@ -7,11 +7,11 @@ import (
 	
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	db "github.com/katatrina/SWD392_NET1701_GroupIntern/db/sqlc"
-	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/token"
-	"github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
+	db "github.com/katatrina/SWD392_NET1701_GroupIntern_BE/db/sqlc"
+	"github.com/katatrina/SWD392_NET1701_GroupIntern_BE/internal/token"
+	"github.com/katatrina/SWD392_NET1701_GroupIntern_BE/internal/util"
 	
-	_ "github.com/katatrina/SWD392_NET1701_GroupIntern/docs"
+	_ "github.com/katatrina/SWD392_NET1701_GroupIntern_BE/docs"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
