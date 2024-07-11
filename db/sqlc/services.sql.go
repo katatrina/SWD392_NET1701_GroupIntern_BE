@@ -11,7 +11,7 @@ import (
 
 const createService = `-- name: CreateService :one
 INSERT INTO services (name, category_id, unit, cost, warranty_duration)
-VALUES ($1, $2, $3, $4, $5) RETURNING id, name, category_id, unit, cost, warranty_duration, created_at
+VALUES ($1, $2, $3, $4, $5) RETURNING id, name, category_id, unit, cost, currency, warranty_duration, created_at
 `
 
 type CreateServiceParams struct {
@@ -37,6 +37,7 @@ func (q *Queries) CreateService(ctx context.Context, arg CreateServiceParams) (S
 		&i.CategoryID,
 		&i.Unit,
 		&i.Cost,
+		&i.Currency,
 		&i.WarrantyDuration,
 		&i.CreatedAt,
 	)
@@ -54,7 +55,7 @@ func (q *Queries) DeleteService(ctx context.Context, id int64) error {
 }
 
 const getService = `-- name: GetService :one
-SELECT id, name, category_id, unit, cost, warranty_duration, created_at
+SELECT id, name, category_id, unit, cost, currency, warranty_duration, created_at
 FROM services
 WHERE id = $1
 `
@@ -68,6 +69,7 @@ func (q *Queries) GetService(ctx context.Context, id int64) (Service, error) {
 		&i.CategoryID,
 		&i.Unit,
 		&i.Cost,
+		&i.Currency,
 		&i.WarrantyDuration,
 		&i.CreatedAt,
 	)
@@ -75,7 +77,7 @@ func (q *Queries) GetService(ctx context.Context, id int64) (Service, error) {
 }
 
 const listServicesByCategory = `-- name: ListServicesByCategory :many
-SELECT id, name, category_id, unit, cost, warranty_duration, created_at
+SELECT id, name, category_id, unit, cost, currency, warranty_duration, created_at
 FROM services
 WHERE category_id = (SELECT id FROM service_categories WHERE slug = $1)
 ORDER BY created_at DESC
@@ -96,6 +98,7 @@ func (q *Queries) ListServicesByCategory(ctx context.Context, slug string) ([]Se
 			&i.CategoryID,
 			&i.Unit,
 			&i.Cost,
+			&i.Currency,
 			&i.WarrantyDuration,
 			&i.CreatedAt,
 		); err != nil {
@@ -113,7 +116,7 @@ func (q *Queries) ListServicesByCategory(ctx context.Context, slug string) ([]Se
 }
 
 const listServicesByNameAndCategory = `-- name: ListServicesByNameAndCategory :many
-SELECT id, name, category_id, unit, cost, warranty_duration, created_at
+SELECT id, name, category_id, unit, cost, currency, warranty_duration, created_at
 FROM services
 WHERE name ILIKE '%' || $1::text || '%'
 AND category_id = (SELECT id FROM service_categories WHERE slug = $2::text)
@@ -140,6 +143,7 @@ func (q *Queries) ListServicesByNameAndCategory(ctx context.Context, arg ListSer
 			&i.CategoryID,
 			&i.Unit,
 			&i.Cost,
+			&i.Currency,
 			&i.WarrantyDuration,
 			&i.CreatedAt,
 		); err != nil {

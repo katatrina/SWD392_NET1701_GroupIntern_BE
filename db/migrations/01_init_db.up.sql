@@ -50,6 +50,7 @@ CREATE TABLE "services"
     "category_id"       bigint      NOT NULL,
     "unit"              text        NOT NULL,
     "cost"              bigint      NOT NULL,
+    "currency"          text        NOT NULL DEFAULT 'VND',
     "warranty_duration" text        NOT NULL,
     "created_at"        timestamptz NOT NULL DEFAULT (now())
 );

@@ -72,6 +72,7 @@ type Service struct {
 	CategoryID       int64     `json:"category_id"`
 	Unit             string    `json:"unit"`
 	Cost             int64     `json:"cost"`
+	Currency         string    `json:"currency"`
 	WarrantyDuration string    `json:"warranty_duration"`
 	CreatedAt        time.Time `json:"created_at"`
 }

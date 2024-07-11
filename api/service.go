@@ -15,7 +15,7 @@ type createServiceRequest struct {
 	CategoryID       int64  `json:"category_id" binding:"required"`
 	Unit             string `json:"unit" binding:"required"`
 	Cost             int64  `json:"cost" binding:"required"`
-	WarrantyDuration string `json:"warranty_duration" binding:"required"`
+	WarrantyDuration string `json:"warranty_duration"`
 }
 
 // createService creates a new service
