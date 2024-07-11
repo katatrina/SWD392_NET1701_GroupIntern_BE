@@ -598,15 +598,20 @@ const docTemplate = `{
                     "schedules"
                 ],
                 "summary": "Liệt kê tất cả lịch khám tổng quát",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search query by dentist name",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/db.ListExaminationSchedulesRow"
-                            }
-                        }
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -1465,8 +1470,7 @@ const docTemplate = `{
                 "category_id",
                 "cost",
                 "name",
-                "unit",
-                "warranty_duration"
+                "unit"
             ],
             "properties": {
                 "category_id": {
@@ -1817,32 +1821,6 @@ const docTemplate = `{
                 }
             }
         },
-        "db.ListExaminationSchedulesRow": {
-            "type": "object",
-            "properties": {
-                "appointment_count": {
-                    "type": "integer"
-                },
-                "dentist_name": {
-                    "type": "string"
-                },
-                "end_time": {
-                    "type": "string"
-                },
-                "room_name": {
-                    "type": "string"
-                },
-                "schedule_id": {
-                    "type": "integer"
-                },
-                "start_time": {
-                    "type": "string"
-                },
-                "type": {
-                    "type": "string"
-                }
-            }
-        },
         "db.ListPatientsByExaminationScheduleIDRow": {
             "type": "object",
             "properties": {
@@ -1971,6 +1949,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "created_at": {
+                    "type": "string"
+                },
+                "currency": {
                     "type": "string"
                 },
                 "id": {

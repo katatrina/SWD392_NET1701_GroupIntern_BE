@@ -1,6 +1,8 @@
 package api
 
 import (
+	"database/sql"
+	"errors"
 	"net/http"
 	"time"
 	
@@ -113,13 +115,37 @@ func (server *Server) listAvailableExaminationSchedulesByDateForPatient(ctx *gin
 //	@Router		/schedules/examination [get]
 //	@Summary	Liệt kê tất cả lịch khám tổng quát
 //	@Description
+// @Param		q	query	string	false	"Search query by dentist name"
 //	@Tags		schedules
 //	@Produce	json
-//	@Success	200	{array}	db.ListExaminationSchedulesRow
+//	@Success	200
+//	@Failure	404
 //	@Failure	500
 func (server *Server) listExaminationSchedules(ctx *gin.Context) {
+	searchQuery := ctx.Query("q")
+	if searchQuery != "" {
+		schedules, err := server.store.ListExaminationSchedulesByDentistName(ctx, searchQuery)
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+				return
+			}
+			
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		
+		ctx.JSON(http.StatusOK, schedules)
+		return
+	}
+	
 	schedules, err := server.store.ListExaminationSchedules(ctx)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+			return
+		}
+		
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}

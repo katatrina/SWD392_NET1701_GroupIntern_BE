@@ -248,8 +248,73 @@ func (q *Queries) ListExaminationSchedules(ctx context.Context) ([]ListExaminati
 	return items, nil
 }
 
+const listExaminationSchedulesByDentistName = `-- name: ListExaminationSchedulesByDentistName :many
+SELECT s.id        as schedule_id,
+       s.type,
+       s.start_time,
+       s.end_time,
+       u.full_name as dentist_name,
+       r.name      as room_name,
+       COUNT(a.id) AS appointment_count
+FROM schedules s
+         JOIN users u ON s.dentist_id = u.id
+         JOIN rooms r ON s.room_id = r.id
+         LEFT JOIN appointments a ON s.id = a.schedule_id
+WHERE u.full_name ILIKE '%' || $1::text || '%'
+GROUP BY s.id, u.full_name, r.name
+ORDER BY s.created_at ASC
+`
+
+type ListExaminationSchedulesByDentistNameRow struct {
+	ScheduleID       int64     `json:"schedule_id"`
+	Type             string    `json:"type"`
+	StartTime        time.Time `json:"start_time"`
+	EndTime          time.Time `json:"end_time"`
+	DentistName      string    `json:"dentist_name"`
+	RoomName         string    `json:"room_name"`
+	AppointmentCount int64     `json:"appointment_count"`
+}
+
+func (q *Queries) ListExaminationSchedulesByDentistName(ctx context.Context, dentistName string) ([]ListExaminationSchedulesByDentistNameRow, error) {
+	rows, err := q.db.QueryContext(ctx, listExaminationSchedulesByDentistName, dentistName)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListExaminationSchedulesByDentistNameRow{}
+	for rows.Next() {
+		var i ListExaminationSchedulesByDentistNameRow
+		if err := rows.Scan(
+			&i.ScheduleID,
+			&i.Type,
+			&i.StartTime,
+			&i.EndTime,
+			&i.DentistName,
+			&i.RoomName,
+			&i.AppointmentCount,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listPatientsByExaminationScheduleID = `-- name: ListPatientsByExaminationScheduleID :many
-SELECT u.id, u.full_name, u.email, u.phone_number, u.date_of_birth, u.gender, u.role, sc.name as service_category
+SELECT u.id,
+       u.full_name,
+       u.email,
+       u.phone_number,
+       u.date_of_birth,
+       u.gender,
+       u.role,
+       sc.name as service_category
 FROM users u
          JOIN appointments a ON u.id = a.patient_id
          JOIN schedules s ON a.schedule_id = s.id
@@ -302,7 +367,15 @@ func (q *Queries) ListPatientsByExaminationScheduleID(ctx context.Context, sched
 }
 
 const listPatientsByTreatmentScheduleID = `-- name: ListPatientsByTreatmentScheduleID :many
-SELECT u.id, u.full_name, u.email, u.phone_number, u.date_of_birth, u.gender, u.role, services.name as service_name, tad.service_quantity
+SELECT u.id,
+       u.full_name,
+       u.email,
+       u.phone_number,
+       u.date_of_birth,
+       u.gender,
+       u.role,
+       services.name as service_name,
+       tad.service_quantity
 FROM users u
          JOIN appointments a ON u.id = a.patient_id
          JOIN schedules s ON a.schedule_id = s.id
