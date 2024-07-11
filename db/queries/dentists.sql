@@ -7,15 +7,15 @@ SELECT users.id,
        users.full_name,
        users.email,
        users.phone_number,
-       users.created_at,
        users.date_of_birth,
        users.gender,
+       users.deleted_at,
+       users.created_at,
        specialties.name AS specialty
 FROM users
          JOIN dentist_detail ON users.id = dentist_detail.dentist_id
          JOIN specialties ON dentist_detail.specialty_id = specialties.id
 WHERE users.role = 'Dentist'
-  AND users.deleted_at IS NULL
 ORDER BY users.created_at DESC;
 
 -- name: ListDentistsByName :many
@@ -23,15 +23,15 @@ SELECT users.id,
        users.full_name,
        users.email,
        users.phone_number,
-       users.created_at,
        users.date_of_birth,
        users.gender,
+       users.deleted_at,
+       users.created_at,
        specialties.name AS specialty
 FROM users
          JOIN dentist_detail ON users.id = dentist_detail.dentist_id
          JOIN specialties ON dentist_detail.specialty_id = specialties.id
 WHERE users.role = 'Dentist'
-  AND users.deleted_at IS NULL
   AND users.full_name ILIKE '%' || sqlc.arg(name)::text || '%'
 ORDER BY users.created_at DESC;
 

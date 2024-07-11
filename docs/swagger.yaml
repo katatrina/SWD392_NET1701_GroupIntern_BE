@@ -329,6 +329,8 @@ definitions:
         type: string
       date_of_birth:
         type: string
+      deleted_at:
+        $ref: '#/definitions/sql.NullTime'
       email:
         type: string
       full_name:
@@ -611,7 +613,7 @@ paths:
           description: Not Found
         "500":
           description: Internal Server Error
-      summary: Xóa tài khoản nha sĩ
+      summary: Vô hiệu hóa tài khoản nha sĩ
       tags:
       - dentists
     get:

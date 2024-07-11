@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
@@ -90,27 +91,28 @@ SELECT users.id,
        users.full_name,
        users.email,
        users.phone_number,
-       users.created_at,
        users.date_of_birth,
        users.gender,
+       users.deleted_at,
+       users.created_at,
        specialties.name AS specialty
 FROM users
          JOIN dentist_detail ON users.id = dentist_detail.dentist_id
          JOIN specialties ON dentist_detail.specialty_id = specialties.id
 WHERE users.role = 'Dentist'
-  AND users.deleted_at IS NULL
 ORDER BY users.created_at DESC
 `
 
 type ListDentistsRow struct {
-	ID          int64     `json:"id"`
-	FullName    string    `json:"full_name"`
-	Email       string    `json:"email"`
-	PhoneNumber string    `json:"phone_number"`
-	CreatedAt   time.Time `json:"created_at"`
-	DateOfBirth time.Time `json:"date_of_birth"`
-	Gender      string    `json:"gender"`
-	Specialty   string    `json:"specialty"`
+	ID          int64        `json:"id"`
+	FullName    string       `json:"full_name"`
+	Email       string       `json:"email"`
+	PhoneNumber string       `json:"phone_number"`
+	DateOfBirth time.Time    `json:"date_of_birth"`
+	Gender      string       `json:"gender"`
+	DeletedAt   sql.NullTime `json:"deleted_at"`
+	CreatedAt   time.Time    `json:"created_at"`
+	Specialty   string       `json:"specialty"`
 }
 
 func (q *Queries) ListDentists(ctx context.Context) ([]ListDentistsRow, error) {
@@ -127,9 +129,10 @@ func (q *Queries) ListDentists(ctx context.Context) ([]ListDentistsRow, error) {
 			&i.FullName,
 			&i.Email,
 			&i.PhoneNumber,
-			&i.CreatedAt,
 			&i.DateOfBirth,
 			&i.Gender,
+			&i.DeletedAt,
+			&i.CreatedAt,
 			&i.Specialty,
 		); err != nil {
 			return nil, err
@@ -150,28 +153,29 @@ SELECT users.id,
        users.full_name,
        users.email,
        users.phone_number,
-       users.created_at,
        users.date_of_birth,
        users.gender,
+       users.deleted_at,
+       users.created_at,
        specialties.name AS specialty
 FROM users
          JOIN dentist_detail ON users.id = dentist_detail.dentist_id
          JOIN specialties ON dentist_detail.specialty_id = specialties.id
 WHERE users.role = 'Dentist'
-  AND users.deleted_at IS NULL
   AND users.full_name ILIKE '%' || $1::text || '%'
 ORDER BY users.created_at DESC
 `
 
 type ListDentistsByNameRow struct {
-	ID          int64     `json:"id"`
-	FullName    string    `json:"full_name"`
-	Email       string    `json:"email"`
-	PhoneNumber string    `json:"phone_number"`
-	CreatedAt   time.Time `json:"created_at"`
-	DateOfBirth time.Time `json:"date_of_birth"`
-	Gender      string    `json:"gender"`
-	Specialty   string    `json:"specialty"`
+	ID          int64        `json:"id"`
+	FullName    string       `json:"full_name"`
+	Email       string       `json:"email"`
+	PhoneNumber string       `json:"phone_number"`
+	DateOfBirth time.Time    `json:"date_of_birth"`
+	Gender      string       `json:"gender"`
+	DeletedAt   sql.NullTime `json:"deleted_at"`
+	CreatedAt   time.Time    `json:"created_at"`
+	Specialty   string       `json:"specialty"`
 }
 
 func (q *Queries) ListDentistsByName(ctx context.Context, name string) ([]ListDentistsByNameRow, error) {
@@ -188,9 +192,10 @@ func (q *Queries) ListDentistsByName(ctx context.Context, name string) ([]ListDe
 			&i.FullName,
 			&i.Email,
 			&i.PhoneNumber,
-			&i.CreatedAt,
 			&i.DateOfBirth,
 			&i.Gender,
+			&i.DeletedAt,
+			&i.CreatedAt,
 			&i.Specialty,
 		); err != nil {
 			return nil, err

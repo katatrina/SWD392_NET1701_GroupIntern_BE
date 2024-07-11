@@ -38,14 +38,14 @@ func (server *Server) listDentists(ctx *gin.Context) {
 		return
 	}
 	
-	services, err := server.store.ListDentistsByName(ctx, searchQuery)
+	dentists, err := server.store.ListDentistsByName(ctx, searchQuery)
 	switch {
 	case err != nil:
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-	case len(services) == 0:
+	case len(dentists) == 0:
 		ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
 	default:
-		ctx.JSON(http.StatusOK, services)
+		ctx.JSON(http.StatusOK, dentists)
 	}
 }
 
@@ -259,7 +259,7 @@ func (server *Server) updateDentist(ctx *gin.Context) {
 // deleteDentist deletes a dentist account
 //
 //	@Router		/dentists/{id} [delete]
-//	@Summary	Xóa tài khoản nha sĩ
+//	@Summary	Vô hiệu hóa tài khoản nha sĩ
 //	@Produce	json
 //	@Param		id	path	int	true	"Dentist ID"
 //	@Description

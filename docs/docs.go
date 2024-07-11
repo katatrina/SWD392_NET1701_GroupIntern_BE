@@ -187,7 +187,7 @@ const docTemplate = `{
                 "tags": [
                     "dentists"
                 ],
-                "summary": "Xóa tài khoản nha sĩ",
+                "summary": "Vô hiệu hóa tài khoản nha sĩ",
                 "parameters": [
                     {
                         "type": "integer",
@@ -1800,6 +1800,9 @@ const docTemplate = `{
                 },
                 "date_of_birth": {
                     "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/sql.NullTime"
                 },
                 "email": {
                     "type": "string"
