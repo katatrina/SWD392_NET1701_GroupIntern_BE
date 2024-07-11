@@ -1,10 +1,13 @@
 package api
 
 import (
+	"errors"
+	"fmt"
 	"net/http"
 	
 	"github.com/gin-gonic/gin"
 	db "github.com/katatrina/SWD392_NET1701_GroupIntern_BE/db/sqlc"
+	"github.com/lib/pq"
 )
 
 type createRoomRequest struct {
@@ -71,7 +74,6 @@ type updateRoomRequest struct {
 //	@Params		request body updateRoomRequest true "Update room info"
 //	@Param		id	path	int	true	"Room ID"
 //	@Tags		rooms
-//	@Produce	json
 //	@Success	204
 //	@Failure	400
 //	@Failure	500
@@ -94,6 +96,47 @@ func (server *Server) updateRoom(ctx *gin.Context) {
 		Name: req.Name,
 	})
 	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	ctx.JSON(http.StatusNoContent, nil)
+}
+
+// deleteRoom deletes a room
+//
+//	@Router		/rooms/{id} [delete]
+//	@Summary	Xóa một phòng
+//	@Description
+//	@Param		id	path	int	true	"Room ID"
+//	@Tags		rooms
+//	@Success	204
+//	@Failure	400
+//	@Failure	403
+//	@Failure	500
+func (server *Server) deleteRoom(ctx *gin.Context) {
+	roomID, err := server.getLastIDParam(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	err = server.store.DeleteRoom(ctx, roomID)
+	if err != nil {
+		var pqErr *pq.Error
+		if errors.As(err, &pqErr) {
+			switch {
+			case pqErr.Code.Name() == "foreign_key_violation":
+				err = fmt.Errorf("%s", pqErr.Detail)
+				ctx.JSON(http.StatusForbidden, errorResponse(err))
+				return
+			default:
+				err = fmt.Errorf("unexpected error occured: %s", pqErr.Detail)
+				ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+				return
+			}
+		}
+		
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}

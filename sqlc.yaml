@@ -15,13 +15,13 @@ sql:
         overrides:
           - column: "examination_appointment_detail.service_category_id"
             go_type:
-              import: "github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
+              import: "github.com/katatrina/SWD392_NET1701_GroupIntern_BE/internal/util"
               package: "util"
               type: "JSONNullInt64"
             nullable: true
           - column: "service_categories.name"
             go_type:
-              import: "github.com/katatrina/SWD392_NET1701_GroupIntern/internal/util"
+              import: "github.com/katatrina/SWD392_NET1701_GroupIntern_BE/internal/util"
               package: "util"
               type: "JSONNullString"
             nullable: true

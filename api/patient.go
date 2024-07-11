@@ -11,8 +11,6 @@ import (
 	"github.com/katatrina/SWD392_NET1701_GroupIntern_BE/internal/util"
 )
 
-var ()
-
 type createPatientRequest struct {
 	Password    string          `json:"password" binding:"required"`
 	FullName    string          `json:"full_name" binding:"required"`

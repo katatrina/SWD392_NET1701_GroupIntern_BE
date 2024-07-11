@@ -22,6 +22,7 @@ type Querier interface {
 	CreateTreatmentAppointmentDetail(ctx context.Context, arg CreateTreatmentAppointmentDetailParams) (TreatmentAppointmentDetail, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteDentist(ctx context.Context, id int64) error
+	DeleteRoom(ctx context.Context, id int64) error
 	DeleteService(ctx context.Context, id int64) error
 	DeleteServiceCategory(ctx context.Context, id int64) error
 	GetAppointmentByBookingID(ctx context.Context, bookingID int64) (Appointment, error)

@@ -7,7 +7,7 @@ package db
 import (
 	"database/sql"
 	"time"
-	
+
 	util "github.com/katatrina/SWD392_NET1701_GroupIntern_BE/internal/util"
 )
 

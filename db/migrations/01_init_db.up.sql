@@ -118,13 +118,13 @@ ALTER TABLE "dentist_detail"
     ADD FOREIGN KEY ("dentist_id") REFERENCES "users" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "services"
-    ADD FOREIGN KEY ("category_id") REFERENCES "service_categories" ("id") ON DELETE CASCADE ON UPDATE CASCADE;
+    ADD FOREIGN KEY ("category_id") REFERENCES "service_categories" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 ALTER TABLE "schedules"
     ADD FOREIGN KEY ("dentist_id") REFERENCES "users" ("id");
 
 ALTER TABLE "schedules"
-    ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("id");
+    ADD FOREIGN KEY ("room_id") REFERENCES "rooms" ("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 ALTER TABLE "appointments"
     ADD FOREIGN KEY ("booking_id") REFERENCES "bookings" ("id");

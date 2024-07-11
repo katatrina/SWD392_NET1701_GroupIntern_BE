@@ -886,6 +886,25 @@ paths:
       tags:
       - rooms
   /rooms/{id}:
+    delete:
+      parameters:
+      - description: Room ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal Server Error
+      summary: Xóa một phòng
+      tags:
+      - rooms
     put:
       parameters:
       - description: Room ID
@@ -893,8 +912,6 @@ paths:
         name: id
         required: true
         type: integer
-      produces:
-      - application/json
       responses:
         "204":
           description: No Content

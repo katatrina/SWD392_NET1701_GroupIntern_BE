@@ -11,3 +11,8 @@ ORDER BY created_at DESC;
 UPDATE rooms
 SET name = $2
 WHERE id = $1;
+
+-- name: DeleteRoom :exec
+DELETE
+FROM rooms
+WHERE id = $1;

@@ -103,7 +103,7 @@ func (server *Server) setupRouter() {
 		roomGroup.POST("", server.createRoom)
 		roomGroup.GET("", server.listRooms)
 		roomGroup.PUT("/:id", server.updateRoom)
-		// roomGroup.DELETE("/:id", server.deleteRoom)
+		roomGroup.DELETE("/:id", server.deleteRoom)
 	}
 	
 	scheduleGroup := v1.Group("/schedules")

@@ -534,9 +534,6 @@ const docTemplate = `{
         },
         "/rooms/{id}": {
             "put": {
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
                     "rooms"
                 ],
@@ -556,6 +553,35 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "rooms"
+                ],
+                "summary": "Xóa một phòng",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Room ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Forbidden"
                     },
                     "500": {
                         "description": "Internal Server Error"
