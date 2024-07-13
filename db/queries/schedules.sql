@@ -10,13 +10,14 @@ WHERE s.start_time::date = sqlc.arg(date)::date
 ORDER BY s.start_time ASC;
 
 -- name: ListExaminationSchedules :many
-SELECT s.id        as schedule_id,
+SELECT s.id              as schedule_id,
        s.type,
        s.start_time,
        s.end_time,
-       u.full_name as dentist_name,
-       r.name      as room_name,
-       COUNT(a.id) AS appointment_count
+       u.full_name       as dentist_name,
+       r.name            as room_name,
+       s.slots_remaining as max_patients,
+       COUNT(a.id)       as current_patients
 FROM schedules s
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id
@@ -31,6 +32,7 @@ SELECT s.id,
        s.end_time,
        u.full_name as dentist_name,
        r.name      as room_name,
+       s.max_patients,
        s.slots_remaining,
        s.created_at
 FROM schedules s
@@ -40,8 +42,8 @@ WHERE s.id = sqlc.arg(schedule_id)
   AND s.type = sqlc.arg(type);
 
 -- name: CreateSchedule :one
-INSERT INTO schedules (type, start_time, end_time, dentist_id, room_id, slots_remaining)
-VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
+INSERT INTO schedules (type, start_time, end_time, dentist_id, room_id, max_patients, slots_remaining)
+VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;
 
 -- name: UpdateScheduleSlotsRemaining :exec
 UPDATE schedules
@@ -89,13 +91,14 @@ FROM users u
 WHERE s.id = sqlc.arg(schedule_id);
 
 -- name: ListExaminationSchedulesByDentistName :many
-SELECT s.id        as schedule_id,
+SELECT s.id              as schedule_id,
        s.type,
        s.start_time,
        s.end_time,
-       u.full_name as dentist_name,
-       r.name      as room_name,
-       COUNT(a.id) AS appointment_count
+       u.full_name       as dentist_name,
+       r.name            as room_name,
+       s.slots_remaining as max_patients,
+       COUNT(a.id)       as current_patients
 FROM schedules s
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id

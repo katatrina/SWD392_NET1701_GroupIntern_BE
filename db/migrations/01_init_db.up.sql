@@ -50,7 +50,7 @@ CREATE TABLE "services"
     "category_id"       bigint      NOT NULL,
     "unit"              text        NOT NULL,
     "cost"              bigint      NOT NULL,
-    "currency"          text        NOT NULL DEFAULT 'VND',
+    "currency"          text        NOT NULL,
     "warranty_duration" text        NOT NULL,
     "created_at"        timestamptz NOT NULL DEFAULT (now())
 );
@@ -63,6 +63,7 @@ CREATE TABLE "schedules"
     "end_time"        timestamptz NOT NULL,
     "dentist_id"      bigint      NOT NULL,
     "room_id"         bigint      NOT NULL,
+    "max_patients"    bigint      NOT NULL,
     "slots_remaining" bigint      NOT NULL,
     "created_at"      timestamptz NOT NULL DEFAULT (now())
 );

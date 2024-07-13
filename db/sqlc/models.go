@@ -62,6 +62,7 @@ type Schedule struct {
 	EndTime        time.Time `json:"end_time"`
 	DentistID      int64     `json:"dentist_id"`
 	RoomID         int64     `json:"room_id"`
+	MaxPatients    int64     `json:"max_patients"`
 	SlotsRemaining int64     `json:"slots_remaining"`
 	CreatedAt      time.Time `json:"created_at"`
 }

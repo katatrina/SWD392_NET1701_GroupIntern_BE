@@ -242,7 +242,8 @@ func (store *SQLStore) BookTreatmentAppointmentByDentistTx(ctx context.Context, 
 			EndTime:        arg.EndTime,
 			DentistID:      arg.DentistID,
 			RoomID:         arg.RoomID,
-			SlotsRemaining: 1,
+			MaxPatients:    1,
+			SlotsRemaining: 0,
 		})
 		if err != nil {
 			return err

@@ -10,8 +10,8 @@ import (
 )
 
 const createService = `-- name: CreateService :one
-INSERT INTO services (name, category_id, unit, cost, warranty_duration)
-VALUES ($1, $2, $3, $4, $5) RETURNING id, name, category_id, unit, cost, currency, warranty_duration, created_at
+INSERT INTO services (name, category_id, unit, cost, currency, warranty_duration)
+VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, name, category_id, unit, cost, currency, warranty_duration, created_at
 `
 
 type CreateServiceParams struct {
@@ -19,6 +19,7 @@ type CreateServiceParams struct {
 	CategoryID       int64  `json:"category_id"`
 	Unit             string `json:"unit"`
 	Cost             int64  `json:"cost"`
+	Currency         string `json:"currency"`
 	WarrantyDuration string `json:"warranty_duration"`
 }
 
@@ -28,6 +29,7 @@ func (q *Queries) CreateService(ctx context.Context, arg CreateServiceParams) (S
 		arg.CategoryID,
 		arg.Unit,
 		arg.Cost,
+		arg.Currency,
 		arg.WarrantyDuration,
 	)
 	var i Service
@@ -45,7 +47,8 @@ func (q *Queries) CreateService(ctx context.Context, arg CreateServiceParams) (S
 }
 
 const deleteService = `-- name: DeleteService :exec
-DELETE FROM services
+DELETE
+FROM services
 WHERE id = $1
 `
 
