@@ -10,14 +10,14 @@ WHERE s.start_time::date = sqlc.arg(date)::date
 ORDER BY s.start_time ASC;
 
 -- name: ListExaminationSchedules :many
-SELECT s.id              as schedule_id,
+SELECT s.id           as schedule_id,
        s.type,
        s.start_time,
        s.end_time,
-       u.full_name       as dentist_name,
-       r.name            as room_name,
-       s.slots_remaining as max_patients,
-       COUNT(a.id)       as current_patients
+       u.full_name    as dentist_name,
+       r.name         as room_name,
+       s.max_patients as max_patients,
+       COUNT(a.id)    as current_patients
 FROM schedules s
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id
@@ -91,14 +91,14 @@ FROM users u
 WHERE s.id = sqlc.arg(schedule_id);
 
 -- name: ListExaminationSchedulesByDentistName :many
-SELECT s.id              as schedule_id,
+SELECT s.id           as schedule_id,
        s.type,
        s.start_time,
        s.end_time,
-       u.full_name       as dentist_name,
-       r.name            as room_name,
-       s.slots_remaining as max_patients,
-       COUNT(a.id)       as current_patients
+       u.full_name    as dentist_name,
+       r.name         as room_name,
+       s.max_patients as max_patients,
+       COUNT(a.id)    as current_patients
 FROM schedules s
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id
