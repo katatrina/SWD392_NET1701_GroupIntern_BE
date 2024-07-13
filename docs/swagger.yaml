@@ -412,6 +412,8 @@ definitions:
         type: string
       id:
         type: integer
+      max_patients:
+        type: integer
       room_id:
         type: integer
       slots_remaining:

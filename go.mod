@@ -1,6 +1,6 @@
 module github.com/katatrina/SWD392_NET1701_GroupIntern_BE
 
-go 1.22.0
+go 1.21.1
 
 require (
 	github.com/gin-contrib/cors v1.7.2

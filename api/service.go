@@ -44,6 +44,7 @@ func (server *Server) createService(ctx *gin.Context) {
 		CategoryID:       req.CategoryID,
 		Unit:             req.Unit,
 		Cost:             req.Cost,
+		Currency:         "VND",
 		WarrantyDuration: req.WarrantyDuration,
 	}
 	

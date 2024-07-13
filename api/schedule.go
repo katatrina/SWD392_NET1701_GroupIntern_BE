@@ -62,6 +62,7 @@ func (server *Server) createExaminationSchedule(ctx *gin.Context) {
 		EndTime:        req.EndTime,
 		DentistID:      req.DentistID,
 		RoomID:         req.RoomID,
+		MaxPatients:    3,
 		SlotsRemaining: 3,
 	})
 	if err != nil {

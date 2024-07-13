@@ -1928,6 +1928,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "max_patients": {
+                    "type": "integer"
+                },
                 "room_id": {
                     "type": "integer"
                 },

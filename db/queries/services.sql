@@ -1,6 +1,6 @@
 -- name: CreateService :one
-INSERT INTO services (name, category_id, unit, cost, warranty_duration)
-VALUES ($1, $2, $3, $4, $5) RETURNING *;
+INSERT INTO services (name, category_id, unit, cost, currency, warranty_duration)
+VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
 
 -- name: GetService :one
 SELECT *
@@ -17,7 +17,8 @@ SET name              = $2,
 WHERE id = $1;
 
 -- name: DeleteService :exec
-DELETE FROM services
+DELETE
+FROM services
 WHERE id = $1;
 
 -- name: ListServicesByCategory :many

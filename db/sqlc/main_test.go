@@ -103,7 +103,7 @@ func TestInitDB(t *testing.T) {
 	}
 	
 	// Insert payments
-	payments := []string{"Tiền mặt", "Banking", "Bitcoin"}
+	payments := []string{"Tiền mặt", "Banking"}
 	for _, payment := range payments {
 		_, err := testQueries.CreatePayment(context.Background(), payment)
 		require.NoError(t, err)
@@ -195,6 +195,7 @@ func TestInitDB(t *testing.T) {
 	
 	// Insert examination schedules
 	examinationSchedules := []map[string]interface{}{
+		// 15/07/2024
 		{
 			"start_time": time.Date(2024, 7, 15, 7, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"end_time":   time.Date(2024, 7, 15, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
@@ -225,6 +226,8 @@ func TestInitDB(t *testing.T) {
 			"dentist_id": int64(5),
 			"room_id":    int64(5),
 		},
+		
+		// 16/07/2024
 		{
 			"start_time": time.Date(2024, 7, 16, 13, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"end_time":   time.Date(2024, 7, 16, 14, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
@@ -250,22 +253,330 @@ func TestInitDB(t *testing.T) {
 			"room_id":    int64(9),
 		},
 		{
+			"start_time": time.Date(2024, 7, 16, 17, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 16, 18, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(2),
+			"room_id":    int64(10),
+		},
+		
+		// 17/07/2024
+		{
 			"start_time": time.Date(2024, 7, 17, 7, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"end_time":   time.Date(2024, 7, 17, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
-			"dentist_id": int64(3),
-			"room_id":    int64(10),
+			"dentist_id": int64(1),
+			"room_id":    int64(1),
 		},
 		{
 			"start_time": time.Date(2024, 7, 17, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"end_time":   time.Date(2024, 7, 17, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
-			"dentist_id": int64(5),
-			"room_id":    int64(1),
+			"dentist_id": int64(2),
+			"room_id":    int64(2),
 		},
 		{
 			"start_time": time.Date(2024, 7, 17, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"end_time":   time.Date(2024, 7, 17, 10, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(3),
+			"room_id":    int64(3),
+		},
+		{
+			"start_time": time.Date(2024, 7, 17, 10, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 17, 11, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(4),
+			"room_id":    int64(4),
+		},
+		{
+			"start_time": time.Date(2024, 7, 17, 11, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 17, 12, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(5),
+			"room_id":    int64(5),
+		},
+		
+		// 18/07/2024
+		{
+			"start_time": time.Date(2024, 7, 18, 13, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 18, 14, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(6),
+			"room_id":    int64(6),
+		},
+		{
+			"start_time": time.Date(2024, 7, 18, 14, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 18, 15, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
 			"dentist_id": int64(7),
+			"room_id":    int64(7),
+		},
+		{
+			"start_time": time.Date(2024, 7, 18, 15, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 18, 16, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(8),
+			"room_id":    int64(8),
+		},
+		{
+			"start_time": time.Date(2024, 7, 18, 16, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 18, 17, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(4),
+			"room_id":    int64(9),
+		},
+		{
+			"start_time": time.Date(2024, 7, 18, 17, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 18, 18, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(2),
+			"room_id":    int64(10),
+		},
+		
+		// 19/07/2024
+		{
+			"start_time": time.Date(2024, 7, 19, 7, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 19, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(1),
+			"room_id":    int64(1),
+		},
+		{
+			"start_time": time.Date(2024, 7, 19, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 19, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(2),
 			"room_id":    int64(2),
+		},
+		{
+			"start_time": time.Date(2024, 7, 19, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 19, 10, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(3),
+			"room_id":    int64(3),
+		},
+		{
+			"start_time": time.Date(2024, 7, 19, 10, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 19, 11, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(4),
+			"room_id":    int64(4),
+		},
+		{
+			"start_time": time.Date(2024, 7, 19, 11, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 19, 12, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(5),
+			"room_id":    int64(5),
+		},
+		
+		// 20/07/2024
+		{
+			"start_time": time.Date(2024, 7, 20, 13, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 20, 14, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(6),
+			"room_id":    int64(6),
+		},
+		{
+			"start_time": time.Date(2024, 7, 20, 14, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 20, 15, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(7),
+			"room_id":    int64(7),
+		},
+		{
+			"start_time": time.Date(2024, 7, 20, 15, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 20, 16, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(8),
+			"room_id":    int64(8),
+		},
+		{
+			"start_time": time.Date(2024, 7, 20, 16, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 20, 17, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(4),
+			"room_id":    int64(9),
+		},
+		{
+			"start_time": time.Date(2024, 7, 20, 17, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 20, 18, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(2),
+			"room_id":    int64(10),
+		},
+		
+		// 22/07/2024
+		{
+			"start_time": time.Date(2024, 7, 22, 7, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 22, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(1),
+			"room_id":    int64(1),
+		},
+		{
+			"start_time": time.Date(2024, 7, 22, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 22, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(2),
+			"room_id":    int64(2),
+		},
+		{
+			"start_time": time.Date(2024, 7, 22, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 22, 10, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(3),
+			"room_id":    int64(3),
+		},
+		{
+			"start_time": time.Date(2024, 7, 22, 10, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 22, 11, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(4),
+			"room_id":    int64(4),
+		},
+		{
+			"start_time": time.Date(2024, 7, 22, 11, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 22, 12, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(5),
+			"room_id":    int64(5),
+		},
+		
+		// 23/07/2024
+		{
+			"start_time": time.Date(2024, 7, 23, 13, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 23, 14, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(6),
+			"room_id":    int64(6),
+		},
+		{
+			"start_time": time.Date(2024, 7, 23, 14, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 23, 15, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(7),
+			"room_id":    int64(7),
+		},
+		{
+			"start_time": time.Date(2024, 7, 23, 15, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 23, 16, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(8),
+			"room_id":    int64(8),
+		},
+		{
+			"start_time": time.Date(2024, 7, 23, 16, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 23, 17, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(4),
+			"room_id":    int64(9),
+		},
+		{
+			"start_time": time.Date(2024, 7, 23, 17, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 23, 18, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(2),
+			"room_id":    int64(10),
+		},
+		
+		// 24/07/2024
+		{
+			"start_time": time.Date(2024, 7, 24, 7, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 24, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(1),
+			"room_id":    int64(1),
+		},
+		{
+			"start_time": time.Date(2024, 7, 24, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 24, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(2),
+			"room_id":    int64(2),
+		},
+		{
+			"start_time": time.Date(2024, 7, 24, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 24, 10, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(3),
+			"room_id":    int64(3),
+		},
+		{
+			"start_time": time.Date(2024, 7, 24, 10, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 24, 11, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(4),
+			"room_id":    int64(4),
+		},
+		{
+			"start_time": time.Date(2024, 7, 24, 11, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 24, 12, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(5),
+			"room_id":    int64(5),
+		},
+		
+		// 25/07/2024
+		{
+			"start_time": time.Date(2024, 7, 25, 13, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 25, 14, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(6),
+			"room_id":    int64(6),
+		},
+		{
+			"start_time": time.Date(2024, 7, 25, 14, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 25, 15, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(7),
+			"room_id":    int64(7),
+		},
+		{
+			"start_time": time.Date(2024, 7, 25, 15, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 25, 16, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(8),
+			"room_id":    int64(8),
+		},
+		{
+			"start_time": time.Date(2024, 7, 25, 16, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 25, 17, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(4),
+			"room_id":    int64(9),
+		},
+		{
+			"start_time": time.Date(2024, 7, 25, 17, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 25, 18, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(2),
+			"room_id":    int64(10),
+		},
+		
+		// 26/07/2024
+		{
+			"start_time": time.Date(2024, 7, 26, 7, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 26, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(1),
+			"room_id":    int64(1),
+		},
+		{
+			"start_time": time.Date(2024, 7, 26, 8, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 26, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(2),
+			"room_id":    int64(2),
+		},
+		{
+			"start_time": time.Date(2024, 7, 26, 9, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 26, 10, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(3),
+			"room_id":    int64(3),
+		},
+		{
+			"start_time": time.Date(2024, 7, 26, 10, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 26, 11, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(4),
+			"room_id":    int64(4),
+		},
+		{
+			"start_time": time.Date(2024, 7, 26, 11, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 26, 12, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(5),
+			"room_id":    int64(5),
+		},
+		
+		// 27/07/2024
+		{
+			"start_time": time.Date(2024, 7, 27, 13, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 27, 14, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(6),
+			"room_id":    int64(6),
+		},
+		{
+			"start_time": time.Date(2024, 7, 27, 14, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 27, 15, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(7),
+			"room_id":    int64(7),
+		},
+		{
+			"start_time": time.Date(2024, 7, 27, 15, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 27, 16, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(8),
+			"room_id":    int64(8),
+		},
+		{
+			"start_time": time.Date(2024, 7, 27, 16, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 27, 17, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(4),
+			"room_id":    int64(9),
+		},
+		{
+			"start_time": time.Date(2024, 7, 27, 17, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"end_time":   time.Date(2024, 7, 27, 18, 0, 0, 0, time.FixedZone("UTC+7", 7*60*60)),
+			"dentist_id": int64(2),
+			"room_id":    int64(10),
 		},
 	}
 	for _, examinationSchedule := range examinationSchedules {
@@ -275,6 +586,7 @@ func TestInitDB(t *testing.T) {
 			EndTime:        examinationSchedule["end_time"].(time.Time),
 			DentistID:      examinationSchedule["dentist_id"].(int64),
 			RoomID:         examinationSchedule["room_id"].(int64),
+			MaxPatients:    3,
 			SlotsRemaining: 3,
 		}
 		_, err := testQueries.CreateSchedule(context.Background(), arg)
@@ -555,6 +867,7 @@ func TestInitDB(t *testing.T) {
 			CategoryID:       service["service_category_id"].(int64),
 			Unit:             service["unit"].(string),
 			Cost:             service["cost"].(int64),
+			Currency:         "VND",
 			WarrantyDuration: service["warranty_duration"].(string),
 		}
 		_, err := testQueries.CreateService(context.Background(), arg)
