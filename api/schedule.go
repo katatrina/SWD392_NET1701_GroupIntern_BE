@@ -3,14 +3,13 @@ package api
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 	
 	"github.com/gin-gonic/gin"
 	db "github.com/katatrina/SWD392_NET1701_GroupIntern_BE/db/sqlc"
 )
-
-var ()
 
 type createExaminationScheduleRequest struct {
 	DentistID int64     `json:"dentist_id" binding:"required"`
@@ -39,6 +38,8 @@ func (server *Server) createExaminationSchedule(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+	
+	fmt.Println(req)
 	
 	// Check if the schedule overlaps with other schedules
 	schedules, err := server.store.GetScheduleOverlap(ctx, db.GetScheduleOverlapParams{

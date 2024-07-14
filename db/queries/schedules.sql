@@ -23,7 +23,7 @@ FROM schedules s
          JOIN rooms r ON s.room_id = r.id
          LEFT JOIN appointments a ON s.id = a.schedule_id
 GROUP BY s.id, u.full_name, r.name
-ORDER BY s.created_at ASC;
+ORDER BY s.created_at DESC;
 
 -- name: GetSchedule :one
 SELECT s.id,
@@ -53,9 +53,8 @@ WHERE id = $1;
 -- name: GetScheduleOverlap :many
 SELECT s.id
 FROM schedules s
-WHERE s.room_id = $1
-  AND s.start_time = $2
-  AND s.end_time = $3;
+WHERE s.room_id = sqlc.arg(room_id)
+  AND (s.start_time, s.end_time) OVERLAPS (sqlc.arg(start_time), sqlc.arg(end_time));
 
 -- name: ListPatientsByExaminationScheduleID :many
 SELECT u.id,
@@ -105,4 +104,4 @@ FROM schedules s
          LEFT JOIN appointments a ON s.id = a.schedule_id
 WHERE u.full_name ILIKE '%' || sqlc.arg(dentist_name)::text || '%'
 GROUP BY s.id, u.full_name, r.name
-ORDER BY s.created_at ASC;
+ORDER BY s.created_at DESC;

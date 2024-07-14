@@ -108,14 +108,13 @@ const getScheduleOverlap = `-- name: GetScheduleOverlap :many
 SELECT s.id
 FROM schedules s
 WHERE s.room_id = $1
-  AND s.start_time = $2
-  AND s.end_time = $3
+  AND (s.start_time, s.end_time) OVERLAPS ($2, $3)
 `
 
 type GetScheduleOverlapParams struct {
-	RoomID    int64     `json:"room_id"`
-	StartTime time.Time `json:"start_time"`
-	EndTime   time.Time `json:"end_time"`
+	RoomID    int64       `json:"room_id"`
+	StartTime interface{} `json:"start_time"`
+	EndTime   interface{} `json:"end_time"`
 }
 
 func (q *Queries) GetScheduleOverlap(ctx context.Context, arg GetScheduleOverlapParams) ([]int64, error) {
@@ -211,7 +210,7 @@ FROM schedules s
          JOIN rooms r ON s.room_id = r.id
          LEFT JOIN appointments a ON s.id = a.schedule_id
 GROUP BY s.id, u.full_name, r.name
-ORDER BY s.created_at ASC
+ORDER BY s.created_at DESC
 `
 
 type ListExaminationSchedulesRow struct {
@@ -272,7 +271,7 @@ FROM schedules s
          LEFT JOIN appointments a ON s.id = a.schedule_id
 WHERE u.full_name ILIKE '%' || $1::text || '%'
 GROUP BY s.id, u.full_name, r.name
-ORDER BY s.created_at ASC
+ORDER BY s.created_at DESC
 `
 
 type ListExaminationSchedulesByDentistNameRow struct {
