@@ -70,7 +70,7 @@ FROM users u
          JOIN appointments a ON u.id = a.patient_id
          JOIN schedules s ON a.schedule_id = s.id
          LEFT JOIN examination_appointment_detail ead ON a.id = ead.appointment_id
-         JOIN service_categories sc ON ead.service_category_id = sc.id
+         LEFT JOIN service_categories sc ON ead.service_category_id = sc.id
 WHERE s.id = sqlc.arg(schedule_id);
 
 -- name: ListPatientsByTreatmentScheduleID :many
