@@ -102,7 +102,7 @@ func (server *Server) setupRouter() {
 		dentistGroup.PUT("/:id", server.updateDentist)
 		dentistGroup.DELETE("/:id", server.deleteDentist)
 		
-		dentistGroup.GET("/schedules/examination", server.listExaminationSchedulesOfDentist)
+		dentistGroup.GET("/:id/schedules/examination", server.listExaminationSchedulesOfDentist)
 		
 		dentistGroup.GET("/:id/schedules/treatment", server.listTreatmentSchedulesOfDentist)
 	}
