@@ -257,6 +257,68 @@ func (q *Queries) ListExaminationSchedules(ctx context.Context) ([]ListExaminati
 	return items, nil
 }
 
+const listExaminationSchedulesByDentistID = `-- name: ListExaminationSchedulesByDentistID :many
+SELECT s.id        as schedule_id,
+       s.type,
+       s.start_time,
+       s.end_time,
+       u.full_name as dentist_name,
+       r.name      as room_name,
+       s.max_patients,
+       COUNT(a.id) as current_patients
+FROM schedules s
+         JOIN users u ON s.dentist_id = u.id
+         JOIN rooms r ON s.room_id = r.id
+         LEFT JOIN appointments a ON (s.id = a.schedule_id AND a.status <> 'Đã hủy')
+WHERE u.id = $1
+AND s.type = 'Examination'
+GROUP BY s.id, u.full_name, r.name
+ORDER BY s.created_at DESC
+`
+
+type ListExaminationSchedulesByDentistIDRow struct {
+	ScheduleID      int64     `json:"schedule_id"`
+	Type            string    `json:"type"`
+	StartTime       time.Time `json:"start_time"`
+	EndTime         time.Time `json:"end_time"`
+	DentistName     string    `json:"dentist_name"`
+	RoomName        string    `json:"room_name"`
+	MaxPatients     int64     `json:"max_patients"`
+	CurrentPatients int64     `json:"current_patients"`
+}
+
+func (q *Queries) ListExaminationSchedulesByDentistID(ctx context.Context, dentistID int64) ([]ListExaminationSchedulesByDentistIDRow, error) {
+	rows, err := q.db.QueryContext(ctx, listExaminationSchedulesByDentistID, dentistID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListExaminationSchedulesByDentistIDRow{}
+	for rows.Next() {
+		var i ListExaminationSchedulesByDentistIDRow
+		if err := rows.Scan(
+			&i.ScheduleID,
+			&i.Type,
+			&i.StartTime,
+			&i.EndTime,
+			&i.DentistName,
+			&i.RoomName,
+			&i.MaxPatients,
+			&i.CurrentPatients,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const listExaminationSchedulesByDentistName = `-- name: ListExaminationSchedulesByDentistName :many
 SELECT s.id        as schedule_id,
        s.type,
@@ -475,6 +537,60 @@ func (q *Queries) ListTreatmentSchedules(ctx context.Context) ([]ListTreatmentSc
 	items := []ListTreatmentSchedulesRow{}
 	for rows.Next() {
 		var i ListTreatmentSchedulesRow
+		if err := rows.Scan(
+			&i.ScheduleID,
+			&i.Type,
+			&i.StartTime,
+			&i.EndTime,
+			&i.DentistName,
+			&i.RoomName,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listTreatmentSchedulesByDentistID = `-- name: ListTreatmentSchedulesByDentistID :many
+SELECT s.id        as schedule_id,
+       s.type,
+       s.start_time,
+       s.end_time,
+       u.full_name as dentist_name,
+       r.name      as room_name
+FROM schedules s
+         JOIN users u ON s.dentist_id = u.id
+         JOIN rooms r ON s.room_id = r.id
+WHERE u.id = $1
+AND s.type = 'Treatment'
+ORDER BY s.created_at DESC
+`
+
+type ListTreatmentSchedulesByDentistIDRow struct {
+	ScheduleID  int64     `json:"schedule_id"`
+	Type        string    `json:"type"`
+	StartTime   time.Time `json:"start_time"`
+	EndTime     time.Time `json:"end_time"`
+	DentistName string    `json:"dentist_name"`
+	RoomName    string    `json:"room_name"`
+}
+
+func (q *Queries) ListTreatmentSchedulesByDentistID(ctx context.Context, dentistID int64) ([]ListTreatmentSchedulesByDentistIDRow, error) {
+	rows, err := q.db.QueryContext(ctx, listTreatmentSchedulesByDentistID, dentistID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListTreatmentSchedulesByDentistIDRow{}
+	for rows.Next() {
+		var i ListTreatmentSchedulesByDentistIDRow
 		if err := rows.Scan(
 			&i.ScheduleID,
 			&i.Type,

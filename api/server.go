@@ -63,7 +63,7 @@ func (server *Server) setupRouter() {
 	patientGroup := v1.Group("/patients")
 	patientGroup.POST("", server.createPatient)
 	patientGroup.GET("/:id", server.getPatient)
-	patientGroup.GET("", server.searchPatientsByName)
+	patientGroup.GET("", server.listPatients)
 	patientGroup.Use(authMiddleware(server.tokenMaker))
 	{
 		// Examination appointment
@@ -73,11 +73,6 @@ func (server *Server) setupRouter() {
 		
 		// Treatment appointment
 		patientGroup.GET("/appointments/treatment", server.listTreatmentAppointmentsByPatient)
-	}
-	
-	appointmentGroup := v1.Group("/appointments")
-	{
-		appointmentGroup.PATCH("/examination/:id/cancel", server.cancelExaminationAppointmentByPatient)
 	}
 	
 	serviceCategoryGroup := v1.Group("/service-categories")
@@ -105,6 +100,10 @@ func (server *Server) setupRouter() {
 		dentistGroup.GET("/:id", server.getDentist)
 		dentistGroup.PUT("/:id", server.updateDentist)
 		dentistGroup.DELETE("/:id", server.deleteDentist)
+		
+		dentistGroup.GET("/schedules/examination", server.listExaminationSchedulesOfDentist)
+		
+		dentistGroup.GET("/schedules/treatment", server.listTreatmentSchedulesOfDentist)
 	}
 	
 	roomGroup := v1.Group("/rooms")
@@ -122,13 +121,19 @@ func (server *Server) setupRouter() {
 		scheduleGroup.GET("/examination", server.listExaminationSchedules)
 		scheduleGroup.GET("/examination/:id/patients", server.listPatientsByExaminationSchedule)
 		
-		// Treatment schedule
-		scheduleGroup.POST("/treatment", server.createTreatmentSchedule)
-		scheduleGroup.GET("/treatment", server.listTreatmentSchedules)
-		scheduleGroup.GET("/treatment/:id/patients", server.listPatientsByTreatmentSchedule)
-		
 		// Available examination schedules for patient
 		scheduleGroup.GET("/examination/available", server.listAvailableExaminationSchedulesByDateForPatient)
+	}
+	
+	appointmentGroup := v1.Group("/appointments")
+	{
+		// Examination appointment
+		appointmentGroup.PATCH("/examination/:id/cancel", server.cancelExaminationAppointmentByPatient)
+		
+		// Treatment appointment
+		appointmentGroup.POST("/treatment", server.createTreatmentAppointment)
+		appointmentGroup.GET("/treatment", server.listTreatmentAppointments)
+		appointmentGroup.GET("/treatment/:id/patients", server.listPatientsOfTreatmentAppointment)
 	}
 	
 	v1.GET("specialties", server.listSpecialties)

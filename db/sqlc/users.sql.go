@@ -154,17 +154,16 @@ func (q *Queries) IsPhoneNumberExists(ctx context.Context, phoneNumber string) (
 	return exists, err
 }
 
-const listPatientsByName = `-- name: ListPatientsByName :many
+const listPatients = `-- name: ListPatients :many
 SELECT id, full_name, hashed_password, email, phone_number, date_of_birth, gender, role, deleted_at, created_at
 FROM users
 WHERE role = 'Patient'
-  AND full_name ILIKE '%' || $1::text || '%'
   AND deleted_at IS NULL
 ORDER BY created_at DESC
 `
 
-func (q *Queries) ListPatientsByName(ctx context.Context, fullName string) ([]User, error) {
-	rows, err := q.db.QueryContext(ctx, listPatientsByName, fullName)
+func (q *Queries) ListPatients(ctx context.Context) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, listPatients)
 	if err != nil {
 		return nil, err
 	}

@@ -345,26 +345,19 @@ func (server *Server) cancelExaminationAppointmentByPatient(ctx *gin.Context) {
 	ctx.JSON(http.StatusNoContent, nil)
 }
 
-// listPatientsByName returns patients by name
+// listPatients returns all patients
 //
 //	@Router		/patients/ [get]
-//	@Summary	Lấy danh sách bệnh nhân theo tên
+//	@Summary	Lấy danh sách tất cả bệnh nhân
 //	@Description
 //	@Tags		patients
-//	@Param		name	query	string	true	"Search query by patient name"
 //	@Produce	json
 //	@Success	200	{object}	[]userInfo	"List of patients"
 //	@Failure	400
 //	@Failure	404
 //	@Failure	500
-func (server *Server) searchPatientsByName(ctx *gin.Context) {
-	searchQuery := ctx.Query("name")
-	if searchQuery == "" {
-		ctx.JSON(http.StatusBadRequest, errorResponse(ErrEmptySearchQuery))
-		return
-	}
-	
-	patients, err := server.store.ListPatientsByName(ctx, searchQuery)
+func (server *Server) listPatients(ctx *gin.Context) {
+	patients, err := server.store.ListPatients(ctx)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			ctx.JSON(http.StatusNotFound, nil)

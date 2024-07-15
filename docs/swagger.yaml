@@ -123,7 +123,7 @@ definitions:
     - name
     - unit
     type: object
-  api.createTreatmentScheduleRequest:
+  api.createTreatmentAppointmentRequest:
     properties:
       dentist_id:
         type: integer
@@ -563,6 +563,73 @@ paths:
       summary: Cho phép bệnh nhân hủy lịch khám
       tags:
       - appointments
+  /appointments/treatment:
+    get:
+      parameters:
+      - description: Search query by dentist name
+        in: query
+        name: q
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Liệt kê tất cả lịch điều trị
+      tags:
+      - schedules
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Treatment appointment information
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.createTreatmentAppointmentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: Bad Request
+        "403":
+          description: Forbidden
+        "500":
+          description: Internal Server Error
+      summary: Tạo lịch điều trị bởi nha sĩ
+      tags:
+      - schedules
+  /appointments/treatment/{id}/patients:
+    get:
+      parameters:
+      - description: Treatment Schedule ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/db.ListPatientsByTreatmentScheduleIDRow'
+            type: array
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      summary: Liệt kê tất cả bệnh nhân của một lịch điều trị
+      tags:
+      - schedules
   /dentists:
     get:
       parameters:
@@ -690,6 +757,50 @@ paths:
       summary: Cập nhật thông tin cá nhân nha sĩ
       tags:
       - dentists
+  /dentists/{id}/schedules/examination:
+    get:
+      parameters:
+      - description: Dentist ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Liệt kê tất cả lịch khám của một nha sĩ
+      tags:
+      - dentists
+  /dentists/{id}/schedules/treatment:
+    get:
+      parameters:
+      - description: Dentist ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Liệt kê tất cả lịch điều trị của một nha sĩ
+      tags:
+      - dentists
   /patients:
     post:
       consumes:
@@ -721,12 +832,6 @@ paths:
       - patients
   /patients/:
     get:
-      parameters:
-      - description: Search query by patient name
-        in: query
-        name: name
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -742,7 +847,7 @@ paths:
           description: Not Found
         "500":
           description: Internal Server Error
-      summary: Lấy danh sách bệnh nhân theo tên
+      summary: Lấy danh sách tất cả bệnh nhân
       tags:
       - patients
   /patients/{id}:
@@ -1049,73 +1154,6 @@ paths:
           description: Internal Server Error
       summary: Liệt kê tất cả lịch khám tổng quát còn trống trong một ngày cho bệnh
         nhân đặt lịch
-      tags:
-      - schedules
-  /schedules/treatment:
-    get:
-      parameters:
-      - description: Search query by dentist name
-        in: query
-        name: q
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "404":
-          description: Not Found
-        "500":
-          description: Internal Server Error
-      summary: Liệt kê tất cả lịch điều trị
-      tags:
-      - schedules
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Treatment schedule information
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/api.createTreatmentScheduleRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-        "400":
-          description: Bad Request
-        "403":
-          description: Forbidden
-        "500":
-          description: Internal Server Error
-      summary: Tạo lịch điều trị bởi nha sĩ
-      tags:
-      - schedules
-  /schedules/treatment/{id}/patients:
-    get:
-      parameters:
-      - description: Treatment Schedule ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/db.ListPatientsByTreatmentScheduleIDRow'
-            type: array
-        "400":
-          description: Bad Request
-        "500":
-          description: Internal Server Error
-      summary: Liệt kê tất cả bệnh nhân của một lịch điều trị
       tags:
       - schedules
   /service-categories:

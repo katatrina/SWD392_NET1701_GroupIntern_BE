@@ -297,3 +297,69 @@ func (server *Server) deleteDentist(ctx *gin.Context) {
 	
 	ctx.JSON(http.StatusNoContent, nil)
 }
+
+// listExaminationSchedulesOfDentist lists all examination schedules of a dentist
+//
+//	@Router		/dentists/{id}/schedules/examination [get]
+//	@Summary	Liệt kê tất cả lịch khám của một nha sĩ
+//	@Produce	json
+//	@Param		id	path	int	true	"Dentist ID"
+//	@Description
+//	@Tags		dentists
+//	@Success	200
+//	@Failure	400
+//	@Failure	404
+//	@Failure	500
+func (server *Server) listExaminationSchedulesOfDentist(ctx *gin.Context) {
+	dentistID, err := server.getMiddleIDParam(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	schedules, err := server.store.ListExaminationSchedulesByDentistID(ctx, dentistID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	if len(schedules) == 0 {
+		ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+		return
+	}
+	
+	ctx.JSON(http.StatusOK, schedules)
+}
+
+// listTreatmentSchedulesOfDentist lists all treatment schedules of a dentist
+//
+//	@Router		/dentists/{id}/schedules/treatment [get]
+//	@Summary	Liệt kê tất cả lịch điều trị của một nha sĩ
+//	@Produce	json
+//	@Param		id	path	int	true	"Dentist ID"
+//	@Description
+//	@Tags		dentists
+//	@Success	200
+//	@Failure	400
+//	@Failure	404
+//	@Failure	500
+func (server *Server) listTreatmentSchedulesOfDentist(ctx *gin.Context) {
+	dentistID, err := server.getMiddleIDParam(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	schedules, err := server.store.ListTreatmentSchedulesByDentistID(ctx, dentistID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	if len(schedules) == 0 {
+		ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+		return
+	}
+	
+	ctx.JSON(http.StatusOK, schedules)
+}

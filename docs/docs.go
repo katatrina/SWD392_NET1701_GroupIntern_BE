@@ -46,6 +46,110 @@ const docTemplate = `{
                 }
             }
         },
+        "/appointments/treatment": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "schedules"
+                ],
+                "summary": "Liệt kê tất cả lịch điều trị",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search query by dentist name",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "schedules"
+                ],
+                "summary": "Tạo lịch điều trị bởi nha sĩ",
+                "parameters": [
+                    {
+                        "description": "Treatment appointment information",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.createTreatmentAppointmentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/appointments/treatment/{id}/patients": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "schedules"
+                ],
+                "summary": "Liệt kê tất cả bệnh nhân của một lịch điều trị",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Treatment Schedule ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/db.ListPatientsByTreatmentScheduleIDRow"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/dentists": {
             "get": {
                 "produces": [
@@ -241,6 +345,74 @@ const docTemplate = `{
                 }
             }
         },
+        "/dentists/{id}/schedules/examination": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dentists"
+                ],
+                "summary": "Liệt kê tất cả lịch khám của một nha sĩ",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Dentist ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/dentists/{id}/schedules/treatment": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "dentists"
+                ],
+                "summary": "Liệt kê tất cả lịch điều trị của một nha sĩ",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Dentist ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/patients": {
             "post": {
                 "consumes": [
@@ -294,16 +466,7 @@ const docTemplate = `{
                 "tags": [
                     "patients"
                 ],
-                "summary": "Lấy danh sách bệnh nhân theo tên",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Search query by patient name",
-                        "name": "name",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
+                "summary": "Lấy danh sách tất cả bệnh nhân",
                 "responses": {
                     "200": {
                         "description": "List of patients",
@@ -793,110 +956,6 @@ const docTemplate = `{
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/db.ListPatientsByExaminationScheduleIDRow"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/schedules/treatment": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "schedules"
-                ],
-                "summary": "Liệt kê tất cả lịch điều trị",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Search query by dentist name",
-                        "name": "q",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            },
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "schedules"
-                ],
-                "summary": "Tạo lịch điều trị bởi nha sĩ",
-                "parameters": [
-                    {
-                        "description": "Treatment schedule information",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/api.createTreatmentScheduleRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/schedules/treatment/{id}/patients": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "schedules"
-                ],
-                "summary": "Liệt kê tất cả bệnh nhân của một lịch điều trị",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Treatment Schedule ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/db.ListPatientsByTreatmentScheduleIDRow"
                             }
                         }
                     },
@@ -1575,7 +1634,7 @@ const docTemplate = `{
                 }
             }
         },
-        "api.createTreatmentScheduleRequest": {
+        "api.createTreatmentAppointmentRequest": {
             "type": "object",
             "required": [
                 "dentist_id",

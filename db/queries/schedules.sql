@@ -135,3 +135,35 @@ FROM schedules s
 WHERE u.full_name ILIKE '%' || sqlc.arg(dentist_name)::text || '%'
 AND s.type = 'Treatment'
 ORDER BY s.created_at DESC;
+
+-- name: ListExaminationSchedulesByDentistID :many
+SELECT s.id        as schedule_id,
+       s.type,
+       s.start_time,
+       s.end_time,
+       u.full_name as dentist_name,
+       r.name      as room_name,
+       s.max_patients,
+       COUNT(a.id) as current_patients
+FROM schedules s
+         JOIN users u ON s.dentist_id = u.id
+         JOIN rooms r ON s.room_id = r.id
+         LEFT JOIN appointments a ON (s.id = a.schedule_id AND a.status <> 'Đã hủy')
+WHERE u.id = sqlc.arg(dentist_id)
+AND s.type = 'Examination'
+GROUP BY s.id, u.full_name, r.name
+ORDER BY s.created_at DESC;
+
+-- name: ListTreatmentSchedulesByDentistID :many
+SELECT s.id        as schedule_id,
+       s.type,
+       s.start_time,
+       s.end_time,
+       u.full_name as dentist_name,
+       r.name      as room_name
+FROM schedules s
+         JOIN users u ON s.dentist_id = u.id
+         JOIN rooms r ON s.room_id = r.id
+WHERE u.id = sqlc.arg(dentist_id)
+AND s.type = 'Treatment'
+ORDER BY s.created_at DESC;

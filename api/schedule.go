@@ -152,7 +152,7 @@ func (server *Server) listExaminationSchedules(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, schedules)
 }
 
-type createTreatmentScheduleRequest struct {
+type createTreatmentAppointmentRequest struct {
 	DentistID       int64     `json:"dentist_id" binding:"required"`
 	PatientID       int64     `json:"patient_id" binding:"required"`
 	StartTime       time.Time `json:"start_time" binding:"required"`
@@ -163,21 +163,21 @@ type createTreatmentScheduleRequest struct {
 	PaymentID       int64     `json:"payment_id" binding:"required"`
 }
 
-// createTreatmentSchedule creates a new treatment schedule
+// createTreatmentAppointment creates a new treatment appointment
 //
-//	@Router		/schedules/treatment [post]
+//	@Router		/appointments/treatment [post]
 //	@Summary	Tạo lịch điều trị bởi nha sĩ
 //	@Description
 //	@Tags		schedules
 //	@Accept		json
 //	@Produce	json
-//	@Param		request	body	createTreatmentScheduleRequest	true	"Treatment schedule information"
+//	@Param		request	body	createTreatmentAppointmentRequest	true	"Treatment appointment information"
 //	@Success	201
 //	@Failure	400
 //	@Failure	403
 //	@Failure	500
-func (server *Server) createTreatmentSchedule(ctx *gin.Context) {
-	var req createTreatmentScheduleRequest
+func (server *Server) createTreatmentAppointment(ctx *gin.Context) {
+	var req createTreatmentAppointmentRequest
 	
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -245,9 +245,9 @@ func (server *Server) listPatientsByExaminationSchedule(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, patients)
 }
 
-// listPatientsByExaminationSchedule lists patients by examination schedule
+// listPatientsOfTreatmentAppointment lists patients of a treatment appointment
 //
-//	@Router		/schedules/treatment/{id}/patients [get]
+//	@Router		/appointments/treatment/{id}/patients [get]
 //	@Summary	Liệt kê tất cả bệnh nhân của một lịch điều trị
 //	@Description
 //	@Tags		schedules
@@ -256,7 +256,7 @@ func (server *Server) listPatientsByExaminationSchedule(ctx *gin.Context) {
 //	@Success	200	{array}	db.ListPatientsByTreatmentScheduleIDRow
 //	@Failure	400
 //	@Failure	500
-func (server *Server) listPatientsByTreatmentSchedule(ctx *gin.Context) {
+func (server *Server) listPatientsOfTreatmentAppointment(ctx *gin.Context) {
 	scheduleID, err := server.getMiddleIDParam(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
@@ -272,9 +272,9 @@ func (server *Server) listPatientsByTreatmentSchedule(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, patients)
 }
 
-// listTreatmentSchedules lists all treatment schedules
+// listTreatmentAppointments lists all treatment appointments
 //
-//	@Router		/schedules/treatment [get]
+//	@Router		/appointments/treatment [get]
 //	@Summary	Liệt kê tất cả lịch điều trị
 //	@Description
 //	@Param		q	query	string	false	"Search query by dentist name"
@@ -283,7 +283,7 @@ func (server *Server) listPatientsByTreatmentSchedule(ctx *gin.Context) {
 //	@Success	200
 //	@Failure	404
 //	@Failure	500
-func (server *Server) listTreatmentSchedules(ctx *gin.Context) {
+func (server *Server) listTreatmentAppointments(ctx *gin.Context) {
 	searchQuery := ctx.Query("q")
 	if searchQuery != "" {
 		schedules, err := server.store.ListTreatmentSchedulesByDentistName(ctx, searchQuery)
