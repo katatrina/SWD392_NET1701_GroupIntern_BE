@@ -298,7 +298,7 @@ func (store *SQLStore) BookTreatmentAppointmentByDentistTx(ctx context.Context, 
 }
 
 type CancelExaminationAppointmentByPatientParams struct {
-	PatientID int64 `json:"patient_id"`
+	// PatientID int64 `json:"patient_id"`
 	BookingID int64 `json:"booking_id"`
 }
 
@@ -333,6 +333,7 @@ func (store *SQLStore) CancelExaminationAppointmentByPatientTx(ctx context.Conte
 		if err != nil {
 			return err
 		}
+		
 		return nil
 	})
 	

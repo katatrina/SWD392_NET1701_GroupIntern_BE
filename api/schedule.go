@@ -114,7 +114,7 @@ func (server *Server) listAvailableExaminationSchedulesByDateForPatient(ctx *gin
 //	@Router		/schedules/examination [get]
 //	@Summary	Liệt kê tất cả lịch khám tổng quát
 //	@Description
-// @Param		q	query	string	false	"Search query by dentist name"
+//	@Param		q	query	string	false	"Search query by dentist name"
 //	@Tags		schedules
 //	@Produce	json
 //	@Success	200
@@ -289,7 +289,7 @@ func (server *Server) listPatientsByTreatmentSchedule(ctx *gin.Context) {
 //	@Router		/schedules/treatment [get]
 //	@Summary	Liệt kê tất cả lịch điều trị
 //	@Description
-// @Param		q	query	string	false	"Search query by dentist name"
+//	@Param		q	query	string	false	"Search query by dentist name"
 //	@Tags		schedules
 //	@Produce	json
 //	@Success	200

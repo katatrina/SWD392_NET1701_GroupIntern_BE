@@ -67,8 +67,12 @@ func (server *Server) setupRouter() {
 	{
 		patientGroup.POST("/appointments/examination", server.createExaminationAppointmentByPatient)
 		patientGroup.GET("/appointments/examination", server.listExaminationAppointmentsByPatient)
-		patientGroup.PATCH("/appointments/examination/:id/cancel", server.cancelExaminationAppointmentByPatient)
 		patientGroup.GET("/appointments/examination/:id", server.getExaminationAppointmentByPatient)
+	}
+	
+	appointmentGroup := v1.Group("/appointments")
+	{
+		appointmentGroup.PATCH("/examination/:id/cancel", server.cancelExaminationAppointmentByPatient)
 	}
 	
 	serviceCategoryGroup := v1.Group("/service-categories")

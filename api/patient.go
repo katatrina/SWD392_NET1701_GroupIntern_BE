@@ -310,30 +310,29 @@ func (server *Server) getExaminationAppointmentByPatient(ctx *gin.Context) {
 
 // cancelExaminationAppointmentByPatient cancels an examination appointment by a patient
 //
-//	@Router		/patients/appointments/examination/{id}/cancel [patch]
+//	@Router		/appointments/examination/{id}/cancel [patch]
 //	@Summary	Cho phép bệnh nhân hủy lịch khám
 //	@Description
-//	@Tags		patients
-//	@Security	accessToken
+//	@Tags		appointments
 //	@Param		id	path	int	true	"Examination Booking ID"
 //	@Success	204
 //	@Failure	400
 //	@Failure	500
 func (server *Server) cancelExaminationAppointmentByPatient(ctx *gin.Context) {
-	bookingID, err := server.getLastIDParam(ctx)
+	bookingID, err := server.getMiddleIDParam(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
 	
-	patientID, err := server.getAuthorizedUserID(ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, errorResponse(err))
-		return
-	}
+	// patientID, err := server.getAuthorizedUserID(ctx)
+	// if err != nil {
+	// 	ctx.JSON(http.StatusBadRequest, errorResponse(err))
+	// 	return
+	// }
 	
 	arg := db.CancelExaminationAppointmentByPatientParams{
-		PatientID: patientID,
+		// PatientID: patientID,
 		BookingID: bookingID,
 	}
 	

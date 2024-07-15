@@ -21,7 +21,7 @@ SELECT s.id        as schedule_id,
 FROM schedules s
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id
-         LEFT JOIN appointments a ON s.id = a.schedule_id
+         LEFT JOIN appointments a ON (s.id = a.schedule_id AND a.status <> 'Đã hủy')
 WHERE s.type = 'Examination'
 GROUP BY s.id, u.full_name, r.name
 ORDER BY s.created_at DESC;
@@ -71,7 +71,7 @@ FROM users u
          JOIN schedules s ON a.schedule_id = s.id
          LEFT JOIN examination_appointment_detail ead ON a.id = ead.appointment_id
          LEFT JOIN service_categories sc ON ead.service_category_id = sc.id
-WHERE s.id = sqlc.arg(schedule_id);
+WHERE s.id = sqlc.arg(schedule_id) AND s.type = 'Examination' AND a.status <> 'Đã hủy';
 
 -- name: ListPatientsByTreatmentScheduleID :many
 SELECT u.id,
@@ -103,7 +103,7 @@ SELECT s.id        as schedule_id,
 FROM schedules s
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id
-         LEFT JOIN appointments a ON s.id = a.schedule_id
+         LEFT JOIN appointments a ON (s.id = a.schedule_id AND a.status <> 'Đã hủy')
 WHERE u.full_name ILIKE '%' || sqlc.arg(dentist_name)::text || '%'
 AND s.type = 'Examination'
 GROUP BY s.id, u.full_name, r.name
