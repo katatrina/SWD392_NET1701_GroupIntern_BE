@@ -121,7 +121,7 @@ const docTemplate = `{
                 "tags": [
                     "appointments"
                 ],
-                "summary": "Liệt kê tất cả bệnh nhân của một lịch điều trị",
+                "summary": "Lấy thông tin bệnh nhân của một lịch điều trị",
                 "parameters": [
                     {
                         "type": "integer",
@@ -135,10 +135,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/db.ListPatientsByTreatmentScheduleIDRow"
-                            }
+                            "$ref": "#/definitions/db.GetPatientByTreatmentScheduleIDRow"
                         }
                     },
                     "400": {
@@ -1949,6 +1946,44 @@ const docTemplate = `{
                 }
             }
         },
+        "db.GetPatientByTreatmentScheduleIDRow": {
+            "type": "object",
+            "properties": {
+                "date_of_birth": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "full_name": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "service_cost": {
+                    "type": "integer"
+                },
+                "service_name": {
+                    "type": "string"
+                },
+                "service_quantity": {
+                    "type": "integer"
+                },
+                "total_cost": {
+                    "type": "integer"
+                }
+            }
+        },
         "db.ListAvailableExaminationSchedulesByDateForPatientRow": {
             "type": "object",
             "properties": {
@@ -2030,38 +2065,6 @@ const docTemplate = `{
                 },
                 "service_category": {
                     "$ref": "#/definitions/util.JSONNullString"
-                }
-            }
-        },
-        "db.ListPatientsByTreatmentScheduleIDRow": {
-            "type": "object",
-            "properties": {
-                "date_of_birth": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "full_name": {
-                    "type": "string"
-                },
-                "gender": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "phone_number": {
-                    "type": "string"
-                },
-                "role": {
-                    "type": "string"
-                },
-                "service_name": {
-                    "type": "string"
-                },
-                "service_quantity": {
-                    "$ref": "#/definitions/sql.NullInt64"
                 }
             }
         },

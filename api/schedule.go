@@ -248,12 +248,12 @@ func (server *Server) listPatientsByExaminationSchedule(ctx *gin.Context) {
 // listPatientsOfTreatmentAppointment lists patients of a treatment appointment
 //
 //	@Router		/appointments/treatment/{id}/patients [get]
-//	@Summary	Liệt kê tất cả bệnh nhân của một lịch điều trị
+//	@Summary	Lấy thông tin bệnh nhân của một lịch điều trị
 //	@Description
 //	@Tags		appointments
 //	@Produce	json
-//	@Param		id	path	int	true	"Treatment Schedule ID"
-//	@Success	200	{array}	db.ListPatientsByTreatmentScheduleIDRow
+//	@Param		id	path		int	true	"Treatment Schedule ID"
+//	@Success	200	{object}	db.GetPatientByTreatmentScheduleIDRow
 //	@Failure	400
 //	@Failure	500
 func (server *Server) listPatientsOfTreatmentAppointment(ctx *gin.Context) {
@@ -263,13 +263,13 @@ func (server *Server) listPatientsOfTreatmentAppointment(ctx *gin.Context) {
 		return
 	}
 	
-	patients, err := server.store.ListPatientsByTreatmentScheduleID(ctx, scheduleID)
+	patient, err := server.store.GetPatientByTreatmentScheduleID(ctx, scheduleID)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
 		return
 	}
 	
-	ctx.JSON(http.StatusOK, patients)
+	ctx.JSON(http.StatusOK, patient)
 }
 
 // listTreatmentAppointments lists all treatment appointments

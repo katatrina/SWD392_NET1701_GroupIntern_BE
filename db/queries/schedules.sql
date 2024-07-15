@@ -71,9 +71,11 @@ FROM users u
          JOIN schedules s ON a.schedule_id = s.id
          LEFT JOIN examination_appointment_detail ead ON a.id = ead.appointment_id
          LEFT JOIN service_categories sc ON ead.service_category_id = sc.id
-WHERE s.id = sqlc.arg(schedule_id) AND s.type = 'Examination' AND a.status <> 'Đã hủy';
+WHERE s.id = sqlc.arg(schedule_id)
+  AND s.type = 'Examination'
+  AND a.status <> 'Đã hủy';
 
--- name: ListPatientsByTreatmentScheduleID :many
+-- name: GetPatientByTreatmentScheduleID :one
 SELECT u.id,
        u.full_name,
        u.email,
@@ -82,12 +84,15 @@ SELECT u.id,
        u.gender,
        u.role,
        services.name as service_name,
-       tad.service_quantity
+       services.cost as service_cost,
+       tad.service_quantity,
+       b.total_cost
 FROM users u
          JOIN appointments a ON u.id = a.patient_id
          JOIN schedules s ON a.schedule_id = s.id
-         LEFT JOIN treatment_appointment_detail tad ON a.id = tad.appointment_id
+         JOIN treatment_appointment_detail tad ON a.id = tad.appointment_id
          JOIN services ON tad.service_id = services.id
+         JOIN bookings b ON a.booking_id = b.id
 WHERE s.id = sqlc.arg(schedule_id)
   AND s.type = 'Treatment';
 
@@ -150,7 +155,7 @@ FROM schedules s
          JOIN rooms r ON s.room_id = r.id
          LEFT JOIN appointments a ON (s.id = a.schedule_id AND a.status <> 'Đã hủy')
 WHERE u.id = sqlc.arg(dentist_id)
-AND s.type = 'Examination'
+  AND s.type = 'Examination'
 GROUP BY s.id, u.full_name, r.name
 ORDER BY s.created_at DESC;
 
@@ -165,5 +170,5 @@ FROM schedules s
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id
 WHERE u.id = sqlc.arg(dentist_id)
-AND s.type = 'Treatment'
+  AND s.type = 'Treatment'
 ORDER BY s.created_at DESC;

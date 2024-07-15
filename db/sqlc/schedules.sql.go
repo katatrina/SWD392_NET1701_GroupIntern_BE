@@ -7,7 +7,6 @@ package db
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	util "github.com/katatrina/SWD392_NET1701_GroupIntern_BE/internal/util"
@@ -49,6 +48,61 @@ func (q *Queries) CreateSchedule(ctx context.Context, arg CreateScheduleParams) 
 		&i.MaxPatients,
 		&i.SlotsRemaining,
 		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getPatientByTreatmentScheduleID = `-- name: GetPatientByTreatmentScheduleID :one
+SELECT u.id,
+       u.full_name,
+       u.email,
+       u.phone_number,
+       u.date_of_birth,
+       u.gender,
+       u.role,
+       services.name as service_name,
+       services.cost as service_cost,
+       tad.service_quantity,
+       b.total_cost
+FROM users u
+         JOIN appointments a ON u.id = a.patient_id
+         JOIN schedules s ON a.schedule_id = s.id
+         JOIN treatment_appointment_detail tad ON a.id = tad.appointment_id
+         JOIN services ON tad.service_id = services.id
+         JOIN bookings b ON a.booking_id = b.id
+WHERE s.id = $1
+  AND s.type = 'Treatment'
+`
+
+type GetPatientByTreatmentScheduleIDRow struct {
+	ID              int64     `json:"id"`
+	FullName        string    `json:"full_name"`
+	Email           string    `json:"email"`
+	PhoneNumber     string    `json:"phone_number"`
+	DateOfBirth     time.Time `json:"date_of_birth"`
+	Gender          string    `json:"gender"`
+	Role            string    `json:"role"`
+	ServiceName     string    `json:"service_name"`
+	ServiceCost     int64     `json:"service_cost"`
+	ServiceQuantity int64     `json:"service_quantity"`
+	TotalCost       int64     `json:"total_cost"`
+}
+
+func (q *Queries) GetPatientByTreatmentScheduleID(ctx context.Context, scheduleID int64) (GetPatientByTreatmentScheduleIDRow, error) {
+	row := q.db.QueryRowContext(ctx, getPatientByTreatmentScheduleID, scheduleID)
+	var i GetPatientByTreatmentScheduleIDRow
+	err := row.Scan(
+		&i.ID,
+		&i.FullName,
+		&i.Email,
+		&i.PhoneNumber,
+		&i.DateOfBirth,
+		&i.Gender,
+		&i.Role,
+		&i.ServiceName,
+		&i.ServiceCost,
+		&i.ServiceQuantity,
+		&i.TotalCost,
 	)
 	return i, err
 }
@@ -271,7 +325,7 @@ FROM schedules s
          JOIN rooms r ON s.room_id = r.id
          LEFT JOIN appointments a ON (s.id = a.schedule_id AND a.status <> 'Đã hủy')
 WHERE u.id = $1
-AND s.type = 'Examination'
+  AND s.type = 'Examination'
 GROUP BY s.id, u.full_name, r.name
 ORDER BY s.created_at DESC
 `
@@ -395,7 +449,9 @@ FROM users u
          JOIN schedules s ON a.schedule_id = s.id
          LEFT JOIN examination_appointment_detail ead ON a.id = ead.appointment_id
          LEFT JOIN service_categories sc ON ead.service_category_id = sc.id
-WHERE s.id = $1 AND s.type = 'Examination' AND a.status <> 'Đã hủy'
+WHERE s.id = $1
+  AND s.type = 'Examination'
+  AND a.status <> 'Đã hủy'
 `
 
 type ListPatientsByExaminationScheduleIDRow struct {
@@ -427,70 +483,6 @@ func (q *Queries) ListPatientsByExaminationScheduleID(ctx context.Context, sched
 			&i.Gender,
 			&i.Role,
 			&i.ServiceCategory,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listPatientsByTreatmentScheduleID = `-- name: ListPatientsByTreatmentScheduleID :many
-SELECT u.id,
-       u.full_name,
-       u.email,
-       u.phone_number,
-       u.date_of_birth,
-       u.gender,
-       u.role,
-       services.name as service_name,
-       tad.service_quantity
-FROM users u
-         JOIN appointments a ON u.id = a.patient_id
-         JOIN schedules s ON a.schedule_id = s.id
-         LEFT JOIN treatment_appointment_detail tad ON a.id = tad.appointment_id
-         JOIN services ON tad.service_id = services.id
-WHERE s.id = $1
-  AND s.type = 'Treatment'
-`
-
-type ListPatientsByTreatmentScheduleIDRow struct {
-	ID              int64         `json:"id"`
-	FullName        string        `json:"full_name"`
-	Email           string        `json:"email"`
-	PhoneNumber     string        `json:"phone_number"`
-	DateOfBirth     time.Time     `json:"date_of_birth"`
-	Gender          string        `json:"gender"`
-	Role            string        `json:"role"`
-	ServiceName     string        `json:"service_name"`
-	ServiceQuantity sql.NullInt64 `json:"service_quantity"`
-}
-
-func (q *Queries) ListPatientsByTreatmentScheduleID(ctx context.Context, scheduleID int64) ([]ListPatientsByTreatmentScheduleIDRow, error) {
-	rows, err := q.db.QueryContext(ctx, listPatientsByTreatmentScheduleID, scheduleID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []ListPatientsByTreatmentScheduleIDRow{}
-	for rows.Next() {
-		var i ListPatientsByTreatmentScheduleIDRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.FullName,
-			&i.Email,
-			&i.PhoneNumber,
-			&i.DateOfBirth,
-			&i.Gender,
-			&i.Role,
-			&i.ServiceName,
-			&i.ServiceQuantity,
 		); err != nil {
 			return nil, err
 		}
@@ -569,7 +561,7 @@ FROM schedules s
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id
 WHERE u.id = $1
-AND s.type = 'Treatment'
+  AND s.type = 'Treatment'
 ORDER BY s.created_at DESC
 `
 
