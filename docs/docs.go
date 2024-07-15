@@ -18,6 +18,34 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/appointments/examination/{id}/cancel": {
+            "patch": {
+                "tags": [
+                    "appointments"
+                ],
+                "summary": "Cho phép bệnh nhân hủy lịch khám",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Examination Booking ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/dentists": {
             "get": {
                 "produces": [
@@ -365,39 +393,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/db.GetExaminationAppointmentDetailsRow"
                         }
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "500": {
-                        "description": "Internal Server Error"
-                    }
-                }
-            }
-        },
-        "/patients/appointments/examination/{id}/cancel": {
-            "patch": {
-                "security": [
-                    {
-                        "accessToken": []
-                    }
-                ],
-                "tags": [
-                    "patients"
-                ],
-                "summary": "Cho phép bệnh nhân hủy lịch khám",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Examination Booking ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
                     },
                     "400": {
                         "description": "Bad Request"

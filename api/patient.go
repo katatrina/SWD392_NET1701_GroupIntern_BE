@@ -308,7 +308,7 @@ func (server *Server) getExaminationAppointmentByPatient(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, details)
 }
 
-// cancelExaminationAppointmentByPatient cancels an examination appointment by a patient
+// cmancelExaminationAppointmentByPatient cancels an examination appointment by a patient
 //
 //	@Router		/appointments/examination/{id}/cancel [patch]
 //	@Summary	Cho phép bệnh nhân hủy lịch khám
