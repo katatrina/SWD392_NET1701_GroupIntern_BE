@@ -114,7 +114,7 @@ func (server *Server) setupRouter() {
 		scheduleGroup.GET("/examination/:id/patients", server.listPatientsByExaminationSchedule)
 		
 		// Treatment schedule
-		scheduleGroup.Use(authMiddleware(server.tokenMaker)).POST("/treatment", server.createTreatmentSchedule)
+		scheduleGroup.POST("/treatment", server.createTreatmentSchedule)
 		scheduleGroup.GET("/treatment", server.listTreatmentSchedules)
 		scheduleGroup.GET("/treatment/:id/patients", server.listPatientsByTreatmentSchedule)
 		

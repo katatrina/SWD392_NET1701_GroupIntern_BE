@@ -169,21 +169,19 @@ type createTreatmentScheduleRequest struct {
 //	@Summary	Tạo lịch điều trị bởi nha sĩ
 //	@Description
 //	@Tags		schedules
-//	@Security	accessToken
 //	@Accept		json
 //	@Produce	json
 //	@Param		request	body	createTreatmentScheduleRequest	true	"Treatment schedule information"
 //	@Success	201
 //	@Failure	400
-//	@Failure	401
 //	@Failure	403
 //	@Failure	500
 func (server *Server) createTreatmentSchedule(ctx *gin.Context) {
-	dentistID, err := server.getAuthorizedUserID(ctx)
-	if err != nil {
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
-		return
-	}
+	// dentistID, err := server.getAuthorizedUserID(ctx)
+	// if err != nil {
+	// 	ctx.JSON(http.StatusUnauthorized, errorResponse(err))
+	// 	return
+	// }
 	
 	var req createTreatmentScheduleRequest
 	
@@ -193,10 +191,10 @@ func (server *Server) createTreatmentSchedule(ctx *gin.Context) {
 	}
 	
 	// Check if the dentist is the same as the dentist in the request
-	if dentistID != req.DentistID {
-		ctx.JSON(http.StatusForbidden, errorResponse(ErrMisMatchedUserID))
-		return
-	}
+	// if dentistID != req.DentistID {
+	// 	ctx.JSON(http.StatusForbidden, errorResponse(ErrMisMatchedUserID))
+	// 	return
+	// }
 	
 	// Check if the schedule overlaps with other schedules
 	schedules, err := server.store.GetScheduleOverlap(ctx, db.GetScheduleOverlapParams{

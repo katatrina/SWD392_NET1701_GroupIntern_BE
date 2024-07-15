@@ -770,11 +770,6 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "security": [
-                    {
-                        "accessToken": []
-                    }
-                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -802,9 +797,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request"
-                    },
-                    "401": {
-                        "description": "Unauthorized"
                     },
                     "403": {
                         "description": "Forbidden"
