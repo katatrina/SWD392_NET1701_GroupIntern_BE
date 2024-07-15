@@ -189,6 +189,7 @@ SELECT b.id          as booking_id,
        b.status      as booking_status,
        b.payment_status,
        services.name as service,
+       services.cost as service_cost,
        tad.service_quantity,
        s.start_time,
        s.end_time,
@@ -219,6 +220,7 @@ type GetTreatmentAppointmentDetailsRow struct {
 	BookingStatus   string    `json:"booking_status"`
 	PaymentStatus   string    `json:"payment_status"`
 	Service         string    `json:"service"`
+	ServiceCost     int64     `json:"service_cost"`
 	ServiceQuantity int64     `json:"service_quantity"`
 	StartTime       time.Time `json:"start_time"`
 	EndTime         time.Time `json:"end_time"`
@@ -236,6 +238,7 @@ func (q *Queries) GetTreatmentAppointmentDetails(ctx context.Context, arg GetTre
 		&i.BookingStatus,
 		&i.PaymentStatus,
 		&i.Service,
+		&i.ServiceCost,
 		&i.ServiceQuantity,
 		&i.StartTime,
 		&i.EndTime,

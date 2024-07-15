@@ -305,6 +305,8 @@ definitions:
         type: string
       total_cost:
         type: integer
+      type:
+        type: string
     type: object
   db.ListAvailableExaminationSchedulesByDateForPatientRow:
     properties:

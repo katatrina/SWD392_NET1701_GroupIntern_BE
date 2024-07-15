@@ -1943,6 +1943,9 @@ const docTemplate = `{
                 },
                 "total_cost": {
                     "type": "integer"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },
