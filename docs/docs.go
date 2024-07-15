@@ -741,6 +741,34 @@ const docTemplate = `{
             }
         },
         "/schedules/treatment": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "schedules"
+                ],
+                "summary": "Liệt kê tất cả lịch điều trị",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Search query by dentist name",
+                        "name": "q",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {

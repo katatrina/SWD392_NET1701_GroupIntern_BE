@@ -1010,6 +1010,24 @@ paths:
       tags:
       - schedules
   /schedules/treatment:
+    get:
+      parameters:
+      - description: Search query by dentist name
+        in: query
+        name: q
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Liệt kê tất cả lịch điều trị
+      tags:
+      - schedules
     post:
       consumes:
       - application/json

@@ -108,13 +108,17 @@ func (server *Server) setupRouter() {
 	
 	scheduleGroup := v1.Group("/schedules")
 	{
+		// Examination schedule
 		scheduleGroup.POST("/examination", server.createExaminationSchedule)
 		scheduleGroup.GET("/examination", server.listExaminationSchedules)
 		scheduleGroup.GET("/examination/:id/patients", server.listPatientsByExaminationSchedule)
+		
+		// Treatment schedule
+		scheduleGroup.Use(authMiddleware(server.tokenMaker)).POST("/treatment", server.createTreatmentSchedule)
+		scheduleGroup.GET("/treatment", server.listTreatmentSchedules)
 		scheduleGroup.GET("/treatment/:id/patients", server.listPatientsByTreatmentSchedule)
 		
-		scheduleGroup.Use(authMiddleware(server.tokenMaker)).POST("/treatment", server.createTreatmentSchedule)
-		
+		// Available examination schedules for patient
 		scheduleGroup.GET("/examination/available", server.listAvailableExaminationSchedulesByDateForPatient)
 	}
 	

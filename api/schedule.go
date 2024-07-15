@@ -3,7 +3,6 @@ package api
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"net/http"
 	"time"
 	
@@ -38,8 +37,6 @@ func (server *Server) createExaminationSchedule(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-	
-	fmt.Println(req)
 	
 	// Check if the schedule overlaps with other schedules
 	schedules, err := server.store.GetScheduleOverlap(ctx, db.GetScheduleOverlapParams{
@@ -287,4 +284,47 @@ func (server *Server) listPatientsByTreatmentSchedule(ctx *gin.Context) {
 	}
 	
 	ctx.JSON(http.StatusOK, patients)
+}
+
+// listTreatmentSchedules lists all treatment schedules
+//
+//	@Router		/schedules/treatment [get]
+//	@Summary	Liệt kê tất cả lịch điều trị
+//	@Description
+// @Param		q	query	string	false	"Search query by dentist name"
+//	@Tags		schedules
+//	@Produce	json
+//	@Success	200
+//	@Failure	404
+//	@Failure	500
+func (server *Server) listTreatmentSchedules(ctx *gin.Context) {
+	searchQuery := ctx.Query("q")
+	if searchQuery != "" {
+		schedules, err := server.store.ListTreatmentSchedulesByDentistName(ctx, searchQuery)
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+				return
+			}
+			
+			ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+			return
+		}
+		
+		ctx.JSON(http.StatusOK, schedules)
+		return
+	}
+	
+	schedules, err := server.store.ListTreatmentSchedules(ctx)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+			return
+		}
+		
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	ctx.JSON(http.StatusOK, schedules)
 }

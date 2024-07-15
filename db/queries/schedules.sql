@@ -10,18 +10,19 @@ WHERE s.start_time::date = sqlc.arg(date)::date
 ORDER BY s.start_time ASC;
 
 -- name: ListExaminationSchedules :many
-SELECT s.id           as schedule_id,
+SELECT s.id        as schedule_id,
        s.type,
        s.start_time,
        s.end_time,
-       u.full_name    as dentist_name,
-       r.name         as room_name,
-       s.max_patients as max_patients,
-       COUNT(a.id)    as current_patients
+       u.full_name as dentist_name,
+       r.name      as room_name,
+       s.max_patients,
+       COUNT(a.id) as current_patients
 FROM schedules s
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id
          LEFT JOIN appointments a ON s.id = a.schedule_id
+WHERE s.type = 'Examination'
 GROUP BY s.id, u.full_name, r.name
 ORDER BY s.created_at DESC;
 
@@ -87,21 +88,50 @@ FROM users u
          JOIN schedules s ON a.schedule_id = s.id
          LEFT JOIN treatment_appointment_detail tad ON a.id = tad.appointment_id
          JOIN services ON tad.service_id = services.id
-WHERE s.id = sqlc.arg(schedule_id);
+WHERE s.id = sqlc.arg(schedule_id)
+  AND s.type = 'Treatment';
 
 -- name: ListExaminationSchedulesByDentistName :many
-SELECT s.id           as schedule_id,
+SELECT s.id        as schedule_id,
        s.type,
        s.start_time,
        s.end_time,
-       u.full_name    as dentist_name,
-       r.name         as room_name,
-       s.max_patients as max_patients,
-       COUNT(a.id)    as current_patients
+       u.full_name as dentist_name,
+       r.name      as room_name,
+       s.max_patients,
+       COUNT(a.id) as current_patients
 FROM schedules s
          JOIN users u ON s.dentist_id = u.id
          JOIN rooms r ON s.room_id = r.id
          LEFT JOIN appointments a ON s.id = a.schedule_id
 WHERE u.full_name ILIKE '%' || sqlc.arg(dentist_name)::text || '%'
+AND s.type = 'Examination'
 GROUP BY s.id, u.full_name, r.name
+ORDER BY s.created_at DESC;
+
+-- name: ListTreatmentSchedules :many
+SELECT s.id        as schedule_id,
+       s.type,
+       s.start_time,
+       s.end_time,
+       u.full_name as dentist_name,
+       r.name      as room_name
+FROM schedules s
+         JOIN users u ON s.dentist_id = u.id
+         JOIN rooms r ON s.room_id = r.id
+WHERE s.type = 'Treatment'
+ORDER BY s.created_at DESC;
+
+-- name: ListTreatmentSchedulesByDentistName :many
+SELECT s.id        as schedule_id,
+       s.type,
+       s.start_time,
+       s.end_time,
+       u.full_name as dentist_name,
+       r.name      as room_name
+FROM schedules s
+         JOIN users u ON s.dentist_id = u.id
+         JOIN rooms r ON s.room_id = r.id
+WHERE u.full_name ILIKE '%' || sqlc.arg(dentist_name)::text || '%'
+AND s.type = 'Treatment'
 ORDER BY s.created_at DESC;
