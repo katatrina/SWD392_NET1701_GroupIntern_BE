@@ -67,7 +67,7 @@ FROM bookings b
          JOIN users u ON s.dentist_id = u.id
          JOIN dentist_detail dd ON u.id = dd.dentist_id
          JOIN rooms r ON s.room_id = r.id
-         LEFT JOIN services ON tad.service_id = services.id
+         JOIN services ON tad.service_id = services.id
 WHERE b.id = sqlc.arg(booking_id)
   AND b.type = 'Treatment'
   AND b.patient_id = sqlc.arg(patient_id);
