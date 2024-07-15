@@ -115,56 +115,56 @@ func TestInitDB(t *testing.T) {
 			"full_name":   "Nguyễn Anh Dũng",
 			"email":       "dungan@gmail.com",
 			"phone":       "0987654321",
-			"dateOfBirth": time.Date(1990, 1, 1, 0, 0, 0, 0, time.Local),
+			"dateOfBirth": time.Date(1999, 1, 1, 0, 0, 0, 0, time.Local),
 			"gender":      "Nam",
 		},
 		{
 			"full_name":   "Trần Văn Lâm",
 			"email":       "lamtv@gmail.com",
 			"phone":       "0987654322",
-			"dateOfBirth": time.Date(1990, 1, 2, 0, 0, 0, 0, time.Local),
+			"dateOfBirth": time.Date(1998, 2, 2, 0, 0, 0, 0, time.Local),
 			"gender":      "Nam",
 		},
 		{
 			"full_name":   "Nguyễn Thị Hương",
 			"email":       "huongnt10@gmail.com",
 			"phone":       "0987654323",
-			"dateOfBirth": time.Date(1990, 1, 10, 0, 0, 0, 0, time.Local),
+			"dateOfBirth": time.Date(1997, 1, 10, 0, 0, 0, 0, time.Local),
 			"gender":      "Nữ",
 		},
 		{
 			"full_name":   "Lê Thị Hồng",
 			"email":       "huonglt20@gmail.com",
 			"phone":       "0987654324",
-			"dateOfBirth": time.Date(1990, 1, 4, 0, 0, 0, 0, time.Local),
+			"dateOfBirth": time.Date(1996, 1, 4, 0, 0, 0, 0, time.Local),
 			"gender":      "Nữ",
 		},
 		{
 			"full_name":   "Nguyễn Văn Hùng",
 			"email":       "hungnv@gmail.com",
 			"phone":       "0987654325",
-			"dateOfBirth": time.Date(1990, 1, 5, 0, 0, 0, 0, time.Local),
+			"dateOfBirth": time.Date(1995, 1, 5, 0, 0, 0, 0, time.Local),
 			"gender":      "Nam",
 		},
 		{
 			"full_name":   "Phạm Thị Bích Ngọc",
 			"email":       "ngocptb@gmail.com",
 			"phone":       "0987654326",
-			"dateOfBirth": time.Date(1990, 1, 6, 0, 0, 0, 0, time.Local),
+			"dateOfBirth": time.Date(1994, 1, 6, 0, 0, 0, 0, time.Local),
 			"gender":      "Nữ",
 		},
 		{
 			"full_name":   "Lại Ngọc Khánh Thư",
 			"email":       "thulnk@gmail.com",
 			"phone":       "0987654327",
-			"dateOfBirth": time.Date(1990, 1, 7, 0, 0, 0, 0, time.Local),
+			"dateOfBirth": time.Date(1993, 1, 7, 0, 0, 0, 0, time.Local),
 			"gender":      "Nữ",
 		},
 		{
 			"full_name":   "Lê Hoàng Anh",
 			"email":       "anhlh25@gmail.com",
 			"phone":       "0987654328",
-			"dateOfBirth": time.Date(1990, 1, 8, 0, 0, 0, 0, time.Local),
+			"dateOfBirth": time.Date(1992, 1, 8, 0, 0, 0, 0, time.Local),
 			"gender":      "Nam",
 		},
 	}
@@ -602,7 +602,7 @@ func TestInitDB(t *testing.T) {
 		Email:          "thunt@gmail.com",
 		PhoneNumber:    "0987654320",
 		Role:           "Patient",
-		DateOfBirth:    time.Date(1990, 1, 1, 0, 0, 0, 0, time.Local),
+		DateOfBirth:    time.Date(1995, 5, 25, 0, 0, 0, 0, time.Local),
 		Gender:         "Nữ",
 	}
 	_, err = testQueries.CreateUser(context.Background(), arg)
@@ -616,7 +616,7 @@ func TestInitDB(t *testing.T) {
 		Email:          "sangnv@gmail.com",
 		PhoneNumber:    "0989654321",
 		Role:           "Patient",
-		DateOfBirth:    time.Date(1990, 1, 1, 0, 0, 0, 0, time.Local),
+		DateOfBirth:    time.Date(1997, 3, 21, 0, 0, 0, 0, time.Local),
 		Gender:         "Nam",
 	}
 	_, err = testQueries.CreateUser(context.Background(), arg)
@@ -630,7 +630,7 @@ func TestInitDB(t *testing.T) {
 		Email:          "lamlv@gmail.com",
 		PhoneNumber:    "0987624320",
 		Role:           "Patient",
-		DateOfBirth:    time.Date(1990, 1, 1, 0, 0, 0, 0, time.Local),
+		DateOfBirth:    time.Date(1996, 2, 27, 0, 0, 0, 0, time.Local),
 		Gender:         "Nam",
 	}
 	_, err = testQueries.CreateUser(context.Background(), arg)
@@ -644,7 +644,7 @@ func TestInitDB(t *testing.T) {
 		Email:          "tohuu@gmail.com",
 		PhoneNumber:    "0987657320",
 		Role:           "Patient",
-		DateOfBirth:    time.Date(1990, 1, 1, 0, 0, 0, 0, time.Local),
+		DateOfBirth:    time.Date(1989, 6, 26, 0, 0, 0, 0, time.Local),
 		Gender:         "Nam",
 	}
 	_, err = testQueries.CreateUser(context.Background(), arg)
@@ -659,7 +659,7 @@ func TestInitDB(t *testing.T) {
 		Email:          "admin@gmail.com",
 		PhoneNumber:    "0987834320",
 		Role:           "Admin",
-		DateOfBirth:    time.Date(1990, 1, 1, 0, 0, 0, 0, time.Local),
+		DateOfBirth:    time.Date(2001, 3, 7, 0, 0, 0, 0, time.Local),
 		Gender:         "Nam",
 	}
 	_, err = testQueries.CreateUser(context.Background(), arg)

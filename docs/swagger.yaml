@@ -719,6 +719,32 @@ paths:
       summary: Tạo tài khoản bệnh nhân
       tags:
       - patients
+  /patients/:
+    get:
+      parameters:
+      - description: Search query by patient name
+        in: query
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of patients
+          schema:
+            items:
+              $ref: '#/definitions/api.userInfo'
+            type: array
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Lấy danh sách bệnh nhân theo tên
+      tags:
+      - patients
   /patients/{id}:
     get:
       parameters:

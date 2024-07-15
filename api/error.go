@@ -13,4 +13,6 @@ var (
 	
 	ErrNoRecordFound   = errors.New("no record found")
 	ErrScheduleOverlap = errors.New("schedule overlaps with other schedules")
+	
+	ErrEmptySearchQuery = errors.New("search query is empty")
 )

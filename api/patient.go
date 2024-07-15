@@ -344,3 +344,55 @@ func (server *Server) cancelExaminationAppointmentByPatient(ctx *gin.Context) {
 	
 	ctx.JSON(http.StatusNoContent, nil)
 }
+
+// listPatientsByName returns patients by name
+//
+//	@Router		/patients/ [get]
+//	@Summary	Lấy danh sách bệnh nhân theo tên
+//	@Description
+//	@Tags		patients
+//	@Param		name	query	string	true	"Search query by patient name"
+//	@Produce	json
+//	@Success	200	{object}	[]userInfo	"List of patients"
+//	@Failure	400
+//	@Failure	404
+//	@Failure	500
+func (server *Server) searchPatientsByName(ctx *gin.Context) {
+	searchQuery := ctx.Query("name")
+	if searchQuery == "" {
+		ctx.JSON(http.StatusBadRequest, errorResponse(ErrEmptySearchQuery))
+		return
+	}
+	
+	patients, err := server.store.ListPatientsByName(ctx, searchQuery)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			ctx.JSON(http.StatusNotFound, nil)
+			return
+		}
+		
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	if len(patients) == 0 {
+		ctx.JSON(http.StatusNotFound, patients)
+		return
+	}
+	
+	rsp := make([]userInfo, 0, len(patients))
+	for _, patient := range patients {
+		rsp = append(rsp, userInfo{
+			ID:          patient.ID,
+			FullName:    patient.FullName,
+			Email:       patient.Email,
+			PhoneNumber: patient.PhoneNumber,
+			Role:        patient.Role,
+			Gender:      patient.Gender,
+			DateOfBirth: util.CustomDate(patient.DateOfBirth),
+			CreatedAt:   patient.CreatedAt,
+		})
+	}
+	
+	ctx.JSON(http.StatusOK, rsp)
+}

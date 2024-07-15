@@ -154,6 +154,49 @@ func (q *Queries) IsPhoneNumberExists(ctx context.Context, phoneNumber string) (
 	return exists, err
 }
 
+const listPatientsByName = `-- name: ListPatientsByName :many
+SELECT id, full_name, hashed_password, email, phone_number, date_of_birth, gender, role, deleted_at, created_at
+FROM users
+WHERE role = 'Patient'
+  AND full_name ILIKE '%' || $1::text || '%'
+  AND deleted_at IS NULL
+ORDER BY created_at DESC
+`
+
+func (q *Queries) ListPatientsByName(ctx context.Context, fullName string) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, listPatientsByName, fullName)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []User{}
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.FullName,
+			&i.HashedPassword,
+			&i.Email,
+			&i.PhoneNumber,
+			&i.DateOfBirth,
+			&i.Gender,
+			&i.Role,
+			&i.DeletedAt,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateUser = `-- name: UpdateUser :one
 UPDATE users
 SET full_name     = $2,

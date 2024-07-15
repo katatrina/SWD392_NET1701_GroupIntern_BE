@@ -47,6 +47,7 @@ type Querier interface {
 	ListExaminationSchedules(ctx context.Context) ([]ListExaminationSchedulesRow, error)
 	ListExaminationSchedulesByDentistName(ctx context.Context, dentistName string) ([]ListExaminationSchedulesByDentistNameRow, error)
 	ListPatientsByExaminationScheduleID(ctx context.Context, scheduleID int64) ([]ListPatientsByExaminationScheduleIDRow, error)
+	ListPatientsByName(ctx context.Context, fullName string) ([]User, error)
 	ListPatientsByTreatmentScheduleID(ctx context.Context, scheduleID int64) ([]ListPatientsByTreatmentScheduleIDRow, error)
 	ListPayments(ctx context.Context) ([]Payment, error)
 	ListRooms(ctx context.Context) ([]Room, error)

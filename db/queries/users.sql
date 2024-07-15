@@ -20,6 +20,14 @@ FROM users
 WHERE id = $1
   AND role = 'Patient';
 
+-- name: ListPatientsByName :many
+SELECT *
+FROM users
+WHERE role = 'Patient'
+  AND full_name ILIKE '%' || sqlc.arg(full_name)::text || '%'
+  AND deleted_at IS NULL
+ORDER BY created_at DESC;
+
 -- name: UpdateUser :one
 UPDATE users
 SET full_name     = $2,
