@@ -130,11 +130,14 @@ func (server *Server) setupRouter() {
 	{
 		// Examination appointment
 		appointmentGroup.PATCH("/examination/:id/cancel", server.cancelExaminationAppointmentByPatient)
+		// appointmentGroup.PATCH("/examination/:id/complete", server.completeExaminationAppointmentByDentist)
 		
 		// Treatment appointment
 		appointmentGroup.POST("/treatment", server.createTreatmentAppointment)
 		appointmentGroup.GET("/treatment", server.listTreatmentAppointments)
 		appointmentGroup.GET("/treatment/:id/patients", server.listPatientsOfTreatmentAppointment)
+		
+		// appointmentGroup.PATCH("/treatment/:id/complete", server.completeTreatmentAppointmentByPatient)
 	}
 	
 	v1.GET("specialties", server.listSpecialties)

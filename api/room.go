@@ -71,8 +71,8 @@ type updateRoomRequest struct {
 //	@Router		/rooms/{id} [put]
 //	@Summary	Cập nhật tên phòng
 //	@Description
-//	@Params		request body updateRoomRequest true "Update room info"
-//	@Param		id	path	int	true	"Room ID"
+//	@Param		request	body	updateRoomRequest	true	"Update room info"
+//	@Param		id		path	int					true	"Room ID"
 //	@Tags		rooms
 //	@Success	204
 //	@Failure	400

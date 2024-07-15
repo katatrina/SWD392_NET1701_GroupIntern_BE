@@ -801,6 +801,15 @@ const docTemplate = `{
                 "summary": "Cập nhật tên phòng",
                 "parameters": [
                     {
+                        "description": "Update room info",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/api.updateRoomRequest"
+                        }
+                    },
+                    {
                         "type": "integer",
                         "description": "Room ID",
                         "name": "id",
@@ -1752,6 +1761,17 @@ const docTemplate = `{
                 },
                 "specialty_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "api.updateRoomRequest": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
                 }
             }
         },

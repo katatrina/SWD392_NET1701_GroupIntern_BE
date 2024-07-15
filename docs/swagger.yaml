@@ -183,6 +183,13 @@ definitions:
       specialty_id:
         type: integer
     type: object
+  api.updateRoomRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
   api.updateServiceCategoryRequest:
     properties:
       banner_url:
@@ -1066,6 +1073,12 @@ paths:
       - rooms
     put:
       parameters:
+      - description: Update room info
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/api.updateRoomRequest'
       - description: Room ID
         in: path
         name: id
