@@ -396,3 +396,41 @@ func (server *Server) searchPatientsByName(ctx *gin.Context) {
 	
 	ctx.JSON(http.StatusOK, rsp)
 }
+
+// listTreatmentAppointmentsByPatient returns all treatment bookings of a patient
+//
+//	@Router		/patients/appointments/treatment [get]
+//	@Summary	Cho phép bệnh nhân xem lịch sử tất cả lịch điều trị của mình
+//	@Produce	json
+//	@Description
+//	@Security	accessToken
+//	@Tags		patients
+//	@Success	200
+//	@Failure	400
+//	@Failure	404
+//	@Failure	500
+func (server *Server) listTreatmentAppointmentsByPatient(ctx *gin.Context) {
+	patientID, err := server.getAuthorizedUserID(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	arg := db.ListBookingsOfOnePatientParams{
+		PatientID: patientID,
+		Type:      "Treatment",
+	}
+	
+	bookings, err := server.store.ListBookingsOfOnePatient(ctx, arg)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			ctx.JSON(http.StatusNotFound, errorResponse(ErrNoRecordFound))
+			return
+		}
+		
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	ctx.JSON(http.StatusOK, bookings)
+}

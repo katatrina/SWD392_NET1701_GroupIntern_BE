@@ -841,6 +841,24 @@ paths:
       summary: Cho phép bệnh nhân xem chi tiết một lịch khám tổng quát của mình
       tags:
       - patients
+  /patients/appointments/treatment:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      security:
+      - accessToken: []
+      summary: Cho phép bệnh nhân xem lịch sử tất cả lịch điều trị của mình
+      tags:
+      - patients
   /payment-methods:
     get:
       produces:

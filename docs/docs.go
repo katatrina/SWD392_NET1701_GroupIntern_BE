@@ -443,6 +443,36 @@ const docTemplate = `{
                 }
             }
         },
+        "/patients/appointments/treatment": {
+            "get": {
+                "security": [
+                    {
+                        "accessToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patients"
+                ],
+                "summary": "Cho phép bệnh nhân xem lịch sử tất cả lịch điều trị của mình",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/patients/{id}": {
             "get": {
                 "produces": [
