@@ -189,6 +189,7 @@ SELECT b.id          as booking_id,
        b.status      as booking_status,
        b.payment_status,
        services.name as service,
+       tad.service_quantity,
        s.start_time,
        s.end_time,
        u.full_name   as dentist_name,
@@ -213,16 +214,17 @@ type GetTreatmentAppointmentDetailsParams struct {
 }
 
 type GetTreatmentAppointmentDetailsRow struct {
-	BookingID     int64     `json:"booking_id"`
-	Type          string    `json:"type"`
-	BookingStatus string    `json:"booking_status"`
-	PaymentStatus string    `json:"payment_status"`
-	Service       string    `json:"service"`
-	StartTime     time.Time `json:"start_time"`
-	EndTime       time.Time `json:"end_time"`
-	DentistName   string    `json:"dentist_name"`
-	RoomName      string    `json:"room_name"`
-	TotalCost     int64     `json:"total_cost"`
+	BookingID       int64     `json:"booking_id"`
+	Type            string    `json:"type"`
+	BookingStatus   string    `json:"booking_status"`
+	PaymentStatus   string    `json:"payment_status"`
+	Service         string    `json:"service"`
+	ServiceQuantity int64     `json:"service_quantity"`
+	StartTime       time.Time `json:"start_time"`
+	EndTime         time.Time `json:"end_time"`
+	DentistName     string    `json:"dentist_name"`
+	RoomName        string    `json:"room_name"`
+	TotalCost       int64     `json:"total_cost"`
 }
 
 func (q *Queries) GetTreatmentAppointmentDetails(ctx context.Context, arg GetTreatmentAppointmentDetailsParams) (GetTreatmentAppointmentDetailsRow, error) {
@@ -234,6 +236,7 @@ func (q *Queries) GetTreatmentAppointmentDetails(ctx context.Context, arg GetTre
 		&i.BookingStatus,
 		&i.PaymentStatus,
 		&i.Service,
+		&i.ServiceQuantity,
 		&i.StartTime,
 		&i.EndTime,
 		&i.DentistName,
