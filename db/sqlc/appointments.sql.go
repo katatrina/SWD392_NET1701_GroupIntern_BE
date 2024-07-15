@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	util "github.com/katatrina/SWD392_NET1701_GroupIntern_BE/internal/util"
@@ -124,15 +125,14 @@ func (q *Queries) GetAppointmentByScheduleIDAndPatientID(ctx context.Context, ar
 }
 
 const getExaminationAppointmentDetails = `-- name: GetExaminationAppointmentDetails :one
-SELECT b.id             as booking_id,
-       b.status         as booking_status,
+SELECT b.id        as booking_id,
+       b.status    as booking_status,
        b.payment_status,
-       sc.name          as service_category,
+       sc.name     as service_category,
        s.start_time,
        s.end_time,
-       u.full_name      as dentist_name,
-       specialties.name as dentist_specialty,
-       r.name           as room_name,
+       u.full_name as dentist_name,
+       r.name      as room_name,
        b.total_cost
 FROM bookings b
          JOIN appointments a ON b.id = a.booking_id
@@ -140,10 +140,10 @@ FROM bookings b
          JOIN examination_appointment_detail ead ON a.id = ead.appointment_id
          JOIN users u ON s.dentist_id = u.id
          JOIN dentist_detail dd ON u.id = dd.dentist_id
-         JOIN specialties ON dd.specialty_id = specialties.id
          JOIN rooms r ON s.room_id = r.id
          LEFT JOIN service_categories sc ON ead.service_category_id = sc.id
 WHERE b.id = $1
+  AND b.type = 'Examination'
   AND b.patient_id = $2
 `
 
@@ -153,16 +153,15 @@ type GetExaminationAppointmentDetailsParams struct {
 }
 
 type GetExaminationAppointmentDetailsRow struct {
-	BookingID        int64               `json:"booking_id"`
-	BookingStatus    string              `json:"booking_status"`
-	PaymentStatus    string              `json:"payment_status"`
-	ServiceCategory  util.JSONNullString `json:"service_category"`
-	StartTime        time.Time           `json:"start_time"`
-	EndTime          time.Time           `json:"end_time"`
-	DentistName      string              `json:"dentist_name"`
-	DentistSpecialty string              `json:"dentist_specialty"`
-	RoomName         string              `json:"room_name"`
-	TotalCost        int64               `json:"total_cost"`
+	BookingID       int64               `json:"booking_id"`
+	BookingStatus   string              `json:"booking_status"`
+	PaymentStatus   string              `json:"payment_status"`
+	ServiceCategory util.JSONNullString `json:"service_category"`
+	StartTime       time.Time           `json:"start_time"`
+	EndTime         time.Time           `json:"end_time"`
+	DentistName     string              `json:"dentist_name"`
+	RoomName        string              `json:"room_name"`
+	TotalCost       int64               `json:"total_cost"`
 }
 
 func (q *Queries) GetExaminationAppointmentDetails(ctx context.Context, arg GetExaminationAppointmentDetailsParams) (GetExaminationAppointmentDetailsRow, error) {
@@ -176,7 +175,63 @@ func (q *Queries) GetExaminationAppointmentDetails(ctx context.Context, arg GetE
 		&i.StartTime,
 		&i.EndTime,
 		&i.DentistName,
-		&i.DentistSpecialty,
+		&i.RoomName,
+		&i.TotalCost,
+	)
+	return i, err
+}
+
+const getTreatmentAppointmentDetails = `-- name: GetTreatmentAppointmentDetails :one
+SELECT b.id          as booking_id,
+       b.status      as booking_status,
+       b.payment_status,
+       services.name as service,
+       s.start_time,
+       s.end_time,
+       u.full_name   as dentist_name,
+       r.name        as room_name,
+       b.total_cost
+FROM bookings b
+         JOIN appointments a ON b.id = a.booking_id
+         JOIN schedules s ON a.schedule_id = s.id
+         JOIN treatment_appointment_detail tad ON a.id = tad.appointment_id
+         JOIN users u ON s.dentist_id = u.id
+         JOIN dentist_detail dd ON u.id = dd.dentist_id
+         JOIN rooms r ON s.room_id = r.id
+         LEFT JOIN services ON tad.service_id = services.id
+WHERE b.id = $1
+  AND b.type = 'Treatment'
+  AND b.patient_id = $2
+`
+
+type GetTreatmentAppointmentDetailsParams struct {
+	BookingID int64 `json:"booking_id"`
+	PatientID int64 `json:"patient_id"`
+}
+
+type GetTreatmentAppointmentDetailsRow struct {
+	BookingID     int64          `json:"booking_id"`
+	BookingStatus string         `json:"booking_status"`
+	PaymentStatus string         `json:"payment_status"`
+	Service       sql.NullString `json:"service"`
+	StartTime     time.Time      `json:"start_time"`
+	EndTime       time.Time      `json:"end_time"`
+	DentistName   string         `json:"dentist_name"`
+	RoomName      string         `json:"room_name"`
+	TotalCost     int64          `json:"total_cost"`
+}
+
+func (q *Queries) GetTreatmentAppointmentDetails(ctx context.Context, arg GetTreatmentAppointmentDetailsParams) (GetTreatmentAppointmentDetailsRow, error) {
+	row := q.db.QueryRowContext(ctx, getTreatmentAppointmentDetails, arg.BookingID, arg.PatientID)
+	var i GetTreatmentAppointmentDetailsRow
+	err := row.Scan(
+		&i.BookingID,
+		&i.BookingStatus,
+		&i.PaymentStatus,
+		&i.Service,
+		&i.StartTime,
+		&i.EndTime,
+		&i.DentistName,
 		&i.RoomName,
 		&i.TotalCost,
 	)

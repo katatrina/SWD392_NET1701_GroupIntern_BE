@@ -52,7 +52,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "schedules"
+                    "appointments"
                 ],
                 "summary": "Liệt kê tất cả lịch điều trị",
                 "parameters": [
@@ -83,7 +83,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "schedules"
+                    "appointments"
                 ],
                 "summary": "Tạo lịch điều trị bởi nha sĩ",
                 "parameters": [
@@ -119,7 +119,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "schedules"
+                    "appointments"
                 ],
                 "summary": "Liệt kê tất cả bệnh nhân của một lịch điều trị",
                 "parameters": [
@@ -584,7 +584,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "Examination Appointment ID",
+                        "description": "Examination Booking ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -629,6 +629,42 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/patients/appointments/treatment/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "accessToken": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "patients"
+                ],
+                "summary": "Cho phép bệnh nhân xem chi tiết một lịch điều trị của mình",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Treatment Booking ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -1888,9 +1924,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "dentist_name": {
-                    "type": "string"
-                },
-                "dentist_specialty": {
                     "type": "string"
                 },
                 "end_time": {

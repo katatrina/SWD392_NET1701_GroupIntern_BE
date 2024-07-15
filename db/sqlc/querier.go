@@ -36,6 +36,7 @@ type Querier interface {
 	GetServiceCategoryByID(ctx context.Context, id int64) (GetServiceCategoryByIDRow, error)
 	GetServiceCategoryBySlug(ctx context.Context, slug string) (ServiceCategory, error)
 	GetSpecialty(ctx context.Context, id int64) (Specialty, error)
+	GetTreatmentAppointmentDetails(ctx context.Context, arg GetTreatmentAppointmentDetailsParams) (GetTreatmentAppointmentDetailsRow, error)
 	GetUserByEmailForLogin(ctx context.Context, email string) (User, error)
 	GetUserByID(ctx context.Context, id int64) (User, error)
 	IsEmailExists(ctx context.Context, email string) (bool, error)

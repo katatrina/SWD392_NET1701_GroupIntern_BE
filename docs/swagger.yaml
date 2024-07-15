@@ -293,8 +293,6 @@ definitions:
         type: string
       dentist_name:
         type: string
-      dentist_specialty:
-        type: string
       end_time:
         type: string
       payment_status:
@@ -581,7 +579,7 @@ paths:
           description: Internal Server Error
       summary: Liệt kê tất cả lịch điều trị
       tags:
-      - schedules
+      - appointments
     post:
       consumes:
       - application/json
@@ -605,7 +603,7 @@ paths:
           description: Internal Server Error
       summary: Tạo lịch điều trị bởi nha sĩ
       tags:
-      - schedules
+      - appointments
   /appointments/treatment/{id}/patients:
     get:
       parameters:
@@ -629,7 +627,7 @@ paths:
           description: Internal Server Error
       summary: Liệt kê tất cả bệnh nhân của một lịch điều trị
       tags:
-      - schedules
+      - appointments
   /dentists:
     get:
       parameters:
@@ -925,7 +923,7 @@ paths:
   /patients/appointments/examination/{id}:
     get:
       parameters:
-      - description: Examination Appointment ID
+      - description: Examination Booking ID
         in: path
         name: id
         required: true
@@ -962,6 +960,28 @@ paths:
       security:
       - accessToken: []
       summary: Cho phép bệnh nhân xem lịch sử tất cả lịch điều trị của mình
+      tags:
+      - patients
+  /patients/appointments/treatment/{id}:
+    get:
+      parameters:
+      - description: Treatment Booking ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+        "500":
+          description: Internal Server Error
+      security:
+      - accessToken: []
+      summary: Cho phép bệnh nhân xem chi tiết một lịch điều trị của mình
       tags:
       - patients
   /payment-methods:

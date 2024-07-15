@@ -62,8 +62,8 @@ func (server *Server) setupRouter() {
 	
 	patientGroup := v1.Group("/patients")
 	patientGroup.POST("", server.createPatient)
-	patientGroup.GET("/:id", server.getPatient)
 	patientGroup.GET("", server.listPatients)
+	patientGroup.GET("/:id", server.getPatient)
 	patientGroup.Use(authMiddleware(server.tokenMaker))
 	{
 		// Examination appointment
@@ -73,6 +73,7 @@ func (server *Server) setupRouter() {
 		
 		// Treatment appointment
 		patientGroup.GET("/appointments/treatment", server.listTreatmentAppointmentsByPatient)
+		patientGroup.GET("/appointments/treatment/:id", server.getTreatmentAppointmentByPatient)
 	}
 	
 	serviceCategoryGroup := v1.Group("/service-categories")
@@ -103,7 +104,7 @@ func (server *Server) setupRouter() {
 		
 		dentistGroup.GET("/schedules/examination", server.listExaminationSchedulesOfDentist)
 		
-		dentistGroup.GET("/schedules/treatment", server.listTreatmentSchedulesOfDentist)
+		dentistGroup.GET("/:id/schedules/treatment", server.listTreatmentSchedulesOfDentist)
 	}
 	
 	roomGroup := v1.Group("/rooms")

@@ -276,7 +276,7 @@ type getExaminationAppointmentDetailsRequest struct {
 //	@Tags		patients
 //	@Produce	json
 //	@Security	accessToken
-//	@Param		id	path		int	true	"Examination Appointment ID"
+//	@Param		id	path		int	true	"Examination Booking ID"
 //	@Success	200	{object}	db.GetExaminationAppointmentDetailsRow
 //	@Failure	400
 //	@Failure	500
@@ -325,14 +325,7 @@ func (server *Server) cancelExaminationAppointmentByPatient(ctx *gin.Context) {
 		return
 	}
 	
-	// patientID, err := server.getAuthorizedUserID(ctx)
-	// if err != nil {
-	// 	ctx.JSON(http.StatusBadRequest, errorResponse(err))
-	// 	return
-	// }
-	
 	arg := db.CancelExaminationAppointmentByPatientParams{
-		// PatientID: patientID,
 		BookingID: bookingID,
 	}
 	
@@ -426,4 +419,48 @@ func (server *Server) listTreatmentAppointmentsByPatient(ctx *gin.Context) {
 	}
 	
 	ctx.JSON(http.StatusOK, bookings)
+}
+
+type getTreatmentAppointmentDetailsRequest struct {
+	TreatmentBookingID int64 `uri:"id" binding:"required"`
+}
+
+// getTreatmentAppointmentByPatient returns the details of an treatment appointment
+//
+//	@Router		/patients/appointments/treatment/{id} [get]
+//	@Summary	Cho phép bệnh nhân xem chi tiết một lịch điều trị của mình
+//	@Description
+//	@Tags		patients
+//	@Produce	json
+//	@Security	accessToken
+//	@Param		id	path	int	true	"Treatment Booking ID"
+//	@Success	200
+//	@Failure	400
+//	@Failure	500
+func (server *Server) getTreatmentAppointmentByPatient(ctx *gin.Context) {
+	var req getTreatmentAppointmentDetailsRequest
+	
+	if err := ctx.ShouldBindUri(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	patientID, err := server.getAuthorizedUserID(ctx)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, errorResponse(err))
+		return
+	}
+	
+	arg := db.GetTreatmentAppointmentDetailsParams{
+		PatientID: patientID,
+		BookingID: req.TreatmentBookingID,
+	}
+	
+	details, err := server.store.GetTreatmentAppointmentDetails(ctx, arg)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	
+	ctx.JSON(http.StatusOK, details)
 }

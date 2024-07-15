@@ -168,7 +168,7 @@ type createTreatmentAppointmentRequest struct {
 //	@Router		/appointments/treatment [post]
 //	@Summary	Tạo lịch điều trị bởi nha sĩ
 //	@Description
-//	@Tags		schedules
+//	@Tags		appointments
 //	@Accept		json
 //	@Produce	json
 //	@Param		request	body	createTreatmentAppointmentRequest	true	"Treatment appointment information"
@@ -250,7 +250,7 @@ func (server *Server) listPatientsByExaminationSchedule(ctx *gin.Context) {
 //	@Router		/appointments/treatment/{id}/patients [get]
 //	@Summary	Liệt kê tất cả bệnh nhân của một lịch điều trị
 //	@Description
-//	@Tags		schedules
+//	@Tags		appointments
 //	@Produce	json
 //	@Param		id	path	int	true	"Treatment Schedule ID"
 //	@Success	200	{array}	db.ListPatientsByTreatmentScheduleIDRow
@@ -278,7 +278,7 @@ func (server *Server) listPatientsOfTreatmentAppointment(ctx *gin.Context) {
 //	@Summary	Liệt kê tất cả lịch điều trị
 //	@Description
 //	@Param		q	query	string	false	"Search query by dentist name"
-//	@Tags		schedules
+//	@Tags		appointments
 //	@Produce	json
 //	@Success	200
 //	@Failure	404

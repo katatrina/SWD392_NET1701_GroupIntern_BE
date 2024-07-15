@@ -3,15 +3,15 @@ INSERT INTO appointments (booking_id, schedule_id, patient_id)
 VALUES ($1, $2, $3) RETURNING *;
 
 -- name: GetExaminationAppointmentDetails :one
-SELECT b.id             as booking_id,
-       b.status         as booking_status,
+SELECT b.id        as booking_id,
+       b.type,
+       b.status    as booking_status,
        b.payment_status,
-       sc.name          as service_category,
+       sc.name     as service_category,
        s.start_time,
        s.end_time,
-       u.full_name      as dentist_name,
-       specialties.name as dentist_specialty,
-       r.name           as room_name,
+       u.full_name as dentist_name,
+       r.name      as room_name,
        b.total_cost
 FROM bookings b
          JOIN appointments a ON b.id = a.booking_id
@@ -19,10 +19,10 @@ FROM bookings b
          JOIN examination_appointment_detail ead ON a.id = ead.appointment_id
          JOIN users u ON s.dentist_id = u.id
          JOIN dentist_detail dd ON u.id = dd.dentist_id
-         JOIN specialties ON dd.specialty_id = specialties.id
          JOIN rooms r ON s.room_id = r.id
          LEFT JOIN service_categories sc ON ead.service_category_id = sc.id
 WHERE b.id = sqlc.arg(booking_id)
+  AND b.type = 'Examination'
   AND b.patient_id = sqlc.arg(patient_id);
 
 -- name: CreateExaminationAppointmentDetail :one
@@ -48,3 +48,26 @@ WHERE id = $1;
 SELECT *
 FROM appointments
 WHERE booking_id = $1;
+
+-- name: GetTreatmentAppointmentDetails :one
+SELECT b.id          as booking_id,
+       b.type,
+       b.status      as booking_status,
+       b.payment_status,
+       services.name as service,
+       s.start_time,
+       s.end_time,
+       u.full_name   as dentist_name,
+       r.name        as room_name,
+       b.total_cost
+FROM bookings b
+         JOIN appointments a ON b.id = a.booking_id
+         JOIN schedules s ON a.schedule_id = s.id
+         JOIN treatment_appointment_detail tad ON a.id = tad.appointment_id
+         JOIN users u ON s.dentist_id = u.id
+         JOIN dentist_detail dd ON u.id = dd.dentist_id
+         JOIN rooms r ON s.room_id = r.id
+         LEFT JOIN services ON tad.service_id = services.id
+WHERE b.id = sqlc.arg(booking_id)
+  AND b.type = 'Treatment'
+  AND b.patient_id = sqlc.arg(patient_id);
