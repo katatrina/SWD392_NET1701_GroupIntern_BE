@@ -92,6 +92,8 @@ func (server *Server) loginUser(ctx *gin.Context) {
 			Email:       user.Email,
 			PhoneNumber: user.PhoneNumber,
 			Role:        user.Role,
+			Gender:      user.Gender,
+			DateOfBirth: util.CustomDate(user.DateOfBirth),
 			CreatedAt:   user.CreatedAt,
 		},
 	}
